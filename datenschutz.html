@@ -20,7 +20,7 @@
   h1 { font-size: 1.85rem; margin-bottom: .25rem; }
   h2 { font-size: 1.15rem; margin-top: 2.25rem; }
   .stand { color: #6b7590; font-size: .9rem; margin-top: 0; }
-  .kasten { background: #000000; border: 1px solid #dde3ee; border-radius: 10px; padding: 1rem 1.25rem; margin: 1.5rem 0; }
+  .kasten { background: #f4f6fb; border: 1px solid #dde3ee; border-radius: 10px; padding: 1rem 1.25rem; margin: 1.5rem 0; }
   ul { padding-left: 1.25rem; }
   li { margin: .35rem 0; }
   footer { margin-top: 3rem; font-size: .85rem; color: #6b7590; }
@@ -29,17 +29,19 @@
 <body>
 
 <h1>Datenschutzerklärung</h1>
-<p class="stand">App „Hockey Setup“ · Stand: 31. August 2026</p>
+<p class="stand">App „Hockey Setup“ · Stand: 28. September 2026 (ab Version 1.2)</p>
 
 <div class="kasten">
-  <strong>Kurz gefasst:</strong> Die App erhebt keine Daten, überträgt nichts an
-  uns oder an Dritte und benötigt keine Internetverbindung. Alles, was du
-  eingibst, bleibt auf deinem Gerät.
+  <strong>Kurz gefasst:</strong> Die App erhebt keine Daten und überträgt nichts
+  an uns oder an Dritte. Alles, was du eingibst, bleibt auf deinem Gerät – es sei
+  denn, du schaltest den <strong>Abgleich über iCloud</strong> ein. Dann liegen
+  deine Mannschaften zusätzlich in <em>deinem eigenen</em> iCloud-Konto, damit
+  sie auf deinen anderen Geräten bereitstehen. Auch dann bekommt der Entwickler
+  nichts davon zu sehen.
 </div>
 
 <h2>Verantwortlicher</h2>
 <p>
-  <!-- BITTE AUSFÜLLEN -->
   Steve Schumann<br>
   Malzstraße 17<br>
   08459 Neukirchen, Germany<br>
@@ -49,23 +51,80 @@
 <h2>Welche Daten die App verarbeitet</h2>
 <p>
   Du gibst in der App Angaben zu deiner Mannschaft ein: Namen, Geburtsdaten,
-  Pass- und Trikotnummern, Positionen, Verfügbarkeiten sowie Angaben zum Spiel.
-  Diese Daten werden ausschließlich auf deinem Gerät gespeichert, im
-  Dokumente-Ordner der App.
+  Pass- und Trikotnummern, Positionen, Verfügbarkeiten, Bewertungen, Statistiken
+  sowie Angaben zum Spiel. Dazu kommt auf Wunsch ein Vereinswappen. Diese Daten
+  werden auf deinem Gerät gespeichert, im Dokumente-Ordner der App.
 </p>
 <p>
-  Zusätzlich merkt sich die App einige Bedieneinstellungen (zuletzt geöffneter
-  Bereich, zuletzt gewählte Reihe, gewählte PDF-Vorlage). Auch diese liegen
-  ausschließlich lokal.
+  Zusätzlich merkt sich die App einige Bedieneinstellungen: zuletzt geöffneter
+  Bereich, zuletzt gewählte Reihe, gewählte PDF-Vorlage, Sprache, Farbschema und
+  ob der iCloud-Abgleich eingeschaltet ist. Auch diese liegen lokal.
 </p>
 
-<h2>Keine Übermittlung</h2>
+<h2>Abgleich über iCloud – nur wenn du ihn einschaltest</h2>
+<p>
+  Seit Version 1.2 kann die App deine Mannschaften über iCloud zwischen deinen
+  eigenen Geräten abgleichen. <strong>Diese Funktion ist ab Werk
+  ausgeschaltet.</strong> Beim ersten Start nach der Aktualisierung wirst du
+  einmal gefragt; ein- und ausschalten lässt sie sich jederzeit unter
+  „Optionen → iCloud“.
+</p>
+<p>Ist sie eingeschaltet, gilt Folgendes:</p>
 <ul>
-  <li>Die App stellt <strong>keine Netzwerkverbindung</strong> her.</li>
-  <li>Es gibt <strong>kein Nutzerkonto</strong> und keine Anmeldung.</li>
+  <li>
+    Übertragen werden genau die Mannschaftsdaten, die du eingegeben hast –
+    Kader, Aufstellungen, Bewertungen, Statistiken, Kleinfeld-Einteilung und
+    Vereinswappen. Nichts darüber hinaus.
+  </li>
+  <li>
+    Ziel ist die <strong>private Datenbank deines eigenen iCloud-Kontos</strong>
+    (Apples Dienst „CloudKit“). Es gibt keinen Server des Entwicklers, keine
+    öffentliche Datenbank und keine Freigabe an andere Personen.
+  </li>
+  <li>
+    <strong>Der Entwickler hat auf diese Daten keinen Zugriff.</strong> Die
+    private Datenbank ist technisch so gebaut, dass nur du sie lesen kannst.
+    Die Anhänge – die eigentlichen Mannschaftsdateien und das Wappen –
+    verschlüsselt iCloud dabei von sich aus.
+  </li>
+  <li>
+    Zugriff haben ausschließlich Geräte, die mit <em>derselben Apple-ID</em>
+    angemeldet sind wie deines.
+  </li>
+  <li>
+    Sichtbare Mitteilungen verschickt die App nicht. Sie lässt sich von iOS
+    lediglich still darüber benachrichtigen, dass ein anderes deiner Geräte
+    etwas geändert hat.
+  </li>
+</ul>
+<p>
+  Apple verarbeitet die Daten dabei in deinem Auftrag. Es gelten zusätzlich
+  Apples Datenschutzrichtlinien:
+  <a href="https://www.apple.com/de/legal/privacy/">apple.com/de/legal/privacy</a>.
+</p>
+<p>
+  <strong>Bitte bedenke:</strong> Ein Kader enthält personenbezogene Daten
+  anderer Menschen, im Nachwuchs in aller Regel von Minderjährigen. Ob du diese
+  Daten in dein iCloud-Konto legen darfst, richtet sich nach der Vereinbarung mit
+  deinem Verein und den Erziehungsberechtigten. Das entscheidet nicht die App,
+  sondern du.
+</p>
+<p>
+  <strong>Wieder löschen:</strong> „Optionen → iCloud → Daten aus iCloud löschen“
+  entfernt alles, was die App in deinem Konto abgelegt hat, und schaltet den
+  Abgleich ab. Die Mannschaften auf deinen Geräten bleiben dabei erhalten.
+</p>
+
+<h2>Keine Übermittlung an Entwickler oder Dritte</h2>
+<ul>
+  <li>Es gibt <strong>kein Nutzerkonto</strong> bei uns und keine Anmeldung.</li>
   <li>Es werden <strong>keine Analyse-, Tracking- oder Werbedienste</strong> eingesetzt.</li>
   <li>Es findet <strong>kein Tracking über Apps und Websites hinweg</strong> statt.</li>
-  <li>Der Entwickler erhält <strong>keinerlei Daten</strong> aus der App.</li>
+  <li>Es sind <strong>keine Fremdbibliotheken</strong> eingebunden.</li>
+  <li>Der Entwickler erhält <strong>keinerlei Daten</strong> aus der App – auch
+      dann nicht, wenn der iCloud-Abgleich eingeschaltet ist.</li>
+  <li>Ist der Abgleich ausgeschaltet, stellt die App <strong>überhaupt keine
+      Netzwerkverbindung</strong> her.</li>
 </ul>
 
 <h2>Wenn du ein PDF teilst</h2>
@@ -83,7 +142,8 @@
 <p>
   Wenn du die Datensicherung deines iPhones oder iPads über iCloud oder den
   Computer nutzt, können die Daten der App Bestandteil dieser Sicherung sein.
-  Dafür gelten die Datenschutzbestimmungen von Apple.
+  Dafür gelten die Datenschutzbestimmungen von Apple. Das gilt unabhängig davon,
+  ob der Abgleich über iCloud eingeschaltet ist.
 </p>
 
 <h2>Absturzberichte</h2>
@@ -98,22 +158,25 @@
 <h2>Löschung</h2>
 <p>
   In der App kannst du unter „Spiel &amp; PDF“ alle Daten auf einmal löschen.
-  Wenn du die App vom Gerät entfernst, werden ebenfalls sämtliche gespeicherten
-  Daten gelöscht.
+  Was in iCloud liegt, entfernst du unter „Optionen → iCloud“. Entfernst du die
+  App vom Gerät, sind die Daten auf dem Gerät gelöscht; der Inhalt deines
+  iCloud-Kontos bleibt davon unberührt, bis du ihn dort löschst.
 </p>
 
 <h2>Deine Rechte</h2>
 <p>
   Da wir keine personenbezogenen Daten von dir erheben oder speichern, gibt es
   bei uns auch keine Daten, über die wir Auskunft erteilen oder die wir
-  berichtigen oder löschen könnten. Für die Daten auf deinem Gerät hast du die
-  volle Kontrolle. Bei Fragen erreichst du uns unter der oben genannten Adresse.
+  berichtigen oder löschen könnten. Für die Daten auf deinem Gerät und in deinem
+  iCloud-Konto hast du die volle Kontrolle. Bei Fragen erreichst du uns unter der
+  oben genannten Adresse.
 </p>
 
 <h2>Änderungen</h2>
 <p>
   Wird die App um Funktionen erweitert, die eine Datenverarbeitung erfordern,
-  wird diese Erklärung vorher angepasst.
+  wird diese Erklärung vorher angepasst. Die letzte Änderung betraf den
+  optionalen Abgleich über iCloud in Version 1.2.
 </p>
 
 <footer>
