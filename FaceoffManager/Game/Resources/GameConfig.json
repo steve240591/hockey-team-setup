@@ -1,0 +1,142 @@
+{
+  "costGrowth": 1.15,
+  "milestoneLevels": [25, 50, 100],
+  "fanIncomeFactor": 0.0005,
+  "seasonLength": 10,
+  "teamsPerLeague": 6,
+  "promotionSlots": 2,
+  "maxLeagueTier": 5,
+  "start": {
+    "coins": 0,
+    "pucks": 100,
+    "cards": 10,
+    "clubName": ""
+  },
+  "facilities": [
+    { "id": "ticket",    "unlockTier": 1, "baseCost": 10,        "baseIncome": 0.5,  "kind": "income",     "effectPerLevel": 0,    "managerLevel": 10, "managerCost": 400,       "symbol": "ticket" },
+    { "id": "food",      "unlockTier": 1, "baseCost": 120,       "baseIncome": 4,    "kind": "income",     "effectPerLevel": 0,    "managerLevel": 10, "managerCost": 4000,      "symbol": "fork.knife" },
+    { "id": "shop",      "unlockTier": 2, "baseCost": 1500,      "baseIncome": 30,   "kind": "income",     "effectPerLevel": 0,    "managerLevel": 10, "managerCost": 50000,     "symbol": "bag" },
+    { "id": "training",  "unlockTier": 2, "baseCost": 4000,      "baseIncome": 10,   "kind": "strength",   "effectPerLevel": 0.02, "managerLevel": 10, "managerCost": 120000,    "symbol": "dumbbell" },
+    { "id": "stands",    "unlockTier": 3, "baseCost": 20000,     "baseIncome": 250,  "kind": "income",     "effectPerLevel": 0,    "managerLevel": 10, "managerCost": 600000,    "symbol": "person.3" },
+    { "id": "sponsor",   "unlockTier": 3, "baseCost": 90000,     "baseIncome": 900,  "kind": "income",     "effectPerLevel": 0,    "managerLevel": 10, "managerCost": 3000000,   "symbol": "briefcase" },
+    { "id": "vip",       "unlockTier": 4, "baseCost": 500000,    "baseIncome": 4000, "kind": "income",     "effectPerLevel": 0,    "managerLevel": 10, "managerCost": 15000000,  "symbol": "star.circle" },
+    { "id": "academy",   "unlockTier": 4, "baseCost": 1200000,   "baseIncome": 2000, "kind": "cards",      "effectPerLevel": 0.5,  "managerLevel": 10, "managerCost": 40000000,  "symbol": "graduationcap" },
+    { "id": "videocube", "unlockTier": 5, "baseCost": 6000000,   "baseIncome": 0,    "kind": "multiplier", "effectPerLevel": 0.05, "managerLevel": 10, "managerCost": 200000000, "symbol": "tv" }
+  ],
+  "leagues": [
+    { "tier": 1, "nameKey": "league.1", "matchIntervalSeconds": 120, "opponentStrengthMin": 45,  "opponentStrengthMax": 70,  "fansPerWin": 10,   "seasonRewardPucks": [30, 20, 10, 5, 5, 5] },
+    { "tier": 2, "nameKey": "league.2", "matchIntervalSeconds": 180, "opponentStrengthMin": 65,  "opponentStrengthMax": 100, "fansPerWin": 25,   "seasonRewardPucks": [40, 25, 15, 5, 5, 5] },
+    { "tier": 3, "nameKey": "league.3", "matchIntervalSeconds": 240, "opponentStrengthMin": 95,  "opponentStrengthMax": 150, "fansPerWin": 60,   "seasonRewardPucks": [50, 30, 20, 10, 5, 5] },
+    { "tier": 4, "nameKey": "league.4", "matchIntervalSeconds": 300, "opponentStrengthMin": 140, "opponentStrengthMax": 220, "fansPerWin": 150,  "seasonRewardPucks": [60, 40, 25, 10, 5, 5] },
+    { "tier": 5, "nameKey": "league.5", "matchIntervalSeconds": 300, "opponentStrengthMin": 210, "opponentStrengthMax": 330, "fansPerWin": 400,  "seasonRewardPucks": [80, 50, 30, 15, 10, 5] },
+    { "tier": 6, "nameKey": "league.6", "matchIntervalSeconds": 300, "opponentStrengthMin": 320, "opponentStrengthMax": 500, "fansPerWin": 1000, "seasonRewardPucks": [100, 60, 40, 20, 10, 5] },
+    { "tier": 7, "nameKey": "league.7", "matchIntervalSeconds": 300, "opponentStrengthMin": 480, "opponentStrengthMax": 750, "fansPerWin": 2500, "seasonRewardPucks": [150, 90, 50, 25, 10, 5] }
+  ],
+  "match": {
+    "drawChance": 0.12,
+    "steepness": 6,
+    "winRewardIncomeSeconds": 60,
+    "lossRewardIncomeSeconds": 15,
+    "seasonRewardIncomeSeconds": 900,
+    "skipRewardFactor": 0.5,
+    "maxCatchUpMatches": 30,
+    "shootoutShots": 5
+  },
+  "offline": {
+    "baseCapHours": 2,
+    "upgrades": [
+      { "hours": 4, "pucks": 50 },
+      { "hours": 6, "pucks": 100 },
+      { "hours": 8, "pucks": 200 }
+    ]
+  },
+  "rewarded": {
+    "boostHours": 2,
+    "boostMaxHours": 8,
+    "dailyLimits": {
+      "boost": 4,
+      "practiceExtra": 3,
+      "freeScout": 2,
+      "replay": 2
+    }
+  },
+  "scouting": {
+    "costPucks": 100,
+    "maxRoster": 30,
+    "rarities": [
+      { "rarity": "common",    "weight": 70, "statMin": 8,  "statMax": 12, "releaseCards": 2 },
+      { "rarity": "rare",      "weight": 22, "statMin": 12, "statMax": 17, "releaseCards": 5 },
+      { "rarity": "epic",      "weight": 7,  "statMin": 17, "statMax": 24, "releaseCards": 12 },
+      { "rarity": "legendary", "weight": 1,  "statMin": 24, "statMax": 32, "releaseCards": 30 }
+    ]
+  },
+  "training": {
+    "cardsPerLevel": 3,
+    "maxLevel": 20,
+    "ratingGainPerLevel": 0.1
+  },
+  "practice": {
+    "freePerDay": 3,
+    "coinsPerGoalIncomeSeconds": 60,
+    "cardsPerGoal": 1
+  },
+  "prestige": {
+    "minTier": 5,
+    "earningsDivisor": 1000000,
+    "multiplierPerPoint": 0.1
+  },
+  "loginRewardPucks": [10, 15, 20, 25, 30, 40, 100],
+  "dailyQuestCount": 3,
+  "quests": [
+    { "id": "win3",      "kind": "winMatches",      "target": 3,  "rewardPucks": 20 },
+    { "id": "win5",      "kind": "winMatches",      "target": 5,  "rewardPucks": 30 },
+    { "id": "upgrade10", "kind": "upgradeFacility", "target": 10, "rewardPucks": 15 },
+    { "id": "upgrade25", "kind": "upgradeFacility", "target": 25, "rewardPucks": 25 },
+    { "id": "shootout1", "kind": "playShootout",    "target": 1,  "rewardPucks": 15 },
+    { "id": "ads2",      "kind": "watchAd",         "target": 2,  "rewardPucks": 15 },
+    { "id": "scout1",    "kind": "scoutPlayer",     "target": 1,  "rewardPucks": 20 },
+    { "id": "train2",    "kind": "trainPlayer",     "target": 2,  "rewardPucks": 15 }
+  ],
+  "starter": {
+    "windowHours": 72,
+    "pucks": 300,
+    "boostHours": 2,
+    "rarity": "epic"
+  },
+  "shop": {
+    "timeSkipHours": 4,
+    "timeSkipPucks": 60,
+    "adFreeIncomeBonus": 0.5
+  },
+  "products": {
+    "starterPack": "faceoff.starterpack",
+    "adFree": "faceoff.adfree",
+    "pucks": [
+      { "id": "faceoff.pucks.80",   "pucks": 80 },
+      { "id": "faceoff.pucks.500",  "pucks": 500 },
+      { "id": "faceoff.pucks.1100", "pucks": 1100 },
+      { "id": "faceoff.pucks.2400", "pucks": 2400 }
+    ]
+  },
+  "teams": [
+    { "id": "yetis",    "name": "Frostbach Yetis" },
+    { "id": "moose",    "name": "Nordheide Wild Moose" },
+    { "id": "penguins", "name": "Kaltenstein Pinguine" },
+    { "id": "walrus",   "name": "Glacier Bay Walrusse" },
+    { "id": "owls",     "name": "Sturmtal Schneeeulen" },
+    { "id": "husky",    "name": "Polarfels Husky" },
+    { "id": "rhinos",   "name": "Steelback Rhinos" },
+    { "id": "sharks",   "name": "Icebreak Sharks" },
+    { "id": "ravens",   "name": "Blizzard Ravens" },
+    { "id": "dragons",  "name": "Firestorm Dragons" },
+    { "id": "hunters",  "name": "Arctic Hunters" },
+    { "id": "bears",    "name": "Thunderclaw Bears" },
+    { "id": "bulls",    "name": "Ironhorn Bulls" },
+    { "id": "foxes",    "name": "Frozen Foxes" },
+    { "id": "panthers", "name": "Nightfang Panthers" }
+  ],
+  "names": {
+    "firstNames": ["Bo", "Kalle", "Jonte", "Rasmus", "Tilo", "Ole", "Fiete", "Linus", "Mats", "Henrik", "Jari", "Eskil", "Torben", "Nils", "Anton", "Emil", "Juri", "Mika", "Ruben", "Viggo", "Hannes", "Lasse", "Benno", "Frode"],
+    "lastNames": ["Kufenberg", "Eisenhart", "Schneefeld", "Pucklund", "Frostvik", "Bandenholm", "Gletschner", "Hagelstein", "Reifmann", "Firnhuber", "Wintersee", "Nordkamp", "Kaltwasser", "Schlittbach", "Graupel", "Polarski", "Eiskamp", "Sturmhöfer", "Flockner", "Raureif"]
+  }
+}
