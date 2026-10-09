@@ -27,7 +27,7 @@ fi
 echo "JDK: $JAVA_HOME_PFAD"
 
 # 2. Anthropic-Java-SDK für den Claude-Coach laden (einmalig, mit Prüfsummen)
-./werkzeuge/sdk-laden.sh
+sh ./werkzeuge/sdk-laden.sh
 
 # 3. App-Paket anlegen und Java-Teil vorübersetzen
 BAU="$WURZEL/mac/build"
