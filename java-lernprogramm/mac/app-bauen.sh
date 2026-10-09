@@ -65,7 +65,11 @@ pruefe_jdk() {
                    JAVA_HOME_PFAD="$kandidat"
                    return 0
                fi
-               grund="Version $v ist zu alt" ;;
+               if [ "$v" = 1 ]; then
+                   grund="Java 8 (Version 1.8) ist zu alt - benötigt wird Java 17 oder neuer"
+               else
+                   grund="Java $v ist zu alt - benötigt wird Java 17 oder neuer"
+               fi ;;
         esac
     fi
     PRUEFBERICHT="$PRUEFBERICHT
