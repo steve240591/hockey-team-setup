@@ -43,29 +43,63 @@ fi
 # Ein JDK ab Version 17 suchen. Wichtig: Es muss javac enthalten - eine reine
 # Laufzeitumgebung (JRE, z. B. das alte Java-Browser-Plug-in) reicht nicht.
 java_version() {
-    "$1/bin/java" -version 2>&1 | head -1 | sed -E 's/.*version "([0-9]+).*/\1/'
+    "$1/bin/java" -version 2>&1 | grep -m1 'version "' | sed -E 's/.*version "([0-9]+).*/\1/'
 }
 JAVA_HOME_PFAD=""
-for kandidat in "$(/usr/libexec/java_home -v 17+ 2>/dev/null)" \
+PRUEFBERICHT=""
+pruefe_jdk() {
+    kandidat="$1"
+    [ -n "$kandidat" ] && [ -d "$kandidat" ] || return 1
+    case "$PRUEFBERICHT" in
+        *"|$kandidat|"*) return 1 ;;   # schon geprüft
+    esac
+    if [ ! -x "$kandidat/bin/java" ]; then
+        grund="kein bin/java"
+    elif [ ! -x "$kandidat/bin/javac" ]; then
+        grund="kein javac (nur Laufzeitumgebung/JRE)"
+    else
+        v=$(java_version "$kandidat")
+        case "$v" in
+            ''|*[!0-9]*) grund="Version nicht lesbar: $("$kandidat/bin/java" -version 2>&1 | head -1)" ;;
+            *) if [ "$v" -ge 17 ]; then
+                   JAVA_HOME_PFAD="$kandidat"
+                   return 0
+               fi
+               grund="Version $v ist zu alt" ;;
+        esac
+    fi
+    PRUEFBERICHT="$PRUEFBERICHT
+    |$kandidat| -> $grund"
+    return 1
+}
+# Kandidaten: Vorschlag von macOS, alle registrierten JVMs, JAVA_HOME,
+# die üblichen Installationsorte (Temurin/Oracle .pkg, Homebrew, SDKMAN, entpackte Archive)
+for kandidat in "$(/usr/libexec/java_home -v 17+ 2>/dev/null)" "${JAVA_HOME:-}" \
         /Library/Java/JavaVirtualMachines/*/Contents/Home \
         "$HOME"/Library/Java/JavaVirtualMachines/*/Contents/Home \
         /opt/homebrew/opt/openjdk*/libexec/openjdk.jdk/Contents/Home \
-        /usr/local/opt/openjdk*/libexec/openjdk.jdk/Contents/Home; do
-    if [ -x "$kandidat/bin/javac" ] && [ -x "$kandidat/bin/java" ]; then
-        v=$(java_version "$kandidat")
-        case "$v" in
-            ''|*[!0-9]*) continue ;;
-        esac
-        if [ "$v" -ge 17 ]; then
-            JAVA_HOME_PFAD="$kandidat"
-            break
-        fi
-    fi
+        /usr/local/opt/openjdk*/libexec/openjdk.jdk/Contents/Home \
+        "$HOME"/.sdkman/candidates/java/* \
+        "$HOME"/Downloads/jdk*/Contents/Home "$HOME"/Downloads/*/jdk*/Contents/Home; do
+    pruefe_jdk "$kandidat" && break
 done
+if [ -z "$JAVA_HOME_PFAD" ]; then
+    /usr/libexec/java_home -V 2>&1 | sed -n 's/.*"[^"]*" \(\/.*\)$/\1/p' > "${TMPDIR:-/tmp}/javatrainer-jvms.txt" || true
+    while IFS= read -r kandidat; do
+        pruefe_jdk "$kandidat" && break
+    done < "${TMPDIR:-/tmp}/javatrainer-jvms.txt"
+fi
 if [ -z "$JAVA_HOME_PFAD" ]; then
     echo "Kein JDK ab Version 17 mit Compiler (javac) gefunden." >&2
     echo "Bitte ein JDK installieren, z. B. Eclipse Temurin 21 (LTS) für macOS von https://adoptium.net" >&2
-    echo "Gefunden wurde nur: $(/usr/libexec/java_home 2>/dev/null)" >&2
+    echo "" >&2
+    echo "Geprüft wurden:${PRUEFBERICHT:-
+    (gar keine Java-Installation gefunden)}" >&2
+    echo "" >&2
+    echo "Inhalt von /Library/Java/JavaVirtualMachines:" >&2
+    ls -1 /Library/Java/JavaVirtualMachines 2>&1 | sed 's/^/    /' >&2
+    echo "Ausgabe von java_home -V:" >&2
+    /usr/libexec/java_home -V 2>&1 | sed 's/^/    /' >&2
     exit 1
 fi
 echo "    macOS $(sw_vers -productVersion), $(uname -m)"
