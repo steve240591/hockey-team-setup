@@ -1,0 +1,93 @@
+=== titel
+Konstruktoren mit Parametern und this
+=== erklaerung
+Ein Konstruktor kann Parameter haben. Heißen sie genauso wie die Instanzvariablen, brauchst du `this` (Skript S. 29):
+
+```java
+Fahrrad4(String eigentuemer, String farbe) {
+    this.eigentuemer = eigentuemer;   // this.eigentuemer = Instanzvariable
+    this.farbe = farbe;               // farbe allein = Parameter
+}
+```
+
+Ohne `this` würdest du den Parameter sich selbst zuweisen – und die Instanzvariable bliebe leer!
+
+Eine Klasse kann **mehrere Konstruktoren** haben, solange sich die Parameterlisten unterscheiden (Überladen, Skript S. 30).
+=== aufgabe
+Ergänze den Konstruktor `KaderSpieler(String name, int nummer)`. Er setzt Name und Nummer, die Tore starten bei 0.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+        System.out.println(s.getName() + " #" + s.getNummer());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler() {
+        this.name = "Unbekannt";
+    }
+
+    KaderSpieler(String name, int nummer) {
+        // Dein Code hier
+    }
+
+    String getName() {
+        return name;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    int getTore() {
+        return tore;
+    }
+}
+=== pruefung
+Check.gleich("Name wird gesetzt", "Draisaitl", () -> new KaderSpieler("Draisaitl", 29).getName());
+Check.gleich("Nummer wird gesetzt", 29, () -> new KaderSpieler("Draisaitl", 29).getNummer());
+Check.gleich("Tore starten bei 0", 0, () -> new KaderSpieler("Draisaitl", 29).getTore());
+Check.gleich("Standardkonstruktor funktioniert weiter", "Unbekannt", () -> new KaderSpieler().getName());
+Check.quelltextEnthaelt("this wird verwendet", "this\\s*\\.\\s*nummer\\s*=");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+        System.out.println(s.getName() + " #" + s.getNummer());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler() {
+        this.name = "Unbekannt";
+    }
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+        this.tore = 0;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    int getTore() {
+        return tore;
+    }
+}
+=== tipp
+`this.name = name;`

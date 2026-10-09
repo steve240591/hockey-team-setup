@@ -1,0 +1,53 @@
+=== titel
+Kommazahlen und eigene Methoden
+=== erklaerung
+Ab jetzt schreibst du oft eine eigene **Methode**, die etwas berechnet und mit `return` zurückgibt:
+
+```java
+static double verdoppeln(double zahl) {
+    return zahl * 2;
+}
+```
+
+- `double` vor dem Namen ist der **Rückgabetyp**.
+- `(double zahl)` ist der **Parameter** – der Wert, mit dem die Methode arbeitet.
+- `return` liefert das Ergebnis zurück.
+
+Aufrufen kannst du sie z. B. in `main`: `System.out.println(verdoppeln(2.5));` gibt `5.0` aus.
+
+Kommazahlen haben den Typ `double` und werden mit **Punkt** geschrieben: `1.19`, nicht `1,19`.
+
+> Beim **Prüfen** ruft der Trainer deine Methode mit verschiedenen Werten auf. Mit **Ausführen** startest du nur `main` – praktisch zum Ausprobieren.
+=== aufgabe
+Vervollständige `bruttopreis`: Sie bekommt einen Nettopreis und gibt den Bruttopreis mit **19 % Mehrwertsteuer** zurück (vgl. Skript S. 16, ImportDemo.java).
+
+Beispiel: `bruttopreis(100.0)` → `119.0`
+=== vorlage
+public class Main {
+
+    static double bruttopreis(double netto) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(bruttopreis(100.0));
+    }
+}
+=== pruefung
+Check.gleich("bruttopreis(100.0)", 119.0, () -> Main.bruttopreis(100.0));
+Check.gleich("bruttopreis(0.0)", 0.0, () -> Main.bruttopreis(0.0));
+Check.gleich("bruttopreis(19.99)", 23.7881, () -> Main.bruttopreis(19.99));
+=== loesung
+public class Main {
+
+    static double bruttopreis(double netto) {
+        return netto * 1.19;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(bruttopreis(100.0));
+    }
+}
+=== tipp
+19 % Aufschlag heißt: mal 1.19

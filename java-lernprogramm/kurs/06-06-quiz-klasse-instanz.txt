@@ -1,0 +1,13 @@
+=== titel
+Quiz: Klasse, Objekt, Instanz
+=== typ
+quiz
+=== frage
+Welche Aussage über `Fahrrad meinRad = new Fahrrad();` ist richtig?
+=== optionen
+- `Fahrrad` ist eine Instanz, `meinRad` ist die Klasse.
++ `Fahrrad()` ist der Konstruktor, `new` erzeugt damit eine Instanz, auf die `meinRad` verweist.
+- `meinRad` ist eine Methode der Klasse Fahrrad.
+- Ohne eigenen Konstruktor in der Klasse Fahrrad kompiliert die Zeile nicht.
+=== nachher
+`Fahrrad` ist die Klasse (der Bauplan), `meinRad` eine Referenzvariable vom Typ `Fahrrad`. `new Fahrrad()` ruft den Konstruktor auf und erzeugt die Instanz (Skript S. 25). Hat eine Klasse **keinen** eigenen Konstruktor, erzeugt Java automatisch einen leeren Standardkonstruktor.

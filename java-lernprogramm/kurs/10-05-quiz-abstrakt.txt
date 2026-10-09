@@ -1,0 +1,13 @@
+=== titel
+Quiz: Abstrakte Klassen
+=== typ
+quiz
+=== frage
+`Figur` ist abstrakt, `KreisF` erbt von `Figur`. Welche Zeile kompiliert **nicht**?
+=== optionen
++ Figur f = new Figur();
+- Figur f = new KreisF(2);
+- Figur[] alle = new Figur[10];
+- KreisF k = new KreisF(2);
+=== nachher
+Von abstrakten Klassen können **keine Instanzen** erzeugt werden (Skript S. 38). Variablen und Arrays vom Typ `Figur` sind aber erlaubt – sie zeigen dann auf Instanzen konkreter Subklassen. Die Meldung lautet: *Figur ist abstrakt, kann nicht instanziiert werden.*

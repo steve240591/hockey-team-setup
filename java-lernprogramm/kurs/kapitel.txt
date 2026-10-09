@@ -1,0 +1,13 @@
+# Nummer | Titel | Untertitel
+01 | Erste Schritte | Skript Lektion 3–5: Hallo Java, Aufbau eines Programms
+02 | Datentypen und Variablen | Skript Lektion 7: Grunddatentypen, Typkonvertierung
+03 | Operatoren | Skript Lektion 7: Operatoren und Ausdrücke
+04 | Kontrollstrukturen | Skript Lektion 7: if, switch, Schleifen, Sprünge
+05 | Arrays und Strings | Skript S. 13–15, 22 und 35
+06 | Klassen und Objekte | Skript Lektion 8
+07 | Datenkapselung und Konstruktoren | Skript Lektion 9
+08 | Vererbung | Skript Lektion 10
+09 | Klassenvariablen und Klassenmethoden | Skript Lektion 11
+10 | Abstrakte Klassen und Schnittstellen | Skript Lektion 12
+11 | Wiederholung und Klausurtraining | Skript Lektion 1, 2, 6 und 13
+12 | Abschlussprojekt: Kaderverwaltung | Alles zusammen

@@ -1,0 +1,85 @@
+=== titel
+Reparieren: drei Fehler
+=== erklaerung
+In der Klausur kommen gern Aufgaben wie „Finden Sie die Fehler“. Lies die Fehlermeldungen des Compilers genau – sie nennen die Zeile und den Grund.
+
+Typische Kandidaten:
+
+- statische Methode greift auf Instanzvariable zu
+- `int` statt `boolean` in einer Bedingung
+- Interface-Methode ohne `public`
+=== aufgabe
+Das Programm enthält **drei Fehler**. Klicke auf **Ausführen**, lies die Meldungen und repariere es. Es soll ausgeben:
+
+```
+Puck bei x = 5
+fertig
+```
+
+Ändere nur, was nötig ist.
+=== reparieren
+ja
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Puck p = new Puck();
+        p.moveX(5);
+        System.out.println("Puck bei x = " + p.getX());
+        boolean fertig = 1;
+        if (fertig) {
+            System.out.println("fertig");
+        }
+    }
+}
+
+interface Bewegung {
+    void moveX(int m);
+}
+
+class Puck implements Bewegung {
+    private int x;
+
+    void moveX(int m) {
+        x += m;
+    }
+
+    static int getX() {
+        return x;
+    }
+}
+=== pruefung
+Check.ausgabe("Ausgabe stimmt", "Puck bei x = 5\nfertig");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Puck p = new Puck();
+        p.moveX(5);
+        System.out.println("Puck bei x = " + p.getX());
+        boolean fertig = true;
+        if (fertig) {
+            System.out.println("fertig");
+        }
+    }
+}
+
+interface Bewegung {
+    void moveX(int m);
+}
+
+class Puck implements Bewegung {
+    private int x;
+
+    public void moveX(int m) {
+        x += m;
+    }
+
+    int getX() {
+        return x;
+    }
+}
+=== tipp
+Ein `boolean` kann nur `true` oder `false` sein – keine Zahl (Skript S. 19).
+=== tipp
+`getX()` soll die Instanzvariable `x` lesen – dann darf sie nicht `static` sein.
+=== tipp
+`moveX` kommt aus einem Interface und muss deshalb `public` sein.

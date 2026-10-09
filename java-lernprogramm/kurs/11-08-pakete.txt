@@ -1,0 +1,47 @@
+=== titel
+Praxis: Ein eigenes Paket
+=== typ
+info
+=== erklaerung
+Pakete (Skript S. 15–18) lassen sich im Trainer nicht üben, weil hier alles in **einer** Datei steht. Probiere es deshalb einmal klassisch mit Editor und Kommandozeile aus – genau so, wie es im Skript beschrieben ist:
+
+1. Lege einen Ordner `paketuebung` an und darin den Unterordner `MeinPak`.
+2. Schreibe `MeinPak/Komma.java`:
+
+```java
+package MeinPak;
+
+public class Komma {
+    public void komma() {
+        System.out.println(" Komma | ");
+    }
+}
+```
+
+3. Schreibe im Ordner `paketuebung` die Datei `PaketTest.java`:
+
+```java
+import MeinPak.*;
+
+public class PaketTest {
+    public static void main(String[] str) {
+        Komma k = new Komma();
+        k.komma();
+    }
+}
+```
+
+4. Übersetzen und starten (im Ordner `paketuebung`):
+
+```
+javac PaketTest.java
+java PaketTest
+```
+
+Schau nach: Neben `PaketTest.class` ist auch `MeinPak/Komma.class` entstanden – der Compiler übersetzt benutzte Klassen aus dem Paket „bei Bedarf“ mit (Skript S. 18).
+
+**Zusatzfrage:** Was passiert, wenn du in `Komma.java` das `public` vor `class` entfernst? (Antwort: `PaketTest` kann die Klasse nicht mehr sehen – sie ist nur im eigenen Paket sichtbar, S. 42.)
+
+Eine fertige Lösung liegt im Ordner `extras/pakete`.
+
+> Konvention: In der Praxis schreibt man Paketnamen komplett klein (`meinpak`). Großbuchstaben wie im Skript funktionieren aber auch.

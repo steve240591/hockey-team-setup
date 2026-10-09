@@ -1,0 +1,113 @@
+=== titel
+Klassenvariablen
+=== erklaerung
+Eine **Klassenvariable** (`static`) gehört zur **Klasse**, nicht zu einer Instanz. Es gibt sie nur **einmal** – alle Instanzen teilen sie sich (Skript S. 36):
+
+```java
+class Kreis3 {
+    static int num_kreise = 0;   // Klassenvariable: einmal für alle
+    private double r;            // Instanzvariable: jede Instanz hat ihre eigene
+
+    Kreis3() {
+        this.r = 1.0;
+        num_kreise++;            // bei jedem new hochzählen
+    }
+}
+```
+
+Aufgerufen wird sie über den **Klassennamen**: `Kreis3.num_kreise`.
+
+Startwerte für Klassenvariablen kann man auch in einem **statischen Initialisierungsblock** setzen – das Skript nennt ihn „statischen Konstruktor“ (S. 38):
+
+```java
+static {
+    num_kreise = 0;
+}
+```
+=== aufgabe
+Jeder `Puck` bekommt eine fortlaufende Seriennummer.
+
+1. Im Konstruktor: `anzahl` um 1 erhöhen, dann `seriennummer = anzahl`.
+2. `getSeriennummer()` liefert die Seriennummer.
+3. `getAnzahl()` ist eine **Klassenmethode** (`static`) und liefert `anzahl`.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Puck a = new Puck();
+        Puck b = new Puck();
+        System.out.println("Puck b hat Nummer " + b.getSeriennummer());
+        System.out.println("Pucks insgesamt: " + Puck.getAnzahl());
+    }
+}
+
+class Puck {
+    private static int anzahl;
+    private int seriennummer;
+
+    static {
+        anzahl = 0;
+    }
+
+    Puck() {
+        // Dein Code hier
+    }
+
+    int getSeriennummer() {
+        // Dein Code hier
+        return 0;
+    }
+
+    static int getAnzahl() {
+        // Dein Code hier
+        return 0;
+    }
+}
+=== pruefung
+Check.gleich("zwei neue Pucks: anzahl steigt um 2", 2, () -> {
+    int vorher = Puck.getAnzahl();
+    new Puck();
+    new Puck();
+    return Puck.getAnzahl() - vorher;
+});
+Check.gleich("Seriennummern sind fortlaufend", 1, () -> {
+    Puck p1 = new Puck();
+    Puck p2 = new Puck();
+    return p2.getSeriennummer() - p1.getSeriennummer();
+});
+Check.gleich("Seriennummer = Anzahl beim Erzeugen", true, () -> {
+    Puck p = new Puck();
+    return p.getSeriennummer() == Puck.getAnzahl() && p.getSeriennummer() > 0;
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Puck a = new Puck();
+        Puck b = new Puck();
+        System.out.println("Puck b hat Nummer " + b.getSeriennummer());
+        System.out.println("Pucks insgesamt: " + Puck.getAnzahl());
+    }
+}
+
+class Puck {
+    private static int anzahl;
+    private int seriennummer;
+
+    static {
+        anzahl = 0;
+    }
+
+    Puck() {
+        anzahl++;
+        seriennummer = anzahl;
+    }
+
+    int getSeriennummer() {
+        return seriennummer;
+    }
+
+    static int getAnzahl() {
+        return anzahl;
+    }
+}
+=== tipp
+Im Konstruktor: `anzahl++;` und danach `seriennummer = anzahl;`

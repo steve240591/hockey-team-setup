@@ -1,0 +1,21 @@
+=== titel
+Quiz: Referenzen
+=== typ
+quiz
+=== frage
+```java
+Spieler a = new Spieler();
+a.tore = 1;
+Spieler b = a;
+b.tore = 5;
+System.out.println(a.tore);
+```
+
+Was wird ausgegeben?
+=== optionen
+- 1
++ 5
+- 6
+- Fehler: b wurde nicht mit new erzeugt
+=== nachher
+`b = a` kopiert nur die **Referenz** („Speicheradresse“, Skript S. 25) – nicht das Objekt. `a` und `b` zeigen auf **dasselbe** Objekt. Ändert man es über `b`, sieht man die Änderung auch über `a`.

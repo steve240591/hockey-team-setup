@@ -1,0 +1,63 @@
+=== titel
+Primzahlen
+=== erklaerung
+Eine Primzahl ist nur durch 1 und sich selbst teilbar: 2, 3, 5, 7, 11, 13, …
+0 und 1 sind **keine** Primzahlen.
+
+Idee: Probiere alle möglichen Teiler aus. Sobald einer passt, steht das Ergebnis fest – du kannst mit `return` (oder `break`) sofort aufhören:
+
+```java
+for (int teiler = 2; teiler < n; teiler++) {
+    if (n % teiler == 0) {
+        return false;   // Teiler gefunden – fertig
+    }
+}
+```
+=== aufgabe
+Schreibe `istPrimzahl(int n)`.
+
+- `2` → `true`, `17` → `true`, `97` → `true`
+- `1` → `false`, `21` → `false`, `49` → `false`
+=== vorlage
+public class Main {
+
+    static boolean istPrimzahl(int n) {
+        // Dein Code hier
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istPrimzahl(17));
+    }
+}
+=== pruefung
+Check.gleich("istPrimzahl(2)", true, () -> Main.istPrimzahl(2));
+Check.gleich("istPrimzahl(17)", true, () -> Main.istPrimzahl(17));
+Check.gleich("istPrimzahl(97)", true, () -> Main.istPrimzahl(97));
+Check.gleich("istPrimzahl(1)", false, () -> Main.istPrimzahl(1));
+Check.gleich("istPrimzahl(0)", false, () -> Main.istPrimzahl(0));
+Check.gleich("istPrimzahl(21)", false, () -> Main.istPrimzahl(21));
+Check.gleich("istPrimzahl(49)", false, () -> Main.istPrimzahl(49));
+=== loesung
+public class Main {
+
+    static boolean istPrimzahl(int n) {
+        if (n < 2) {
+            return false;
+        }
+        for (int teiler = 2; teiler * teiler <= n; teiler++) {
+            if (n % teiler == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istPrimzahl(17));
+    }
+}
+=== tipp
+Zuerst: `if (n < 2) { return false; }`
+=== tipp
+Wenn die Schleife durchläuft, ohne einen Teiler zu finden, ist es eine Primzahl: `return true;` nach der Schleife.

@@ -1,0 +1,24 @@
+=== titel
+Quiz: Der verschwundene Konstruktor
+=== typ
+quiz
+=== frage
+```java
+class Rad {
+    private String farbe;
+    Rad(String farbe) { this.farbe = farbe; }
+}
+// in main:
+Rad r = new Rad();
+```
+
+Was passiert?
+=== optionen
+- Es wird ein Rad mit farbe = null erzeugt.
+- Es wird ein Rad mit farbe = "" erzeugt.
++ Der Compiler meldet einen Fehler.
+- Das Programm stürzt beim Ausführen ab.
+=== nachher
+Java erzeugt den leeren Standardkonstruktor **nur**, wenn eine Klasse **gar keinen** eigenen Konstruktor hat. Hier gibt es `Rad(String)`, also gibt es `Rad()` nicht mehr. Der Compiler meldet: *Konstruktor Rad in Klasse Rad kann nicht auf die angegebenen Typen angewendet werden.*
+
+Das Skript (S. 25/30) sagt vereinfacht, jede Klasse habe den Standardkonstruktor – genau genommen gilt das nur ohne eigene Konstruktoren (Java Language Specification §8.8.9).

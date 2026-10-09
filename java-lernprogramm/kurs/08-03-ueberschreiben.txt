@@ -1,0 +1,159 @@
+=== titel
+Methoden überschreiben
+=== erklaerung
+Eine Subklasse **überschreibt** eine Methode, wenn sie eine Methode mit **gleichem Namen und gleicher Parameterliste** neu definiert (Skript S. 33). Für Zylinder-Instanzen wird dann die neue Methode benutzt.
+
+Mit `super.methode()` rufst du die **alte** Version aus der Basisklasse auf (Skript S. 34):
+
+```java
+class Zylinder2 extends Kreis {
+    public double flaeche() {
+        double fl = super.flaeche();   // Grundfläche (aus Kreis)
+        double umf = super.umfang();   // Umfang (aus Kreis)
+        return 2 * fl + h * umf;       // Oberfläche des Zylinders
+    }
+}
+```
+
+`@Override` über der Methode ist optional, aber empfehlenswert: Der Compiler meldet dann einen Fehler, wenn du dich z. B. beim Namen vertippst.
+=== aufgabe
+1. Überschreibe `flaeche()` in `Zylinder`: Sie liefert die **Oberfläche** = 2 · Grundfläche + h · Umfang.
+2. Schreibe `volumen()` = Grundfläche · h.
+
+Falle: Warum ist `flaeche() * h` beim Volumen falsch?
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Zylinder z = new Zylinder(2, 5);
+        System.out.println("Oberfläche: " + z.flaeche());
+        System.out.println("Volumen: " + z.volumen());
+    }
+}
+
+class Zylinder extends Kreis {
+    protected double h;
+
+    Zylinder() {
+        super();
+        this.h = 1.0;
+    }
+
+    Zylinder(double r, double h) {
+        super(r);
+        this.h = h;
+    }
+
+    double getH() {
+        return h;
+    }
+
+    // flaeche() hier überschreiben
+
+    double volumen() {
+        // Dein Code hier
+        return 0;
+    }
+}
+
+class Kreis {
+    protected double r;
+
+    Kreis() {
+        this.r = 1.0;
+    }
+
+    Kreis(double r) {
+        this.r = r;
+    }
+
+    double setRad(double r) {
+        this.r = r;
+        return r;
+    }
+
+    double getRad() {
+        return r;
+    }
+
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+=== pruefung
+Check.gleich("Zylinder(2, 5).flaeche() = Oberfläche", 28 * Math.PI, () -> new Zylinder(2, 5).flaeche());
+Check.gleich("Zylinder().flaeche()", 4 * Math.PI, () -> new Zylinder().flaeche());
+Check.gleich("Zylinder(2, 5).volumen()", 20 * Math.PI, () -> new Zylinder(2, 5).volumen());
+Check.gleich("Kreis(2).flaeche() bleibt unverändert", 4 * Math.PI, () -> new Kreis(2).flaeche());
+Check.quelltextEnthaelt("super.flaeche() wird verwendet", "super\\s*\\.\\s*flaeche\\s*\\(");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Zylinder z = new Zylinder(2, 5);
+        System.out.println("Oberfläche: " + z.flaeche());
+        System.out.println("Volumen: " + z.volumen());
+    }
+}
+
+class Zylinder extends Kreis {
+    protected double h;
+
+    Zylinder() {
+        super();
+        this.h = 1.0;
+    }
+
+    Zylinder(double r, double h) {
+        super(r);
+        this.h = h;
+    }
+
+    double getH() {
+        return h;
+    }
+
+    @Override
+    double flaeche() {
+        return 2 * super.flaeche() + h * super.umfang();
+    }
+
+    double volumen() {
+        return super.flaeche() * h;
+    }
+}
+
+class Kreis {
+    protected double r;
+
+    Kreis() {
+        this.r = 1.0;
+    }
+
+    Kreis(double r) {
+        this.r = r;
+    }
+
+    double setRad(double r) {
+        this.r = r;
+        return r;
+    }
+
+    double getRad() {
+        return r;
+    }
+
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+=== tipp
+`@Override double flaeche() { return 2 * super.flaeche() + h * super.umfang(); }`
+=== tipp
+Im Volumen brauchst du die **Grundfläche**, also `super.flaeche()` – `flaeche()` allein wäre jetzt die Oberfläche!

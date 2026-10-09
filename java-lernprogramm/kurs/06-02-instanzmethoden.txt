@@ -1,0 +1,116 @@
+=== titel
+Instanzmethoden
+=== erklaerung
+Klassen haben nicht nur Eigenschaften, sondern auch **Fähigkeiten**: Instanzmethoden (Skript S. 26). Sie stehen **ohne** `static` in der Klasse und können auf die Instanzvariablen zugreifen:
+
+```java
+class Fahrrad2 {
+    int richtung;
+
+    public int lenken(int r) {
+        richtung = richtung + r;
+        return richtung;
+    }
+}
+```
+
+Aufgerufen werden sie über eine Instanz:
+
+```java
+Fahrrad2 meinRad = new Fahrrad2();
+meinRad.lenken(10);
+```
+
+Jede Instanz hat ihre **eigenen** Werte – lenkt `meinRad`, ändert sich die Richtung von `deinRad` nicht.
+=== aufgabe
+Vervollständige die Klasse `Spieler`:
+
+1. `torErzielen()` erhöht `tore` um 1 und gibt die neue Toranzahl zurück.
+2. `vorlageGeben()` macht dasselbe für `vorlagen`.
+3. `punkte()` gibt Tore + Vorlagen zurück.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Spieler s = new Spieler();
+        s.torErzielen();
+        s.vorlageGeben();
+        System.out.println("Punkte: " + s.punkte());
+    }
+}
+
+class Spieler {
+    String name;
+    int tore;
+    int vorlagen;
+
+    int torErzielen() {
+        // Dein Code hier
+        return 0;
+    }
+
+    int vorlageGeben() {
+        // Dein Code hier
+        return 0;
+    }
+
+    int punkte() {
+        // Dein Code hier
+        return 0;
+    }
+}
+=== pruefung
+Check.gleich("neuer Spieler: torErzielen() liefert 1", 1, () -> new Spieler().torErzielen());
+Check.gleich("zweimal torErzielen() liefert 2", 2, () -> {
+    Spieler s = new Spieler();
+    s.torErzielen();
+    return s.torErzielen();
+});
+Check.gleich("vorlageGeben() erhöht vorlagen", 2, () -> {
+    Spieler s = new Spieler();
+    s.vorlageGeben();
+    s.vorlageGeben();
+    return s.vorlagen;
+});
+Check.gleich("punkte() bei 2 Toren und 3 Vorlagen", 5, () -> {
+    Spieler s = new Spieler();
+    s.tore = 2;
+    s.vorlagen = 3;
+    return s.punkte();
+});
+Check.gleich("jede Instanz zählt für sich", 0, () -> {
+    Spieler a = new Spieler();
+    Spieler b = new Spieler();
+    a.torErzielen();
+    return b.tore;
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Spieler s = new Spieler();
+        s.torErzielen();
+        s.vorlageGeben();
+        System.out.println("Punkte: " + s.punkte());
+    }
+}
+
+class Spieler {
+    String name;
+    int tore;
+    int vorlagen;
+
+    int torErzielen() {
+        tore = tore + 1;
+        return tore;
+    }
+
+    int vorlageGeben() {
+        vorlagen++;
+        return vorlagen;
+    }
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+}
+=== tipp
+`tore = tore + 1;` (oder kurz `tore++;`) und danach `return tore;`

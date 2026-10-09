@@ -1,0 +1,83 @@
+=== titel
+Konstanten und Klassenmethoden
+=== erklaerung
+**Konstanten** sind statische Variablen mit dem Modifier `final` – ihr Wert kann nicht mehr geändert werden. Namen schreibt man **GROSS** (Skript S. 9 und 37):
+
+```java
+public final static double PI = 3.141592653589793;   // so steht es in Math
+```
+
+**Klassenmethoden** (`static`) gehören zu keiner Instanz. Man ruft sie über den Klassennamen auf – wie `Math.sqrt(2.0)` (Skript S. 37):
+
+```java
+class Kreis4 {
+    public static double flaeche(double rs) {
+        return Math.PI * rs * rs;
+    }
+}
+// Aufruf: Kreis4.flaeche(1.0)
+```
+
+Klassen nur mit statischen Methoden sind „Werkzeugkästen“ – wie `Math`.
+=== aufgabe
+Vervollständige die Werkzeug-Klasse `Umrechner`:
+
+1. Die Konstante `KMH_PRO_MS` bekommt den richtigen Wert **3.6** (1 m/s = 3,6 km/h).
+2. `kmhInMs(double kmh)` – km/h in m/s (durch die Konstante teilen)
+3. `msInKmh(double ms)` – m/s in km/h
+4. `kreisflaeche(double r)` – wie `Kreis4.flaeche` im Skript
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Umrechner.kmhInMs(36) + " m/s");
+    }
+}
+
+class Umrechner {
+    static final double KMH_PRO_MS = 0;   // richtigen Wert eintragen
+
+    static double kmhInMs(double kmh) {
+        // Dein Code hier
+        return 0;
+    }
+
+    static double msInKmh(double ms) {
+        // Dein Code hier
+        return 0;
+    }
+
+    static double kreisflaeche(double r) {
+        // Dein Code hier
+        return 0;
+    }
+}
+=== pruefung
+Check.gleich("Umrechner.KMH_PRO_MS", 3.6, () -> Umrechner.KMH_PRO_MS);
+Check.gleich("Umrechner.kmhInMs(36)", 10.0, () -> Umrechner.kmhInMs(36));
+Check.gleich("Umrechner.msInKmh(10)", 36.0, () -> Umrechner.msInKmh(10));
+Check.gleich("Umrechner.kreisflaeche(2)", 4 * Math.PI, () -> Umrechner.kreisflaeche(2));
+Check.quelltextEnthaelt("die Konstante wird in den Methoden benutzt", "[*/]\\s*KMH_PRO_MS");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Umrechner.kmhInMs(36) + " m/s");
+    }
+}
+
+class Umrechner {
+    static final double KMH_PRO_MS = 3.6;
+
+    static double kmhInMs(double kmh) {
+        return kmh / KMH_PRO_MS;
+    }
+
+    static double msInKmh(double ms) {
+        return ms * KMH_PRO_MS;
+    }
+
+    static double kreisflaeche(double r) {
+        return Math.PI * r * r;
+    }
+}
+=== tipp
+Benutze die Konstante statt der Zahl: `return kmh / KMH_PRO_MS;`

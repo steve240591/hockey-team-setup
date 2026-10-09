@@ -1,0 +1,51 @@
+=== titel
+Zeichen aus Strings holen
+=== erklaerung
+Ein String besteht aus einzelnen Zeichen. Mit `charAt(position)` holst du eines heraus – gezählt wird **ab 0**:
+
+```java
+String name = "Gretzky";
+char erstes = name.charAt(0);   // 'G'
+int laenge = name.length();     // 7
+```
+
+Falle: `char + char` ergibt eine **Zahl**, keinen String!
+
+```java
+System.out.println('W' + '.');        // 133
+System.out.println("" + 'W' + '.');   // W.
+```
+=== aufgabe
+Schreibe `initialen(String vorname, String nachname)`.
+
+Beispiel: `initialen("Wayne", "Gretzky")` → `"W.G."`
+=== vorlage
+public class Main {
+
+    static String initialen(String vorname, String nachname) {
+        // Dein Code hier
+        return "";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(initialen("Wayne", "Gretzky"));
+    }
+}
+=== pruefung
+Check.gleich("initialen(\"Wayne\", \"Gretzky\")", "W.G.", () -> Main.initialen("Wayne", "Gretzky"));
+Check.gleich("initialen(\"Leon\", \"Draisaitl\")", "L.D.", () -> Main.initialen("Leon", "Draisaitl"));
+=== loesung
+public class Main {
+
+    static String initialen(String vorname, String nachname) {
+        return "" + vorname.charAt(0) + "." + nachname.charAt(0) + ".";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(initialen("Wayne", "Gretzky"));
+    }
+}
+=== tipp
+`vorname.charAt(0)` liefert den ersten Buchstaben.
+=== tipp
+Beginne mit einem leeren String `""`, dann wird alles danach als Text verkettet.

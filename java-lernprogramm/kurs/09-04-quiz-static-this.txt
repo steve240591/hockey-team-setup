@@ -1,0 +1,22 @@
+=== titel
+Quiz: static und this
+=== typ
+quiz
+=== frage
+```java
+class Zaehler {
+    int wert;
+    static void erhoehe() {
+        wert++;
+    }
+}
+```
+
+Was meldet der Compiler – und warum?
+=== optionen
+- Nichts, der Code ist korrekt.
+- Fehler, weil wert nicht initialisiert ist.
++ Fehler, weil eine statische Methode nicht auf eine Instanzvariable zugreifen kann.
+- Fehler, weil statische Methoden void sein müssen.
+=== nachher
+Eine statische Methode gehört zu **keiner Instanz** und hat kein `this` (Skript S. 37). Sie weiß also nicht, wessen `wert` gemeint ist. Die Meldung lautet: *Variable wert ist nicht statisch und kann nicht aus einem statischen Kontext referenziert werden.*

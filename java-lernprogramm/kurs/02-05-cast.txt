@@ -1,0 +1,56 @@
+=== titel
+Typkonvertierung mit Cast
+=== erklaerung
+Java wandelt **automatisch** nur von „kleinen“ in „große“ Typen um (Skript S. 19):
+
+`byte → short → int → long → float → double`  und  `char → int`
+
+```java
+int i = 42;
+double d = i;        // automatisch: 42.0
+```
+
+In die andere Richtung brauchst du den **Cast-Operator** – den Zieltyp in runden Klammern:
+
+```java
+double wert = 2.538;
+int ganz = (int) wert;   // 2
+```
+
+Der Cast **schneidet ab** – er rundet nicht!
+=== aufgabe
+Schreibe `abschneiden(double wert)`, die den Wert per Cast in einen `int` umwandelt.
+
+- `abschneiden(2.538)` → `2`
+- `abschneiden(9.99)` → `9`
+- `abschneiden(-2.7)` → ?  (Probier mal aus!)
+=== vorlage
+public class Main {
+
+    static int abschneiden(double wert) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(abschneiden(-2.7));
+    }
+}
+=== pruefung
+Check.gleich("abschneiden(2.538)", 2, () -> Main.abschneiden(2.538));
+Check.gleich("abschneiden(9.99)", 9, () -> Main.abschneiden(9.99));
+Check.gleich("abschneiden(-2.7)", -2, () -> Main.abschneiden(-2.7));
+Check.quelltextEnthaelt("Cast-Operator (int) wird verwendet", "\\(\\s*int\\s*\\)");
+=== loesung
+public class Main {
+
+    static int abschneiden(double wert) {
+        return (int) wert;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(abschneiden(-2.7));
+    }
+}
+=== tipp
+`return (int) wert;`

@@ -1,0 +1,48 @@
+=== titel
+Die Durchschnitts-Falle
+=== erklaerung
+Sobald **ein** Operand eine Kommazahl ist, rechnet Java mit Kommazahlen:
+
+```java
+System.out.println(7 / 2);     // 3
+System.out.println(7 / 2.0);   // 3.5
+System.out.println(7.0 / 2);   // 3.5
+```
+
+Achtung: Auch wenn das Ergebnis in einer `double`-Variable landet, wird vorher ganzzahlig gerechnet!
+
+```java
+double d = 7 / 2;              // d ist 3.0 – nicht 3.5!
+```
+=== aufgabe
+Schreibe `durchschnitt(int a, int b)`, die den Durchschnitt **als Kommazahl** zurückgibt.
+
+Beispiel: `durchschnitt(3, 4)` → `3.5`
+=== vorlage
+public class Main {
+
+    static double durchschnitt(int a, int b) {
+        return (a + b) / 2;   // Achtung, Falle!
+    }
+
+    public static void main(String[] args) {
+        System.out.println(durchschnitt(3, 4));
+    }
+}
+=== pruefung
+Check.gleich("durchschnitt(3, 4)", 3.5, () -> Main.durchschnitt(3, 4));
+Check.gleich("durchschnitt(2, 2)", 2.0, () -> Main.durchschnitt(2, 2));
+Check.gleich("durchschnitt(-1, 2)", 0.5, () -> Main.durchschnitt(-1, 2));
+=== loesung
+public class Main {
+
+    static double durchschnitt(int a, int b) {
+        return (a + b) / 2.0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(durchschnitt(3, 4));
+    }
+}
+=== tipp
+Teile durch `2.0` statt durch `2`.

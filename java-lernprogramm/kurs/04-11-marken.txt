@@ -1,0 +1,66 @@
+=== titel
+Marken und break
+=== erklaerung
+`break` verlässt nur die **innerste** Schleife. Willst du aus verschachtelten Schleifen ganz heraus, versiehst du die äußere Schleife mit einer **Marke** (Skript S. 23):
+
+```java
+aussen:
+for (int i = 1; i <= 9; i++) {
+    for (int j = 1; j <= 9; j++) {
+        if (i * j == 12) {
+            break aussen;   // verlässt BEIDE Schleifen
+        }
+    }
+}
+```
+=== aufgabe
+Schreibe `erstesPaar(int ziel)`: Suche mit zwei Schleifen (i von 1 bis 9, j von i bis 9) das **erste** Paar mit `i * j == ziel` und gib es als `"i*j"` zurück. Gibt es keins: `"keins"`.
+
+- `erstesPaar(12)` → `"2*6"`
+- `erstesPaar(81)` → `"9*9"`
+- `erstesPaar(11)` → `"keins"`
+=== vorlage
+public class Main {
+
+    static String erstesPaar(int ziel) {
+        String ergebnis = "keins";
+        // Dein Code hier
+
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(erstesPaar(12));
+    }
+}
+=== pruefung
+Check.gleich("erstesPaar(12)", "2*6", () -> Main.erstesPaar(12));
+Check.gleich("erstesPaar(81)", "9*9", () -> Main.erstesPaar(81));
+Check.gleich("erstesPaar(7)", "1*7", () -> Main.erstesPaar(7));
+Check.gleich("erstesPaar(11)", "keins", () -> Main.erstesPaar(11));
+Check.quelltextEnthaelt("break mit Marke wird verwendet", "\\bbreak\\s+\\w+\\s*;");
+=== loesung
+public class Main {
+
+    static String erstesPaar(int ziel) {
+        String ergebnis = "keins";
+        aussen:
+        for (int i = 1; i <= 9; i++) {
+            for (int j = i; j <= 9; j++) {
+                if (i * j == ziel) {
+                    ergebnis = i + "*" + j;
+                    break aussen;
+                }
+            }
+        }
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(erstesPaar(12));
+    }
+}
+=== tipp
+Die innere Schleife beginnt bei `j = i`.
+=== tipp
+Gefunden? `ergebnis = i + "*" + j;` und dann `break aussen;`

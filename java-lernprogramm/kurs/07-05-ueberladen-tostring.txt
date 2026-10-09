@@ -1,0 +1,122 @@
+=== titel
+Überladen und toString()
+=== erklaerung
+**Überladen** heißt: mehrere Methoden mit **gleichem Namen**, aber **unterschiedlichen Parametern** (Skript S. 30). Java wählt anhand der Argumente die passende aus:
+
+```java
+void torErzielen()           { ... }   // torErzielen()
+void torErzielen(int anzahl) { ... }   // torErzielen(3)
+```
+
+Jede Klasse erbt von `Object` die Methode `toString()` (Skript S. 16/17). Sie wird automatisch aufgerufen, wenn ein Objekt als Text gebraucht wird, z. B. in `System.out.println(spieler)`. Du kannst sie **überschreiben**:
+
+```java
+@Override
+public String toString() {
+    return "Fahrrad von " + eigentuemer;
+}
+```
+=== aufgabe
+1. `torErzielen()` – ein Tor mehr.
+2. `torErzielen(int anzahl)` – `anzahl` Tore mehr; negative Werte werden ignoriert. Tipp: Die erste Methode kann die zweite aufrufen!
+3. `toString()` – Format: `Draisaitl #29 (3 Tore)`
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+        s.torErzielen();
+        s.torErzielen(2);
+        System.out.println(s);
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+    }
+
+    void torErzielen() {
+        // Dein Code hier
+    }
+
+    void torErzielen(int anzahl) {
+        // Dein Code hier
+    }
+
+    int getTore() {
+        return tore;
+    }
+
+    @Override
+    public String toString() {
+        // Dein Code hier
+        return "";
+    }
+}
+=== pruefung
+Check.gleich("torErzielen()", 1, () -> {
+    KaderSpieler s = new KaderSpieler("X", 1);
+    s.torErzielen();
+    return s.getTore();
+});
+Check.gleich("torErzielen(3)", 3, () -> {
+    KaderSpieler s = new KaderSpieler("X", 1);
+    s.torErzielen(3);
+    return s.getTore();
+});
+Check.gleich("torErzielen(-2) wird ignoriert", 1, () -> {
+    KaderSpieler s = new KaderSpieler("X", 1);
+    s.torErzielen();
+    s.torErzielen(-2);
+    return s.getTore();
+});
+Check.gleich("toString()", "Draisaitl #29 (0 Tore)", () -> new KaderSpieler("Draisaitl", 29).toString());
+Check.ausgabe("Ausgabe von main", "Draisaitl #29 (3 Tore)");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+        s.torErzielen();
+        s.torErzielen(2);
+        System.out.println(s);
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+    }
+
+    void torErzielen() {
+        torErzielen(1);
+    }
+
+    void torErzielen(int anzahl) {
+        if (anzahl > 0) {
+            tore += anzahl;
+        }
+    }
+
+    int getTore() {
+        return tore;
+    }
+
+    @Override
+    public String toString() {
+        return name + " #" + nummer + " (" + tore + " Tore)";
+    }
+}
+=== tipp
+`torErzielen()` kann einfach `torErzielen(1);` aufrufen.
+=== tipp
+`return name + " #" + nummer + " (" + tore + " Tore)";`

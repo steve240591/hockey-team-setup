@@ -1,0 +1,13 @@
+=== titel
+Quiz: Grunddatentypen
+=== typ
+quiz
+=== frage
+Welcher der folgenden ist **kein** Grunddatentyp in Java?
+=== optionen
+- char
+- boolean
++ String
+- long
+=== nachher
+Java hat acht Grunddatentypen: `byte`, `short`, `int`, `long`, `float`, `double`, `char`, `boolean` (Skript S. 18). `String` ist eine **Klasse** – Strings sind Instanzen dieser Klasse (Skript S. 13).

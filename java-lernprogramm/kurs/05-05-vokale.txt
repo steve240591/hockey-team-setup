@@ -1,0 +1,67 @@
+=== titel
+Strings Zeichen für Zeichen
+=== erklaerung
+Die Klasse `String` hat über 50 Methoden (Skript S. 13). Die wichtigsten für den Anfang:
+
+```java
+String s = "Eishockey";
+s.length()        // 9
+s.charAt(0)       // 'E'
+s.toLowerCase()   // "eishockey"
+s.toUpperCase()   // "EISHOCKEY"
+s.equals("Puck")  // false – Strings immer mit equals vergleichen!
+```
+
+Einen String durchläufst du wie ein Array – nur mit `length()` und `charAt(i)`:
+
+```java
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+}
+```
+=== aufgabe
+Schreibe `zaehleVokale(String text)`: Zähle a, e, i, o, u – egal ob groß oder klein.
+
+- `"Eishockey"` → `4`
+- `"PUCK"` → `1`
+- `""` → `0`
+=== vorlage
+public class Main {
+
+    static int zaehleVokale(String text) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(zaehleVokale("Eishockey"));
+    }
+}
+=== pruefung
+Check.gleich("zaehleVokale(\"Eishockey\")", 4, () -> Main.zaehleVokale("Eishockey"));
+Check.gleich("zaehleVokale(\"PUCK\")", 1, () -> Main.zaehleVokale("PUCK"));
+Check.gleich("zaehleVokale(\"\")", 0, () -> Main.zaehleVokale(""));
+Check.gleich("zaehleVokale(\"AEIOU aeiou\")", 10, () -> Main.zaehleVokale("AEIOU aeiou"));
+=== loesung
+public class Main {
+
+    static int zaehleVokale(String text) {
+        int anzahl = 0;
+        String klein = text.toLowerCase();
+        for (int i = 0; i < klein.length(); i++) {
+            char c = klein.charAt(i);
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                anzahl++;
+            }
+        }
+        return anzahl;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(zaehleVokale("Eishockey"));
+    }
+}
+=== tipp
+Wandle den Text zuerst mit `toLowerCase()` in Kleinbuchstaben um.
+=== tipp
+Ein `char` vergleichst du mit `==`: `c == 'a' || c == 'e' || ...`

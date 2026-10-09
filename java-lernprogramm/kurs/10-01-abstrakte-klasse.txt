@@ -1,0 +1,180 @@
+=== titel
+Abstrakte Klassen
+=== erklaerung
+Eine **abstrakte Klasse** ist ein unvollständiger Bauplan (Skript S. 38/39):
+
+- Sie wird mit `abstract` deklariert.
+- Von ihr können **keine Instanzen** erzeugt werden: `new Figur()` geht nicht.
+- Sie kann **abstrakte Methoden** enthalten – ohne Rumpf, nur mit `;`.
+- Jede Subklasse **muss** alle abstrakten Methoden überschreiben.
+
+```java
+abstract class Figur {
+    protected int xp, yp;
+    public void setPos(int xp, int yp) { this.xp = xp; this.yp = yp; }  // normal
+    abstract double flaeche();     // abstrakt – jede Figur rechnet anders
+    abstract double umfang();
+}
+```
+
+Eine **normale** Methode der abstrakten Klasse darf abstrakte Methoden aufrufen – zur Laufzeit wird dann die Version der Subklasse benutzt.
+=== aufgabe
+1. Ergänze in `KreisF` und `RechteckF` die Methoden `flaeche()` und `umfang()`.
+2. Schreibe in `Figur` die (nicht abstrakte) Methode `istGroesserAls(Figur andere)`: `true`, wenn diese Figur eine größere Fläche hat.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Figur k = new KreisF(2);
+        Figur r = new RechteckF(3, 4);
+        System.out.println(k.istGroesserAls(r));
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        // Dein Code hier
+        return false;
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        // Dein Code hier
+        return 0;
+    }
+
+    @Override
+    double umfang() {
+        // Dein Code hier
+        return 0;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        // Dein Code hier
+        return 0;
+    }
+
+    @Override
+    double umfang() {
+        // Dein Code hier
+        return 0;
+    }
+}
+=== pruefung
+Check.gleich("KreisF(1).flaeche()", Math.PI, () -> new KreisF(1).flaeche());
+Check.gleich("KreisF(1).umfang()", 2 * Math.PI, () -> new KreisF(1).umfang());
+Check.gleich("RechteckF(3, 4).flaeche()", 12.0, () -> new RechteckF(3, 4).flaeche());
+Check.gleich("RechteckF(3, 4).umfang()", 14.0, () -> new RechteckF(3, 4).umfang());
+Check.gleich("KreisF(2) größer als RechteckF(1, 1)", true, () -> new KreisF(2).istGroesserAls(new RechteckF(1, 1)));
+Check.gleich("RechteckF(1, 1) größer als KreisF(2)", false, () -> new RechteckF(1, 1).istGroesserAls(new KreisF(2)));
+Check.gleich("setPos() wird geerbt", 7, () -> {
+    RechteckF r = new RechteckF(3, 4);
+    r.setPos(7, 2);
+    return r.getX();
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Figur k = new KreisF(2);
+        Figur r = new RechteckF(3, 4);
+        System.out.println(k.istGroesserAls(r));
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== tipp
+Rechteck: Fläche `l * h`, Umfang `2 * (l + h)`
+=== tipp
+`return this.flaeche() > andere.flaeche();`

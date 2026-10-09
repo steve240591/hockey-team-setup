@@ -1,0 +1,13 @@
+=== titel
+Quiz: final
+=== typ
+quiz
+=== frage
+Was bewirkt `final class EndKlasse { ... }`?
+=== optionen
+- Von EndKlasse können keine Instanzen erzeugt werden.
++ Von EndKlasse können keine Subklassen gebildet werden.
+- Alle Variablen in EndKlasse sind Konstanten.
+- EndKlasse muss die letzte Klasse in der Datei sein.
+=== nachher
+`final` vor einer **Klasse** verhindert die Vererbung, vor einer **Methode** das Überschreiben und vor einer **Variablen** jede spätere Änderung (Skript S. 35 und 37). Keine Instanzen erzeugen kann man dagegen von **abstrakten** Klassen.

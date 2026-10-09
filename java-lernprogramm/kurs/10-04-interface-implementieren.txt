@@ -1,0 +1,303 @@
+=== titel
+Ein Interface komplett umsetzen
+=== erklaerung
+Schnittstellen verbinden auch Klassen, die **nichts miteinander zu tun haben**. Ein Schiedsrichter ist keine Figur – bewegen kann er sich trotzdem.
+
+Code, der nur das Interface kennt, funktioniert dann mit beiden:
+
+```java
+static void allesVerschieben(Bewegung[] objekte, int dx, int dy) { ... }
+```
+
+Jeder Nutzer kann sich darauf verlassen, dass die Methoden des Interfaces vorhanden sind – egal, wie sie umgesetzt sind (Skript S. 40).
+=== aufgabe
+1. `Schiedsrichter` implementiert **alle fünf** Methoden von `Bewegung` selbst (mit eigenen Variablen `x` und `y`).
+2. `allesVerschieben(Bewegung[] objekte, int dx, int dy)` verschiebt jedes Objekt um `dx` und `dy`.
+=== vorlage
+public class Main {
+
+    static void allesVerschieben(Bewegung[] objekte, int dx, int dy) {
+        // Dein Code hier
+    }
+
+    public static void main(String[] args) {
+        Schiedsrichter s = new Schiedsrichter();
+        s.setPos(10, 10);
+        Bewegung[] alle = {s};
+        allesVerschieben(alle, 3, 1);
+        System.out.println(s.getX() + "," + s.getY());
+    }
+}
+
+interface Bewegung {
+    void setPos(int x, int y);
+
+    void moveX(int m);
+
+    void moveY(int m);
+
+    int getX();
+
+    int getY();
+}
+
+class Schiedsrichter implements Bewegung {
+    private int x;
+    private int y;
+
+    public void setPos(int x, int y) {
+        // Dein Code hier
+    }
+
+    public void moveX(int m) {
+        // Dein Code hier
+    }
+
+    public void moveY(int m) {
+        // Dein Code hier
+    }
+
+    public int getX() {
+        // Dein Code hier
+        return 0;
+    }
+
+    public int getY() {
+        // Dein Code hier
+        return 0;
+    }
+}
+
+class BewKreis extends KreisF implements Bewegung {
+
+    BewKreis(double r) {
+        super(r);
+    }
+
+    public void moveX(int mx) {
+        xp = xp + mx;
+    }
+
+    public void moveY(int my) {
+        yp = yp + my;
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    public int getY() {
+        return yp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== pruefung
+Check.gleich("Schiedsrichter: setPos und getX", 10, () -> {
+    Schiedsrichter s = new Schiedsrichter();
+    s.setPos(10, 20);
+    return s.getX();
+});
+Check.gleich("Schiedsrichter: moveY", -4, () -> {
+    Schiedsrichter s = new Schiedsrichter();
+    s.moveY(-4);
+    return s.getY();
+});
+Check.gleich("allesVerschieben mit BewKreis und Schiedsrichter", "3,1 13,11", () -> {
+    BewKreis k = new BewKreis(1);
+    Schiedsrichter s = new Schiedsrichter();
+    s.setPos(10, 10);
+    Main.allesVerschieben(new Bewegung[] {k, s}, 3, 1);
+    return k.getX() + "," + k.getY() + " " + s.getX() + "," + s.getY();
+});
+=== loesung
+public class Main {
+
+    static void allesVerschieben(Bewegung[] objekte, int dx, int dy) {
+        for (Bewegung b : objekte) {
+            b.moveX(dx);
+            b.moveY(dy);
+        }
+    }
+
+    public static void main(String[] args) {
+        Schiedsrichter s = new Schiedsrichter();
+        s.setPos(10, 10);
+        Bewegung[] alle = {s};
+        allesVerschieben(alle, 3, 1);
+        System.out.println(s.getX() + "," + s.getY());
+    }
+}
+
+interface Bewegung {
+    void setPos(int x, int y);
+
+    void moveX(int m);
+
+    void moveY(int m);
+
+    int getX();
+
+    int getY();
+}
+
+class Schiedsrichter implements Bewegung {
+    private int x;
+    private int y;
+
+    public void setPos(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void moveX(int m) {
+        x += m;
+    }
+
+    public void moveY(int m) {
+        y += m;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+}
+
+class BewKreis extends KreisF implements Bewegung {
+
+    BewKreis(double r) {
+        super(r);
+    }
+
+    public void moveX(int mx) {
+        xp = xp + mx;
+    }
+
+    public void moveY(int my) {
+        yp = yp + my;
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    public int getY() {
+        return yp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== tipp
+`for (Bewegung b : objekte) { b.moveX(dx); b.moveY(dy); }`

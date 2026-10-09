@@ -1,0 +1,52 @@
+=== titel
+Vorkommen zählen
+=== erklaerung
+Ein häufiges Muster: Durchlaufe das Array und erhöhe einen Zähler, wenn eine Bedingung zutrifft.
+
+```java
+int anzahl = 0;
+for (int z : zahlen) {
+    if (z > 0) {
+        anzahl++;
+    }
+}
+```
+=== aufgabe
+Schreibe `zaehle(int[] zahlen, int gesucht)`: Wie oft kommt `gesucht` im Array vor?
+
+`zaehle({1, 2, 1, 1}, 1)` → `3`
+=== vorlage
+public class Main {
+
+    static int zaehle(int[] zahlen, int gesucht) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(zaehle(new int[] {1, 2, 1, 1}, 1));
+    }
+}
+=== pruefung
+Check.gleich("zaehle({1, 2, 1, 1}, 1)", 3, () -> Main.zaehle(new int[] {1, 2, 1, 1}, 1));
+Check.gleich("zaehle({1, 2, 1, 1}, 2)", 1, () -> Main.zaehle(new int[] {1, 2, 1, 1}, 2));
+Check.gleich("zaehle({1, 2, 1, 1}, 5)", 0, () -> Main.zaehle(new int[] {1, 2, 1, 1}, 5));
+=== loesung
+public class Main {
+
+    static int zaehle(int[] zahlen, int gesucht) {
+        int anzahl = 0;
+        for (int z : zahlen) {
+            if (z == gesucht) {
+                anzahl++;
+            }
+        }
+        return anzahl;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(zaehle(new int[] {1, 2, 1, 1}, 1));
+    }
+}
+=== tipp
+Vergleiche jedes Element mit `gesucht` und zähle mit `anzahl++`.

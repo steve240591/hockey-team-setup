@@ -1,0 +1,163 @@
+=== titel
+Vererbung mit extends
+=== erklaerung
+„Zylinder sind Kreise mit einer Höhe“ (Skript S. 32). Mit `extends` **erbt** eine Klasse alle Eigenschaften und Methoden der Basisklasse und kann neue hinzufügen:
+
+```java
+class Verkehrsrad extends Fahrrad {
+    boolean licht;              // neu
+    public void einaus(boolean ea) { this.licht = ea; }   // neu
+}
+```
+
+Der Konstruktor der Subklasse ruft mit `super(...)` den Konstruktor der Basisklasse auf. **`super(...)` muss die erste Zeile im Konstruktor sein** (Skript S. 34):
+
+```java
+Zylinder() {
+    super();        // Kreis() – Radius 1
+    this.h = 1.0;
+}
+```
+
+In Java kann eine Klasse nur von **einer** Klasse erben (Skript S. 32).
+=== aufgabe
+Vervollständige die Klasse `Zylinder`:
+
+1. `Zylinder()` – Radius 1 (über `super()`), Höhe 1
+2. `Zylinder(double r, double h)` – Radius über `super(r)`, dazu die Höhe
+3. `setH(double h)` – setzt die Höhe und gibt sie zurück (wie `setRad`)
+4. `getH()`
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Zylinder z = new Zylinder(2, 5);
+        System.out.println("Radius: " + z.getRad());   // geerbt!
+        System.out.println("Höhe: " + z.getH());
+    }
+}
+
+class Zylinder extends Kreis {
+    protected double h;
+
+    Zylinder() {
+        // Dein Code hier
+    }
+
+    Zylinder(double r, double h) {
+        // Dein Code hier
+    }
+
+    double setH(double h) {
+        // Dein Code hier
+        return 0;
+    }
+
+    double getH() {
+        // Dein Code hier
+        return 0;
+    }
+}
+
+class Kreis {
+    protected double r;
+
+    Kreis() {
+        this.r = 1.0;
+    }
+
+    Kreis(double r) {
+        this.r = r;
+    }
+
+    double setRad(double r) {
+        this.r = r;
+        return r;
+    }
+
+    double getRad() {
+        return r;
+    }
+
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+=== pruefung
+Check.gleich("new Zylinder(): Radius 1", 1.0, () -> new Zylinder().getRad());
+Check.gleich("new Zylinder(): Höhe 1", 1.0, () -> new Zylinder().getH());
+Check.gleich("new Zylinder(2, 5): Radius 2", 2.0, () -> new Zylinder(2, 5).getRad());
+Check.gleich("new Zylinder(2, 5): Höhe 5", 5.0, () -> new Zylinder(2, 5).getH());
+Check.gleich("setH(4) liefert 4", 4.0, () -> new Zylinder().setH(4));
+Check.gleich("setH(4) speichert 4", 4.0, () -> {
+    Zylinder z = new Zylinder();
+    z.setH(4);
+    return z.getH();
+});
+Check.gleich("Zylinder erbt setRad()", 3.0, () -> new Zylinder().setRad(3));
+Check.quelltextEnthaelt("super(r) wird verwendet", "super\\s*\\(\\s*r\\s*\\)");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Zylinder z = new Zylinder(2, 5);
+        System.out.println("Radius: " + z.getRad());   // geerbt!
+        System.out.println("Höhe: " + z.getH());
+    }
+}
+
+class Zylinder extends Kreis {
+    protected double h;
+
+    Zylinder() {
+        super();
+        this.h = 1.0;
+    }
+
+    Zylinder(double r, double h) {
+        super(r);
+        this.h = h;
+    }
+
+    double setH(double h) {
+        this.h = h;
+        return h;
+    }
+
+    double getH() {
+        return h;
+    }
+}
+
+class Kreis {
+    protected double r;
+
+    Kreis() {
+        this.r = 1.0;
+    }
+
+    Kreis(double r) {
+        this.r = r;
+    }
+
+    double setRad(double r) {
+        this.r = r;
+        return r;
+    }
+
+    double getRad() {
+        return r;
+    }
+
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+=== tipp
+`Zylinder(double r, double h) { super(r); this.h = h; }`

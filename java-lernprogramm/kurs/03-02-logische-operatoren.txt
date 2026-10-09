@@ -1,0 +1,54 @@
+=== titel
+Logische Operatoren
+=== erklaerung
+Mit logischen Operatoren verknüpfst du Bedingungen (Skript S. 20):
+
+| Operator | Bedeutung | wahr, wenn … |
+|---|---|---|
+| `&&` | UND | beide Seiten wahr sind |
+| `\|\|` | ODER | mindestens eine Seite wahr ist |
+| `!` | NICHT | die Bedingung falsch ist |
+
+```java
+boolean imDrittel = minute >= 0 && minute < 20;
+boolean pause = !laeuft || drittelVorbei;
+```
+
+`&&` und `||` sind **Short-Cut-Operatoren**: Steht das Ergebnis nach der linken Seite schon fest, wird die rechte Seite gar nicht mehr ausgewertet.
+=== aufgabe
+Schreibe `istSchaltjahr(int jahr)` – **ohne if**, nur mit Operatoren.
+
+Regel: durch 4 teilbar, aber nicht durch 100 – außer es ist durch 400 teilbar.
+
+- 2024 → `true`, 2023 → `false`, 1900 → `false`, 2000 → `true`
+=== vorlage
+public class Main {
+
+    static boolean istSchaltjahr(int jahr) {
+        // Dein Code hier
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istSchaltjahr(2024));
+    }
+}
+=== pruefung
+Check.gleich("istSchaltjahr(2024)", true, () -> Main.istSchaltjahr(2024));
+Check.gleich("istSchaltjahr(2023)", false, () -> Main.istSchaltjahr(2023));
+Check.gleich("istSchaltjahr(1900)", false, () -> Main.istSchaltjahr(1900));
+Check.gleich("istSchaltjahr(2000)", true, () -> Main.istSchaltjahr(2000));
+Check.quelltextOhne("kein if verwendet", "\\bif\\b");
+=== loesung
+public class Main {
+
+    static boolean istSchaltjahr(int jahr) {
+        return (jahr % 4 == 0 && jahr % 100 != 0) || jahr % 400 == 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istSchaltjahr(2024));
+    }
+}
+=== tipp
+Baue es in zwei Teilen: `(durch 4 teilbar && nicht durch 100 teilbar)` ODER `durch 400 teilbar`.

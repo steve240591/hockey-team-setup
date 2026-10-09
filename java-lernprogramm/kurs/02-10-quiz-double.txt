@@ -1,0 +1,18 @@
+=== titel
+Quiz: Was steht in y?
+=== typ
+quiz
+=== frage
+```java
+double y = 7 / 2;
+System.out.println(y);
+```
+
+Was wird ausgegeben?
+=== optionen
+- 3.5
++ 3.0
+- 3
+- Fehler beim Übersetzen
+=== nachher
+`7 / 2` sind zwei `int`-Werte – also Ganzzahldivision: `3`. Erst **danach** wird das Ergebnis automatisch in `double` umgewandelt: `3.0`.

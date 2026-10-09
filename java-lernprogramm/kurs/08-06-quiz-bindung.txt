@@ -1,0 +1,20 @@
+=== titel
+Quiz: Welche Methode?
+=== typ
+quiz
+=== frage
+`Zylinder` erbt von `Kreis` und überschreibt `flaeche()`.
+
+```java
+Kreis k = new Zylinder(1, 2);
+System.out.println(k.flaeche());
+```
+
+Welche `flaeche()` wird aufgerufen?
+=== optionen
+- Die aus Kreis, weil k vom Typ Kreis ist.
++ Die aus Zylinder, weil k auf eine Zylinder-Instanz zeigt.
+- Beide nacheinander.
+- Keine – der Compiler meldet einen Fehler.
+=== nachher
+Das ist die **dynamische Bindung**: Entscheidend ist die tatsächliche **Instanz**, nicht der Typ der Variablen (Skript S. 35: „…wird die Methode genutzt, die der Instanz am nächsten ist“).

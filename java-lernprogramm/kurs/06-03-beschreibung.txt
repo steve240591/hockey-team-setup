@@ -1,0 +1,86 @@
+=== titel
+Methoden nutzen Methoden
+=== erklaerung
+Innerhalb einer Klasse kann eine Methode andere Methoden derselben Instanz einfach mit ihrem Namen aufrufen:
+
+```java
+String info() {
+    return name + " hat " + punkte() + " Punkte";
+}
+```
+
+Das verhindert doppelten Code: Die Punkte-Formel steht nur an **einer** Stelle.
+=== aufgabe
+Schreibe `beschreibung()`, die genau dieses Format liefert:
+
+```
+#87 Crosby: 2 Tore, 1 Vorlagen, 3 Punkte
+```
+
+Nutze dabei deine Methode `punkte()`.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Spieler s = new Spieler();
+        s.name = "Crosby";
+        s.nummer = 87;
+        s.tore = 2;
+        s.vorlagen = 1;
+        System.out.println(s.beschreibung());
+    }
+}
+
+class Spieler {
+    String name;
+    int nummer;
+    int tore;
+    int vorlagen;
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    String beschreibung() {
+        // Dein Code hier
+        return "";
+    }
+}
+=== pruefung
+Check.ausgabe("Ausgabe für Crosby", "#87 Crosby: 2 Tore, 1 Vorlagen, 3 Punkte");
+Check.gleich("beschreibung() für Draisaitl", "#29 Draisaitl: 0 Tore, 4 Vorlagen, 4 Punkte", () -> {
+    Spieler s = new Spieler();
+    s.name = "Draisaitl";
+    s.nummer = 29;
+    s.vorlagen = 4;
+    return s.beschreibung();
+});
+Check.quelltextEnthaelt("punkte() wird in beschreibung() genutzt", "\\+\\s*punkte\\s*\\(\\s*\\)");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Spieler s = new Spieler();
+        s.name = "Crosby";
+        s.nummer = 87;
+        s.tore = 2;
+        s.vorlagen = 1;
+        System.out.println(s.beschreibung());
+    }
+}
+
+class Spieler {
+    String name;
+    int nummer;
+    int tore;
+    int vorlagen;
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    String beschreibung() {
+        return "#" + nummer + " " + name + ": " + tore + " Tore, " + vorlagen + " Vorlagen, "
+                + punkte() + " Punkte";
+    }
+}
+=== tipp
+`return "#" + nummer + " " + name + ": " + ...`

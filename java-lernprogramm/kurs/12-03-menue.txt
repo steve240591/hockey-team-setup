@@ -1,0 +1,522 @@
+=== titel
+Projekt 3/3: Das Menü
+=== erklaerung
+Jetzt wird es ein richtiges Programm: Ein **Menü** in einer `do-while`-Schleife, das Eingaben mit `Scanner` liest (Skript S. 11 und 16) und mit `switch` verzweigt.
+
+```java
+Scanner lies = new Scanner(System.in);
+int auswahl;
+do {
+    // Menü anzeigen, Auswahl lesen
+    switch (auswahl) {
+        case 1 -> ...
+        case 0 -> System.out.println("Tschüss!");
+        default -> System.out.println("Ungültige Auswahl.");
+    }
+} while (auswahl != 0);
+```
+
+Die Hilfsmethoden `leseZahl` und `leseText` sind schon fertig.
+
+**Zum Ausprobieren:** Klicke unten auf **Eingabe** und trage die Tastatureingaben ein – eine pro Zeile, z. B.:
+
+```
+1
+Plachta
+22
+3
+22
+6
+0
+```
+=== aufgabe
+Setze im `switch` die fehlenden Menüpunkte um. Halte dich genau an diese Texte:
+
+| Nr. | Was passiert | Ausgabe |
+|---|---|---|
+| 1 | Name und Nummer lesen, Feldspieler anlegen | `Angelegt: ` + Spieler – oder `Nicht möglich.` |
+| 2 | wie 1, aber Torhüter | wie 1 |
+| 3 | Nummer lesen, beim Feldspieler ein Tor eintragen | `Tor für ` + Name – oder `Kein Feldspieler.` |
+| 5 | Nummer lesen, dann `1` = Parade, `2` = Gegentor | `Gespeichert.` – oder `Kein Torhüter.` |
+| 6 | Kader anzeigen | `kader.ausgeben()` |
+| 7 | Topscorer | `Topscorer: ` + Spieler – oder `Noch keine Feldspieler.` |
+=== vorlage
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner lies = new Scanner(System.in);
+        Kader kader = new Kader("Adler Mannheim");
+        int auswahl;
+        do {
+            System.out.println();
+            System.out.println("1 Feldspieler  2 Torhüter  3 Tor  5 Schuss  6 Kader  7 Topscorer  0 Ende");
+            auswahl = leseZahl(lies, "Auswahl: ");
+            switch (auswahl) {
+                // Deine Menüpunkte hier
+                case 6 -> kader.ausgeben();
+                case 0 -> System.out.println("Tschüss!");
+                default -> System.out.println("Ungültige Auswahl.");
+            }
+        } while (auswahl != 0);
+    }
+
+    static void spielerAnlegen(Scanner lies, Kader kader, boolean torhueter) {
+        String name = leseText(lies, "Name: ");
+        int nummer = leseZahl(lies, "Nummer: ");
+        // Dein Code hier
+    }
+
+    static int leseZahl(Scanner lies, String frage) {
+        System.out.print(frage);
+        while (!lies.hasNextInt()) {
+            if (!lies.hasNext()) {
+                return 0;   // Eingabe zu Ende: Programm beenden
+            }
+            lies.next();
+            System.out.print("Bitte eine ganze Zahl eingeben: ");
+        }
+        int zahl = lies.nextInt();
+        lies.nextLine();
+        return zahl;
+    }
+
+    static String leseText(Scanner lies, String frage) {
+        System.out.print(frage);
+        return lies.hasNextLine() ? lies.nextLine().trim() : "";
+    }
+}
+
+class Kader {
+    static final int MAX_SPIELER = 25;
+
+    private final String teamname;
+    private final Spieler[] spieler = new Spieler[MAX_SPIELER];
+    private int anzahl = 0;
+
+    Kader(String teamname) {
+        this.teamname = teamname;
+    }
+
+    String getTeamname() {
+        return teamname;
+    }
+
+    int getAnzahl() {
+        return anzahl;
+    }
+
+    boolean hinzufuegen(Spieler neu) {
+        if (anzahl == MAX_SPIELER || suche(neu.getNummer()) != null) {
+            return false;
+        }
+        spieler[anzahl] = neu;
+        anzahl++;
+        return true;
+    }
+
+    Spieler suche(int nummer) {
+        for (int i = 0; i < anzahl; i++) {
+            if (spieler[i].getNummer() == nummer) {
+                return spieler[i];
+            }
+        }
+        return null;
+    }
+
+    Feldspieler topScorer() {
+        Feldspieler top = null;
+        for (int i = 0; i < anzahl; i++) {
+            if (spieler[i] instanceof Feldspieler) {
+                Feldspieler f = (Feldspieler) spieler[i];
+                if (top == null || f.punkte() > top.punkte()) {
+                    top = f;
+                }
+            }
+        }
+        return top;
+    }
+
+    void ausgeben() {
+        System.out.println("Kader " + teamname + " (" + anzahl + " von " + MAX_SPIELER + " Plätzen)");
+        for (int i = 0; i < anzahl; i++) {
+            System.out.println("  " + spieler[i]);
+        }
+    }
+}
+
+class Feldspieler extends Spieler {
+    private int tore;
+    private int vorlagen;
+
+    Feldspieler(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    void vorlageGeben() {
+        vorlagen++;
+    }
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    @Override
+    String rolle() {
+        return "Feldspieler";
+    }
+
+    @Override
+    public String statistik() {
+        return "Tore: " + tore + "  Vorlagen: " + vorlagen + "  Punkte: " + punkte();
+    }
+}
+
+class Torhueter extends Spieler {
+    private int paraden;
+    private int gegentore;
+
+    Torhueter(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void parade() {
+        paraden++;
+    }
+
+    void gegentor() {
+        gegentore++;
+    }
+
+    double fangquote() {
+        int schuesse = paraden + gegentore;
+        if (schuesse == 0) {
+            return 0.0;
+        }
+        return Math.round(1000.0 * paraden / schuesse) / 10.0;
+    }
+
+    @Override
+    String rolle() {
+        return "Torhüter";
+    }
+
+    @Override
+    public String statistik() {
+        return "Paraden: " + paraden + "  Gegentore: " + gegentore + "  Fangquote: " + fangquote() + " %";
+    }
+}
+
+abstract class Person {
+    private static int anzahlPersonen = 0;
+    private final String name;
+
+    Person(String name) {
+        this.name = name;
+        anzahlPersonen++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    static int getAnzahlPersonen() {
+        return anzahlPersonen;
+    }
+
+    abstract String rolle();
+}
+
+interface Auswertbar {
+    String statistik();
+}
+
+abstract class Spieler extends Person implements Auswertbar {
+    private final int nummer;
+
+    Spieler(String name, int nummer) {
+        super(name);
+        this.nummer = nummer;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + nummer + " " + getName() + " (" + rolle() + ")  " + statistik();
+    }
+}
+=== pruefung
+Check.ausgabeEnthaelt("1: Feldspieler anlegen", "1\nPlachta\n22\n0\n", "Angelegt: #22 Plachta (Feldspieler)");
+Check.ausgabeEnthaelt("2: Torhüter anlegen", "2\nBrückmann\n30\n0\n", "Angelegt: #30 Brückmann (Torhüter)");
+Check.ausgabeEnthaelt("1: doppelte Nummer", "1\nA\n22\n1\nB\n22\n0\n", "Nicht möglich.");
+Check.ausgabeEnthaelt("3: Tor eintragen", "1\nPlachta\n22\n3\n22\n0\n", "Tor für Plachta");
+Check.ausgabeEnthaelt("3: unbekannte Nummer", "3\n99\n0\n", "Kein Feldspieler.");
+Check.ausgabeEnthaelt("5: Parade und Gegentor", "2\nBrückmann\n30\n5\n30\n1\n5\n30\n2\n6\n0\n", "Fangquote: 50.0 %");
+Check.ausgabeEnthaelt("5: Feldspieler ist kein Torhüter", "1\nPlachta\n22\n5\n22\n0\n", "Kein Torhüter.");
+Check.ausgabeEnthaelt("7: Topscorer", "1\nPlachta\n22\n1\nWolf\n86\n3\n86\n7\n0\n", "Topscorer: #86 Wolf (Feldspieler)  Tore: 1");
+Check.ausgabeEnthaelt("7: ohne Feldspieler", "7\n0\n", "Noch keine Feldspieler.");
+=== loesung
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner lies = new Scanner(System.in);
+        Kader kader = new Kader("Adler Mannheim");
+        int auswahl;
+        do {
+            System.out.println();
+            System.out.println("1 Feldspieler  2 Torhüter  3 Tor  5 Schuss  6 Kader  7 Topscorer  0 Ende");
+            auswahl = leseZahl(lies, "Auswahl: ");
+            switch (auswahl) {
+                case 1 -> spielerAnlegen(lies, kader, false);
+                case 2 -> spielerAnlegen(lies, kader, true);
+                case 3 -> torEintragen(lies, kader);
+                case 5 -> schussEintragen(lies, kader);
+                case 6 -> kader.ausgeben();
+                case 7 -> {
+                    Feldspieler top = kader.topScorer();
+                    System.out.println(top == null ? "Noch keine Feldspieler." : "Topscorer: " + top);
+                }
+                case 0 -> System.out.println("Tschüss!");
+                default -> System.out.println("Ungültige Auswahl.");
+            }
+        } while (auswahl != 0);
+    }
+
+    static void spielerAnlegen(Scanner lies, Kader kader, boolean torhueter) {
+        String name = leseText(lies, "Name: ");
+        int nummer = leseZahl(lies, "Nummer: ");
+        Spieler neu = torhueter ? new Torhueter(name, nummer) : new Feldspieler(name, nummer);
+        if (kader.hinzufuegen(neu)) {
+            System.out.println("Angelegt: " + neu);
+        } else {
+            System.out.println("Nicht möglich.");
+        }
+    }
+
+    static void torEintragen(Scanner lies, Kader kader) {
+        Spieler s = kader.suche(leseZahl(lies, "Nummer: "));
+        if (s instanceof Feldspieler) {
+            ((Feldspieler) s).torErzielen();
+            System.out.println("Tor für " + s.getName());
+        } else {
+            System.out.println("Kein Feldspieler.");
+        }
+    }
+
+    static void schussEintragen(Scanner lies, Kader kader) {
+        Spieler s = kader.suche(leseZahl(lies, "Nummer: "));
+        if (!(s instanceof Torhueter)) {
+            System.out.println("Kein Torhüter.");
+            return;
+        }
+        Torhueter t = (Torhueter) s;
+        int ergebnis = leseZahl(lies, "1 = Parade, 2 = Gegentor: ");
+        if (ergebnis == 1) {
+            t.parade();
+        } else {
+            t.gegentor();
+        }
+        System.out.println("Gespeichert.");
+    }
+
+    static int leseZahl(Scanner lies, String frage) {
+        System.out.print(frage);
+        while (!lies.hasNextInt()) {
+            if (!lies.hasNext()) {
+                return 0;   // Eingabe zu Ende: Programm beenden
+            }
+            lies.next();
+            System.out.print("Bitte eine ganze Zahl eingeben: ");
+        }
+        int zahl = lies.nextInt();
+        lies.nextLine();
+        return zahl;
+    }
+
+    static String leseText(Scanner lies, String frage) {
+        System.out.print(frage);
+        return lies.hasNextLine() ? lies.nextLine().trim() : "";
+    }
+}
+
+class Kader {
+    static final int MAX_SPIELER = 25;
+
+    private final String teamname;
+    private final Spieler[] spieler = new Spieler[MAX_SPIELER];
+    private int anzahl = 0;
+
+    Kader(String teamname) {
+        this.teamname = teamname;
+    }
+
+    String getTeamname() {
+        return teamname;
+    }
+
+    int getAnzahl() {
+        return anzahl;
+    }
+
+    boolean hinzufuegen(Spieler neu) {
+        if (anzahl == MAX_SPIELER || suche(neu.getNummer()) != null) {
+            return false;
+        }
+        spieler[anzahl] = neu;
+        anzahl++;
+        return true;
+    }
+
+    Spieler suche(int nummer) {
+        for (int i = 0; i < anzahl; i++) {
+            if (spieler[i].getNummer() == nummer) {
+                return spieler[i];
+            }
+        }
+        return null;
+    }
+
+    Feldspieler topScorer() {
+        Feldspieler top = null;
+        for (int i = 0; i < anzahl; i++) {
+            if (spieler[i] instanceof Feldspieler) {
+                Feldspieler f = (Feldspieler) spieler[i];
+                if (top == null || f.punkte() > top.punkte()) {
+                    top = f;
+                }
+            }
+        }
+        return top;
+    }
+
+    void ausgeben() {
+        System.out.println("Kader " + teamname + " (" + anzahl + " von " + MAX_SPIELER + " Plätzen)");
+        for (int i = 0; i < anzahl; i++) {
+            System.out.println("  " + spieler[i]);
+        }
+    }
+}
+
+class Feldspieler extends Spieler {
+    private int tore;
+    private int vorlagen;
+
+    Feldspieler(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    void vorlageGeben() {
+        vorlagen++;
+    }
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    @Override
+    String rolle() {
+        return "Feldspieler";
+    }
+
+    @Override
+    public String statistik() {
+        return "Tore: " + tore + "  Vorlagen: " + vorlagen + "  Punkte: " + punkte();
+    }
+}
+
+class Torhueter extends Spieler {
+    private int paraden;
+    private int gegentore;
+
+    Torhueter(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void parade() {
+        paraden++;
+    }
+
+    void gegentor() {
+        gegentore++;
+    }
+
+    double fangquote() {
+        int schuesse = paraden + gegentore;
+        if (schuesse == 0) {
+            return 0.0;
+        }
+        return Math.round(1000.0 * paraden / schuesse) / 10.0;
+    }
+
+    @Override
+    String rolle() {
+        return "Torhüter";
+    }
+
+    @Override
+    public String statistik() {
+        return "Paraden: " + paraden + "  Gegentore: " + gegentore + "  Fangquote: " + fangquote() + " %";
+    }
+}
+
+abstract class Person {
+    private static int anzahlPersonen = 0;
+    private final String name;
+
+    Person(String name) {
+        this.name = name;
+        anzahlPersonen++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    static int getAnzahlPersonen() {
+        return anzahlPersonen;
+    }
+
+    abstract String rolle();
+}
+
+interface Auswertbar {
+    String statistik();
+}
+
+abstract class Spieler extends Person implements Auswertbar {
+    private final int nummer;
+
+    Spieler(String name, int nummer) {
+        super(name);
+        this.nummer = nummer;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + nummer + " " + getName() + " (" + rolle() + ")  " + statistik();
+    }
+}
+=== tipp
+Schreibe für jeden Menüpunkt eine eigene kleine `static`-Methode wie `spielerAnlegen` – dann bleibt `main` übersichtlich.
+=== tipp
+In `spielerAnlegen`: `Spieler neu = torhueter ? new Torhueter(name, nummer) : new Feldspieler(name, nummer);`
+=== tipp
+Ob ein gefundener Spieler ein Feldspieler ist, prüfst du mit `instanceof` – das klappt auch, wenn `suche` `null` liefert (dann ist das Ergebnis `false`).

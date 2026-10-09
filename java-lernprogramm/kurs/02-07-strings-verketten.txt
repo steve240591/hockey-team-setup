@@ -1,0 +1,52 @@
+=== titel
+Strings verketten
+=== erklaerung
+Mit `+` werden Strings verbunden. Ist **ein** Operand ein String, wird der andere automatisch in Text umgewandelt (Skript S. 13):
+
+```java
+int i = 99;
+System.out.println("i hat den Wert " + i);   // i hat den Wert 99
+```
+
+Java rechnet **von links nach rechts**. Das führt zu einer berühmten Falle:
+
+```java
+System.out.println("Summe: " + 3 + 4);     // Summe: 34   (!)
+System.out.println("Summe: " + (3 + 4));   // Summe: 7
+```
+
+Skript S. 20: „Ist eine Berechnung dabei, muss diese geklammert werden!“
+=== aufgabe
+Schreibe `summenText(int a, int b)`.
+
+- `summenText(3, 4)` → `"3 + 4 = 7"`
+- `summenText(10, -2)` → `"10 + -2 = 8"`
+=== vorlage
+public class Main {
+
+    static String summenText(int a, int b) {
+        // Dein Code hier
+        return "";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(summenText(3, 4));
+    }
+}
+=== pruefung
+Check.gleich("summenText(3, 4)", "3 + 4 = 7", () -> Main.summenText(3, 4));
+Check.gleich("summenText(10, -2)", "10 + -2 = 8", () -> Main.summenText(10, -2));
+Check.gleich("summenText(0, 0)", "0 + 0 = 0", () -> Main.summenText(0, 0));
+=== loesung
+public class Main {
+
+    static String summenText(int a, int b) {
+        return a + " + " + b + " = " + (a + b);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(summenText(3, 4));
+    }
+}
+=== tipp
+Klammere die Rechnung: `(a + b)`

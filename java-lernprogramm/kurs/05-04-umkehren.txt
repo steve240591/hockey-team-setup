@@ -1,0 +1,63 @@
+=== titel
+Ein neues Array erzeugen
+=== erklaerung
+Mit `new int[laenge]` legst du ein neues Array an. Arrays sind **Referenzdaten** (Skript S. 11/12): Wenn du ein Array an eine Methode übergibst und es dort änderst, änderst du das **Original**!
+
+```java
+int[] a = {1, 2, 3};
+int[] b = a;      // b zeigt auf DASSELBE Array
+b[0] = 99;
+System.out.println(a[0]);   // 99
+```
+
+Willst du das Original behalten, musst du ein **neues** Array anlegen.
+=== aufgabe
+Schreibe `umkehren(int[] zahlen)`, die ein **neues** Array in umgekehrter Reihenfolge zurückgibt. Das Original darf nicht verändert werden.
+
+`{1, 2, 3}` → `{3, 2, 1}`
+=== vorlage
+public class Main {
+
+    static int[] umkehren(int[] zahlen) {
+        int[] ergebnis = new int[zahlen.length];
+        // Dein Code hier
+
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        int[] umgekehrt = umkehren(new int[] {1, 2, 3});
+        for (int z : umgekehrt) {
+            System.out.print(z + " ");
+        }
+    }
+}
+=== pruefung
+Check.gleich("umkehren({1, 2, 3})", new int[] {3, 2, 1}, () -> Main.umkehren(new int[] {1, 2, 3}));
+Check.gleich("umkehren({5, 8})", new int[] {8, 5}, () -> Main.umkehren(new int[] {5, 8}));
+Check.gleich("umkehren({})", new int[] {}, () -> Main.umkehren(new int[] {}));
+Check.gleich("Original bleibt unverändert", new int[] {1, 2, 3}, () -> {
+    int[] original = {1, 2, 3};
+    Main.umkehren(original);
+    return original;
+});
+=== loesung
+public class Main {
+
+    static int[] umkehren(int[] zahlen) {
+        int[] ergebnis = new int[zahlen.length];
+        for (int i = 0; i < zahlen.length; i++) {
+            ergebnis[i] = zahlen[zahlen.length - 1 - i];
+        }
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        int[] umgekehrt = umkehren(new int[] {1, 2, 3});
+        for (int z : umgekehrt) {
+            System.out.print(z + " ");
+        }
+    }
+}
+=== tipp
+Das Element an Position `i` im Ergebnis ist das Element an Position `zahlen.length - 1 - i` im Original.

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="token" content="__TOKEN__">
+  <title>Java-Trainer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c5cff'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="kopf">
+    <button class="icon-knopf nur-mobil" id="menueKnopf" aria-label="Kursmenü öffnen">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <a class="logo" href="#" id="logo" title="Kursübersicht">
+      <span class="logo-zeichen">{ }</span>
+      <span class="logo-text">Java-Trainer</span>
+    </a>
+    <div class="kopf-fortschritt" title="Gelöste Lektionen">
+      <div class="balken"><div class="balken-fuellung" id="gesamtBalken"></div></div>
+      <span id="gesamtText">0 / 0</span>
+    </div>
+    <div class="kopf-rechts">
+      <span class="pille pille-xp" title="Erfahrungspunkte"><span aria-hidden="true">⚡</span> <b id="xpWert">0</b> XP</span>
+      <span class="pille pille-serie" title="Lernserie: Tage in Folge mit mindestens einer gelösten Lektion"><span aria-hidden="true">🔥</span> <b id="serieWert">0</b></span>
+      <button class="icon-knopf" id="themaKnopf" aria-label="Hell/Dunkel umschalten" title="Hell/Dunkel">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="rahmen">
+    <nav class="seitenleiste" id="seitenleiste" aria-label="Kursinhalt"></nav>
+    <div class="abdunkler" id="abdunkler"></div>
+
+    <main class="inhalt" id="inhalt">
+      <!-- Kursübersicht -->
+      <section class="uebersicht" id="uebersicht" hidden></section>
+
+      <!-- Lektion -->
+      <section class="lektion" id="lektion" hidden>
+        <article class="lektion-text" id="lektionText"></article>
+
+        <section class="arbeitsbereich" id="arbeitsbereich">
+          <!-- Code-Aufgabe -->
+          <div class="editor-bereich" id="editorBereich">
+            <div class="editor-leiste">
+              <span class="datei-reiter"><span class="punkt"></span>Main.java</span>
+              <div class="editor-aktionen">
+                <button class="text-knopf" id="eingabeKnopf" title="Tastatureingabe für Scanner">⌨ Eingabe</button>
+                <button class="text-knopf" id="zuruecksetzenKnopf" title="Code auf die Vorlage zurücksetzen">↺ Zurücksetzen</button>
+              </div>
+            </div>
+            <div class="editor-huelle" id="editorHuelle"></div>
+            <div class="eingabe-feld" id="eingabeFeld" hidden>
+              <label for="eingabeText">Eingabe für <code>System.in</code> – eine Eingabe pro Zeile:</label>
+              <textarea id="eingabeText" rows="4" spellcheck="false" placeholder="z. B.&#10;1&#10;Plachta&#10;22"></textarea>
+            </div>
+            <div class="aktions-leiste">
+              <button class="knopf knopf-zweit" id="ausfuehrenKnopf" title="Programm starten (Strg+Umschalt+Enter)">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>
+                Ausführen
+              </button>
+              <button class="knopf knopf-haupt" id="pruefenKnopf" title="Lösung prüfen (Strg+Enter)">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Prüfen
+              </button>
+              <span class="tasten-hinweis">Strg+Enter</span>
+            </div>
+            <div class="konsole" id="konsole">
+              <div class="konsole-reiter" role="tablist">
+                <button role="tab" class="reiter aktiv" data-reiter="ergebnis" id="reiterErgebnis">Ergebnis</button>
+                <button role="tab" class="reiter" data-reiter="ausgabe" id="reiterAusgabe">Konsole</button>
+              </div>
+              <div class="konsole-inhalt" id="konsoleErgebnis"></div>
+              <pre class="konsole-inhalt konsole-ausgabe" id="konsoleAusgabe" hidden></pre>
+            </div>
+          </div>
+
+          <!-- Quiz -->
+          <div class="quiz-bereich" id="quizBereich" hidden></div>
+
+          <!-- Info -->
+          <div class="info-bereich" id="infoBereich" hidden></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Erfolg -->
+  <div class="overlay" id="erfolg" hidden>
+    <div class="erfolg-karte" role="dialog" aria-modal="true" aria-labelledby="erfolgTitel">
+      <canvas id="konfetti"></canvas>
+      <div class="erfolg-symbol" id="erfolgSymbol">✓</div>
+      <h2 id="erfolgTitel">Geschafft!</h2>
+      <p id="erfolgText"></p>
+      <div class="erfolg-xp" id="erfolgXp"></div>
+      <div class="erfolg-knoepfe">
+        <button class="knopf knopf-zweit" id="erfolgBleiben">Hier bleiben</button>
+        <button class="knopf knopf-haupt" id="erfolgWeiter">Weiter →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lösung -->
+  <div class="overlay" id="loesungDialog" hidden>
+    <div class="dialog-karte" role="dialog" aria-modal="true" aria-labelledby="loesungTitel">
+      <div class="dialog-kopf">
+        <h2 id="loesungTitel">Musterlösung</h2>
+        <button class="icon-knopf" id="loesungSchliessen" aria-label="Schließen">✕</button>
+      </div>
+      <p class="gedaempft">Vergleiche in Ruhe mit deinem Code. Oft gibt es mehrere richtige Lösungen.</p>
+      <pre class="code-block cm-s-trainer" id="loesungCode"></pre>
+      <div class="erfolg-knoepfe">
+        <button class="knopf knopf-zweit" id="loesungUebernehmen">In den Editor übernehmen</button>
+        <button class="knopf knopf-haupt" id="loesungOk">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="vendor/codemirror/codemirror.js"></script>
+  <script src="vendor/codemirror/clike.js"></script>
+  <script src="vendor/codemirror/matchbrackets.js"></script>
+  <script src="vendor/codemirror/closebrackets.js"></script>
+  <script src="vendor/codemirror/active-line.js"></script>
+  <script src="vendor/codemirror/runmode.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

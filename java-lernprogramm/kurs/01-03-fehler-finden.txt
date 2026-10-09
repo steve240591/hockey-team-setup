@@ -1,0 +1,45 @@
+=== titel
+Der Compiler ist dein Freund
+=== erklaerung
+Bevor ein Programm laufen kann, übersetzt der **Compiler** `javac` den Quelltext in Byte-Code (Skript S. 6). Findet er einen Fehler, bricht er ab und nennt dir **Zeile und Grund**.
+
+Die häufigsten Anfängerfehler:
+
+- Semikolon `;` vergessen
+- Groß-/Kleinschreibung: `system.out` statt `System.out`
+- Klammer `{ }` oder Anführungszeichen `"` nicht geschlossen
+
+Kommentare werden vom Compiler ignoriert (Skript S. 9):
+
+```java
+// Zeilenkommentar
+/* Kommentar über
+   mehrere Zeilen */
+```
+=== aufgabe
+Dieses Programm enthält **zwei Fehler**. Klicke auf **Ausführen**, lies die Fehlermeldungen und repariere das Programm. Es soll ausgeben:
+
+```
+Java ist case-sensitiv
+```
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        // Achtung: zwei Fehler!
+        system.out.println("Java ist case-sensitiv")
+    }
+}
+=== reparieren
+ja
+=== pruefung
+Check.ausgabe("Ausgabe stimmt", "Java ist case-sensitiv");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Java ist case-sensitiv");
+    }
+}
+=== tipp
+Ein Fehler steckt am Anfang der Zeile, einer am Ende.
+=== tipp
+`System` wird großgeschrieben, und jede Anweisung endet mit `;`.

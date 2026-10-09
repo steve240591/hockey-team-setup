@@ -1,0 +1,61 @@
+=== titel
+Zweidimensionale Arrays
+=== erklaerung
+Ein 2D-Array ist ein „Array von Arrays“ – wie eine Tabelle mit Zeilen und Spalten:
+
+```java
+int[][] tabelle = {
+    {1, 2, 3},     // Zeile 0
+    {4, 5, 6}      // Zeile 1
+};
+tabelle[1][2]          // 6  (Zeile 1, Spalte 2)
+tabelle.length         // 2  Zeilen
+tabelle[0].length      // 3  Spalten
+```
+
+Zum Durchlaufen brauchst du zwei verschachtelte Schleifen.
+=== aufgabe
+Schreibe `spaltenSummen(int[][] matrix)`, die die Summe jeder **Spalte** zurückgibt.
+
+```
+{{1, 2, 3},
+ {4, 5, 6}}   →   {5, 7, 9}
+```
+=== vorlage
+public class Main {
+
+    static int[] spaltenSummen(int[][] matrix) {
+        int[] summen = new int[matrix[0].length];
+        // Dein Code hier
+
+        return summen;
+    }
+
+    public static void main(String[] args) {
+        int[] s = spaltenSummen(new int[][] {{1, 2, 3}, {4, 5, 6}});
+        System.out.println(s[0] + " " + s[1] + " " + s[2]);
+    }
+}
+=== pruefung
+Check.gleich("spaltenSummen({{1,2,3},{4,5,6}})", new int[] {5, 7, 9}, () -> Main.spaltenSummen(new int[][] {{1, 2, 3}, {4, 5, 6}}));
+Check.gleich("spaltenSummen({{1},{2},{3}})", new int[] {6}, () -> Main.spaltenSummen(new int[][] {{1}, {2}, {3}}));
+=== loesung
+public class Main {
+
+    static int[] spaltenSummen(int[][] matrix) {
+        int[] summen = new int[matrix[0].length];
+        for (int zeile = 0; zeile < matrix.length; zeile++) {
+            for (int spalte = 0; spalte < matrix[zeile].length; spalte++) {
+                summen[spalte] += matrix[zeile][spalte];
+            }
+        }
+        return summen;
+    }
+
+    public static void main(String[] args) {
+        int[] s = spaltenSummen(new int[][] {{1, 2, 3}, {4, 5, 6}});
+        System.out.println(s[0] + " " + s[1] + " " + s[2]);
+    }
+}
+=== tipp
+Äußere Schleife über die Zeilen, innere über die Spalten: `summen[spalte] += matrix[zeile][spalte];`

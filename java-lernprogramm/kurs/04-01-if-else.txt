@@ -1,0 +1,60 @@
+=== titel
+Entscheidungen mit if
+=== erklaerung
+Mit `if` führt dein Programm Code nur aus, wenn eine Bedingung wahr ist (Skript S. 21):
+
+```java
+if (tore > 2) {
+    System.out.println("Hattrick!");
+} else if (tore > 0) {
+    System.out.println("Getroffen");
+} else {
+    System.out.println("Kein Tor");
+}
+```
+
+- Die Bedingung in den runden Klammern muss vom Typ `boolean` sein.
+- `else if` prüft weitere Fälle, `else` fängt alle übrigen ab.
+- Eine Methode darf mehrere `return`-Anweisungen haben – die erste, die erreicht wird, beendet die Methode.
+=== aufgabe
+Schreibe `ergebnis(int eigeneTore, int gegentore)`:
+
+- mehr eigene Tore → `"Sieg"`
+- weniger → `"Niederlage"`
+- gleich viele → `"Unentschieden"`
+=== vorlage
+public class Main {
+
+    static String ergebnis(int eigeneTore, int gegentore) {
+        // Dein Code hier
+        return "";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(ergebnis(4, 2));
+    }
+}
+=== pruefung
+Check.gleich("ergebnis(4, 2)", "Sieg", () -> Main.ergebnis(4, 2));
+Check.gleich("ergebnis(1, 3)", "Niederlage", () -> Main.ergebnis(1, 3));
+Check.gleich("ergebnis(2, 2)", "Unentschieden", () -> Main.ergebnis(2, 2));
+Check.gleich("ergebnis(0, 0)", "Unentschieden", () -> Main.ergebnis(0, 0));
+=== loesung
+public class Main {
+
+    static String ergebnis(int eigeneTore, int gegentore) {
+        if (eigeneTore > gegentore) {
+            return "Sieg";
+        } else if (eigeneTore < gegentore) {
+            return "Niederlage";
+        } else {
+            return "Unentschieden";
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(ergebnis(4, 2));
+    }
+}
+=== tipp
+Drei Fälle: `if (...) { return "Sieg"; } else if (...) { ... } else { ... }`

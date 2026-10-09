@@ -1,0 +1,252 @@
+=== titel
+Schnittstellen (Interfaces)
+=== erklaerung
+Eine **Schnittstelle** legt fest, welche Methoden eine Klasse haben **muss** – aber nicht, wie sie funktionieren (Skript S. 40):
+
+```java
+interface Bewegung {
+    void setPos(int x, int y);
+    void moveX(int m);
+    void moveY(int m);
+    int getX();
+    int getY();
+}
+```
+
+Eine Klasse übernimmt sie mit `implements` und muss alle Methoden umsetzen:
+
+```java
+class BewKreis extends KreisM implements Bewegung { ... }
+```
+
+- Eine Klasse kann nur von **einer** Klasse erben, aber **mehrere** Interfaces implementieren. Schnittstellen ersetzen so die Mehrfachvererbung.
+- Interface-Methoden sind automatisch `public` – in der Klasse musst du sie deshalb auch `public` schreiben.
+=== aufgabe
+`BewKreis` ist ein `KreisF` **und** implementiert `Bewegung`. `setPos`, `getX` und `getY` erbt er schon von `Figur` – es fehlen nur:
+
+- `moveX(int mx)` – verschiebt um `mx` nach rechts
+- `moveY(int my)` – verschiebt um `my` nach unten
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        BewKreis k = new BewKreis(1);
+        k.setPos(2, 2);
+        k.moveX(3);
+        System.out.println(k.getX() + "," + k.getY());
+    }
+}
+
+interface Bewegung {
+    void setPos(int x, int y);
+
+    void moveX(int m);
+
+    void moveY(int m);
+
+    int getX();
+
+    int getY();
+}
+
+class BewKreis extends KreisF implements Bewegung {
+
+    BewKreis(double r) {
+        super(r);
+    }
+
+    public void moveX(int mx) {
+        // Dein Code hier
+    }
+
+    public void moveY(int my) {
+        // Dein Code hier
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    public int getY() {
+        return yp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== pruefung
+Check.gleich("moveX(3) von x = 2", 5, () -> {
+    BewKreis k = new BewKreis(1);
+    k.setPos(2, 2);
+    k.moveX(3);
+    return k.getX();
+});
+Check.gleich("moveY(-4) von y = 2", -2, () -> {
+    BewKreis k = new BewKreis(1);
+    k.setPos(2, 2);
+    k.moveY(-4);
+    return k.getY();
+});
+Check.gleich("BewKreis ist auch eine Figur", Math.PI, () -> {
+    Figur f = new BewKreis(1);
+    return f.flaeche();
+});
+Check.gleich("BewKreis ist eine Bewegung", 1, () -> {
+    Bewegung b = new BewKreis(1);
+    b.moveX(1);
+    return b.getX();
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        BewKreis k = new BewKreis(1);
+        k.setPos(2, 2);
+        k.moveX(3);
+        System.out.println(k.getX() + "," + k.getY());
+    }
+}
+
+interface Bewegung {
+    void setPos(int x, int y);
+
+    void moveX(int m);
+
+    void moveY(int m);
+
+    int getX();
+
+    int getY();
+}
+
+class BewKreis extends KreisF implements Bewegung {
+
+    BewKreis(double r) {
+        super(r);
+    }
+
+    public void moveX(int mx) {
+        xp = xp + mx;
+    }
+
+    public void moveY(int my) {
+        yp = yp + my;
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    public int getY() {
+        return yp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== tipp
+`xp` und `yp` sind in `Figur` `protected` – du kannst sie in `BewKreis` direkt ändern: `xp = xp + mx;`

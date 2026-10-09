@@ -1,0 +1,56 @@
+=== titel
+switch als Ausdruck
+=== erklaerung
+Moderne `switch`-Ausdrücke mit `->` liefern direkt einen Wert und brauchen **kein break** (Skript S. 22/23). Mehrere Werte trennst du mit Komma:
+
+```java
+String gruss = switch (stunde) {
+    case 22, 23, 0, 1 -> "Gute Nacht!";
+    case 6, 7, 8 -> "Guten Morgen!";
+    default -> "Hallo!";
+};
+```
+
+Auch Strings sind als Wert erlaubt. Beachte das Semikolon nach der schließenden Klammer!
+=== aufgabe
+Schreibe `tagesart(String tag)` mit einem switch-Ausdruck:
+
+- `"Samstag"`, `"Sonntag"` → `"Wochenende"`
+- `"Montag"` bis `"Freitag"` → `"Werktag"`
+- alles andere → `"unbekannt"`
+=== vorlage
+public class Main {
+
+    static String tagesart(String tag) {
+        // Dein Code hier
+        return "";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(tagesart("Sonntag"));
+    }
+}
+=== pruefung
+Check.gleich("tagesart(\"Sonntag\")", "Wochenende", () -> Main.tagesart("Sonntag"));
+Check.gleich("tagesart(\"Samstag\")", "Wochenende", () -> Main.tagesart("Samstag"));
+Check.gleich("tagesart(\"Mittwoch\")", "Werktag", () -> Main.tagesart("Mittwoch"));
+Check.gleich("tagesart(\"Montag\")", "Werktag", () -> Main.tagesart("Montag"));
+Check.gleich("tagesart(\"Feiertag\")", "unbekannt", () -> Main.tagesart("Feiertag"));
+Check.quelltextEnthaelt("switch mit -> wird verwendet", "->");
+=== loesung
+public class Main {
+
+    static String tagesart(String tag) {
+        return switch (tag) {
+            case "Samstag", "Sonntag" -> "Wochenende";
+            case "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag" -> "Werktag";
+            default -> "unbekannt";
+        };
+    }
+
+    public static void main(String[] args) {
+        System.out.println(tagesart("Sonntag"));
+    }
+}
+=== tipp
+`return switch (tag) { case "Samstag", "Sonntag" -> "Wochenende"; ... };`

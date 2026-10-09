@@ -1,0 +1,325 @@
+=== titel
+Projekt 1/3: Die Spielerklassen
+=== erklaerung
+Im Abschlussprojekt baust du in drei Schritten eine **Kaderverwaltung** für eine Eishockeymannschaft – ein echtes Konsolenprogramm mit Menü. Dabei kommt alles aus dem Skript zusammen.
+
+So hängen die Klassen zusammen:
+
+```
+        «abstract» Person                  «interface» Auswertbar
+        name, anzahlPersonen (static)       statistik()
+        rolle() {abstract}
+               △                                  △
+               │                                  ┆ implements
+        «abstract» Spieler ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
+        nummer, toString()
+          △              △
+     Feldspieler      Torhueter
+     tore, vorlagen   paraden, gegentore
+```
+
+`Person`, `Auswertbar` und `Spieler` sind schon fertig. Schau sie dir genau an: abstrakte Klasse, Klassenvariable, Interface, `super(...)` und das überschriebene `toString()`, das die abstrakten Methoden `rolle()` und `statistik()` aufruft.
+=== aufgabe
+Vervollständige `Feldspieler` und `Torhueter`:
+
+**Feldspieler**
+- `torErzielen()`, `vorlageGeben()`, `punkte()` (Tore + Vorlagen)
+- `rolle()` → `"Feldspieler"`
+- `statistik()` → `"Tore: 2  Vorlagen: 1  Punkte: 3"` (je **zwei** Leerzeichen zwischen den Teilen)
+
+**Torhueter**
+- `parade()`, `gegentor()`
+- `fangquote()` in Prozent: Paraden / (Paraden + Gegentore) · 100, auf **eine** Nachkommastelle gerundet. Ohne Schüsse: `0.0`
+- `rolle()` → `"Torhüter"`
+- `statistik()` → `"Paraden: 2  Gegentore: 1  Fangquote: 66.7 %"`
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Feldspieler f = new Feldspieler("Plachta", 22);
+        f.torErzielen();
+        System.out.println(f);
+        Torhueter t = new Torhueter("Brückmann", 30);
+        t.parade();
+        t.parade();
+        t.gegentor();
+        System.out.println(t);
+    }
+}
+
+class Feldspieler extends Spieler {
+    private int tore;
+    private int vorlagen;
+
+    Feldspieler(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void torErzielen() {
+        // Dein Code hier
+    }
+
+    void vorlageGeben() {
+        // Dein Code hier
+    }
+
+    int punkte() {
+        // Dein Code hier
+        return 0;
+    }
+
+    @Override
+    String rolle() {
+        // Dein Code hier
+        return "";
+    }
+
+    @Override
+    public String statistik() {
+        // Dein Code hier
+        return "";
+    }
+}
+
+class Torhueter extends Spieler {
+    private int paraden;
+    private int gegentore;
+
+    Torhueter(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void parade() {
+        // Dein Code hier
+    }
+
+    void gegentor() {
+        // Dein Code hier
+    }
+
+    double fangquote() {
+        // Dein Code hier
+        return 0;
+    }
+
+    @Override
+    String rolle() {
+        // Dein Code hier
+        return "";
+    }
+
+    @Override
+    public String statistik() {
+        // Dein Code hier
+        return "";
+    }
+}
+
+abstract class Person {
+    private static int anzahlPersonen = 0;
+    private final String name;
+
+    Person(String name) {
+        this.name = name;
+        anzahlPersonen++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    static int getAnzahlPersonen() {
+        return anzahlPersonen;
+    }
+
+    abstract String rolle();
+}
+
+interface Auswertbar {
+    String statistik();
+}
+
+abstract class Spieler extends Person implements Auswertbar {
+    private final int nummer;
+
+    Spieler(String name, int nummer) {
+        super(name);
+        this.nummer = nummer;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + nummer + " " + getName() + " (" + rolle() + ")  " + statistik();
+    }
+}
+=== pruefung
+Check.gleich("Feldspieler: punkte() nach 2 Toren und 1 Vorlage", 3, () -> {
+    Feldspieler f = new Feldspieler("Plachta", 22);
+    f.torErzielen();
+    f.torErzielen();
+    f.vorlageGeben();
+    return f.punkte();
+});
+Check.gleich("Feldspieler: statistik()", "Tore: 2  Vorlagen: 1  Punkte: 3", () -> {
+    Feldspieler f = new Feldspieler("Plachta", 22);
+    f.torErzielen();
+    f.torErzielen();
+    f.vorlageGeben();
+    return f.statistik();
+});
+Check.gleich("Feldspieler: toString()", "#22 Plachta (Feldspieler)  Tore: 0  Vorlagen: 0  Punkte: 0", () -> new Feldspieler("Plachta", 22).toString());
+Check.gleich("Torhüter: fangquote() ohne Schüsse", 0.0, () -> new Torhueter("X", 1).fangquote());
+Check.gleich("Torhüter: fangquote() bei 2 Paraden, 1 Gegentor", 66.7, () -> {
+    Torhueter t = new Torhueter("X", 1);
+    t.parade();
+    t.parade();
+    t.gegentor();
+    return t.fangquote();
+});
+Check.gleich("Torhüter: fangquote() bei 9 Paraden, 1 Gegentor", 90.0, () -> {
+    Torhueter t = new Torhueter("X", 1);
+    for (int i = 0; i < 9; i++) {
+        t.parade();
+    }
+    t.gegentor();
+    return t.fangquote();
+});
+Check.gleich("Torhüter: toString()", "#30 Brückmann (Torhüter)  Paraden: 1  Gegentore: 0  Fangquote: 100.0 %", () -> {
+    Torhueter t = new Torhueter("Brückmann", 30);
+    t.parade();
+    return t.toString();
+});
+Check.gleich("Klassenvariable zählt jede neue Person", 2, () -> {
+    int vorher = Person.getAnzahlPersonen();
+    new Feldspieler("A", 1);
+    new Torhueter("B", 2);
+    return Person.getAnzahlPersonen() - vorher;
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Feldspieler f = new Feldspieler("Plachta", 22);
+        f.torErzielen();
+        System.out.println(f);
+        Torhueter t = new Torhueter("Brückmann", 30);
+        t.parade();
+        t.parade();
+        t.gegentor();
+        System.out.println(t);
+    }
+}
+
+class Feldspieler extends Spieler {
+    private int tore;
+    private int vorlagen;
+
+    Feldspieler(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    void vorlageGeben() {
+        vorlagen++;
+    }
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    @Override
+    String rolle() {
+        return "Feldspieler";
+    }
+
+    @Override
+    public String statistik() {
+        return "Tore: " + tore + "  Vorlagen: " + vorlagen + "  Punkte: " + punkte();
+    }
+}
+
+class Torhueter extends Spieler {
+    private int paraden;
+    private int gegentore;
+
+    Torhueter(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void parade() {
+        paraden++;
+    }
+
+    void gegentor() {
+        gegentore++;
+    }
+
+    double fangquote() {
+        int schuesse = paraden + gegentore;
+        if (schuesse == 0) {
+            return 0.0;
+        }
+        return Math.round(1000.0 * paraden / schuesse) / 10.0;
+    }
+
+    @Override
+    String rolle() {
+        return "Torhüter";
+    }
+
+    @Override
+    public String statistik() {
+        return "Paraden: " + paraden + "  Gegentore: " + gegentore + "  Fangquote: " + fangquote() + " %";
+    }
+}
+
+abstract class Person {
+    private static int anzahlPersonen = 0;
+    private final String name;
+
+    Person(String name) {
+        this.name = name;
+        anzahlPersonen++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    static int getAnzahlPersonen() {
+        return anzahlPersonen;
+    }
+
+    abstract String rolle();
+}
+
+interface Auswertbar {
+    String statistik();
+}
+
+abstract class Spieler extends Person implements Auswertbar {
+    private final int nummer;
+
+    Spieler(String name, int nummer) {
+        super(name);
+        this.nummer = nummer;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + nummer + " " + getName() + " (" + rolle() + ")  " + statistik();
+    }
+}
+=== tipp
+Für `statistik()`: `"Tore: " + tore + "  Vorlagen: " + vorlagen + "  Punkte: " + punkte()`
+=== tipp
+Fangquote: Achtung Ganzzahldivision! Rechne mit `1000.0 * paraden / schuesse`, runde mit `Math.round(...)` und teile durch `10.0`.

@@ -1,0 +1,28 @@
+=== titel
+Quiz: Geteilt oder eigen?
+=== typ
+quiz
+=== frage
+```java
+class Zaehler {
+    static int gesamt = 0;
+    int eigen = 0;
+    void klick() { gesamt++; eigen++; }
+}
+// in main:
+Zaehler a = new Zaehler();
+Zaehler b = new Zaehler();
+a.klick();
+a.klick();
+b.klick();
+System.out.println(Zaehler.gesamt + " " + b.eigen);
+```
+
+Was wird ausgegeben?
+=== optionen
+- 1 1
+- 2 1
++ 3 1
+- 3 3
+=== nachher
+`gesamt` ist eine **Klassenvariable** – alle drei Klicks zählen dieselbe Variable hoch: 3. `eigen` ist eine **Instanzvariable** – `b` wurde nur einmal geklickt: 1.

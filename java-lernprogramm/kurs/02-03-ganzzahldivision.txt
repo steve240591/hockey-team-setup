@@ -1,0 +1,51 @@
+=== titel
+Ganzzahldivision und Rest
+=== erklaerung
+Teilst du zwei **ganze Zahlen**, ist auch das Ergebnis ganzzahlig – der Rest fällt weg (Skript S. 20):
+
+```java
+System.out.println(7 / 2);    // 3   (nicht 3.5!)
+System.out.println(7 % 2);    // 1   (Rest der Division)
+System.out.println(125 / 60); // 2
+System.out.println(125 % 60); // 5
+```
+
+Der **Restwert-Operator** `%` ist super praktisch, z. B. für Umrechnungen von Minuten in Stunden.
+=== aufgabe
+Schreibe `minutenAlsText`, die Minuten in Stunden und Minuten umrechnet.
+
+- `minutenAlsText(125)` → `"2 h 5 min"`
+- `minutenAlsText(59)` → `"0 h 59 min"`
+=== vorlage
+public class Main {
+
+    static String minutenAlsText(int minuten) {
+        // Dein Code hier
+        return "";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(minutenAlsText(125));
+    }
+}
+=== pruefung
+Check.gleich("minutenAlsText(125)", "2 h 5 min", () -> Main.minutenAlsText(125));
+Check.gleich("minutenAlsText(59)", "0 h 59 min", () -> Main.minutenAlsText(59));
+Check.gleich("minutenAlsText(180)", "3 h 0 min", () -> Main.minutenAlsText(180));
+=== loesung
+public class Main {
+
+    static String minutenAlsText(int minuten) {
+        int stunden = minuten / 60;
+        int rest = minuten % 60;
+        return stunden + " h " + rest + " min";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(minutenAlsText(125));
+    }
+}
+=== tipp
+Stunden: `minuten / 60`, übrige Minuten: `minuten % 60`
+=== tipp
+Den Text baust du mit `+` zusammen: `stunden + " h " + rest + " min"`

@@ -1,0 +1,18 @@
+=== titel
+Quiz: Inkrement
+=== typ
+quiz
+=== frage
+```java
+int a = 5;
+int b = a++ + ++a;
+```
+
+Welchen Wert hat `b`?
+=== optionen
+- 10
+- 11
++ 12
+- 13
+=== nachher
+`a++` (Postnotation) liefert erst den **alten** Wert 5 und erhöht danach auf 6. `++a` (Pränotation) erhöht **zuerst** auf 7 und liefert 7. Also `5 + 7 = 12` (Skript S. 20).

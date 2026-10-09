@@ -1,0 +1,63 @@
+=== titel
+Bitoperatoren
+=== erklaerung
+Bitoperatoren arbeiten mit der **Binärdarstellung** einer Zahl (Skript S. 20):
+
+```java
+int a = 12;        // 1100
+int b = 10;        // 1010
+System.out.println(a & b);   //  8 = 1000  (UND)
+System.out.println(a | b);   // 14 = 1110  (ODER)
+System.out.println(a ^ b);   //  6 = 0110  (EXKLUSIV ODER)
+System.out.println(1 << 3);  //  8 = 1000  (links schieben = mal 2 hoch 3)
+System.out.println(8 >> 2);  //  2 = 0010  (rechts schieben)
+```
+=== aufgabe
+1. `malZweiHoch(int x, int n)` multipliziert `x` mit 2ⁿ – nur mit dem Schiebe-Operator `<<`. Beispiel: `(3, 2)` → `12`
+2. `istBitGesetzt(int zahl, int position)`: Ist das Bit an der Stelle gesetzt? (Stelle 0 = ganz rechts)
+   `5` ist binär `101` → Stelle 0: `true`, Stelle 1: `false`, Stelle 2: `true`
+=== vorlage
+public class Main {
+
+    static int malZweiHoch(int x, int n) {
+        // Dein Code hier
+        return 0;
+    }
+
+    static boolean istBitGesetzt(int zahl, int position) {
+        // Dein Code hier
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(malZweiHoch(3, 2));
+        System.out.println(istBitGesetzt(5, 2));
+    }
+}
+=== pruefung
+Check.gleich("malZweiHoch(3, 2)", 12, () -> Main.malZweiHoch(3, 2));
+Check.gleich("malZweiHoch(1, 10)", 1024, () -> Main.malZweiHoch(1, 10));
+Check.gleich("istBitGesetzt(5, 0)", true, () -> Main.istBitGesetzt(5, 0));
+Check.gleich("istBitGesetzt(5, 1)", false, () -> Main.istBitGesetzt(5, 1));
+Check.gleich("istBitGesetzt(5, 2)", true, () -> Main.istBitGesetzt(5, 2));
+Check.quelltextEnthaelt("Schiebe-Operator << wird verwendet", "<<");
+=== loesung
+public class Main {
+
+    static int malZweiHoch(int x, int n) {
+        return x << n;
+    }
+
+    static boolean istBitGesetzt(int zahl, int position) {
+        return ((zahl >> position) & 1) == 1;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(malZweiHoch(3, 2));
+        System.out.println(istBitGesetzt(5, 2));
+    }
+}
+=== tipp
+Für das Bit: Schiebe die Zahl um `position` Stellen nach rechts. Dann steht das gesuchte Bit ganz rechts.
+=== tipp
+`(zahl >> position) & 1` ist entweder 0 oder 1.

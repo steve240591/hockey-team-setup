@@ -1,0 +1,13 @@
+=== titel
+Quiz: super und super()
+=== typ
+quiz
+=== frage
+Welche Aussage ist richtig?
+=== optionen
+- super() ruft eine überschriebene Methode der Basisklasse auf und darf überall stehen.
++ super() ruft den Konstruktor der Basisklasse auf und muss die erste Anweisung im Konstruktor sein.
+- super.flaeche() ruft den Konstruktor von flaeche auf.
+- super funktioniert nur in abstrakten Klassen.
+=== nachher
+`super()` ruft den **Konstruktor** der Basisklasse auf – als **erste Zeile** des Konstruktors. `super.methode()` ruft die (überschriebene) **Methode** der Basisklasse auf (Skript S. 34).

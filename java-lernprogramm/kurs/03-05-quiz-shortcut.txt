@@ -1,0 +1,19 @@
+=== titel
+Quiz: Short-Cut
+=== typ
+quiz
+=== frage
+```java
+int z = 0;
+boolean ok = (z != 0) && (10 / z > 1);
+System.out.println(ok);
+```
+
+Was passiert?
+=== optionen
++ Es wird false ausgegeben.
+- Es wird true ausgegeben.
+- Das Programm stürzt mit einer Division durch 0 ab.
+- Der Compiler meldet einen Fehler.
+=== nachher
+`z != 0` ist `false`. Bei `&&` steht das Ergebnis damit fest – die rechte Seite `10 / z` wird **gar nicht ausgewertet**. Mit `&` statt `&&` würden beide Seiten ausgewertet, und das Programm würde mit `ArithmeticException: / by zero` abstürzen (Skript S. 20).

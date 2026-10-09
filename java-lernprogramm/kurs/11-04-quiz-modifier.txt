@@ -1,0 +1,20 @@
+=== titel
+Quiz: Sichtbarkeit
+=== typ
+quiz
+=== frage
+Eine Instanzvariable soll in der eigenen Klasse **und in allen Subklassen** sichtbar sein, aber nicht für beliebige andere Klassen in anderen Paketen. Welchen Modifier nimmst du?
+=== optionen
+- public
++ protected
+- private
+- static
+=== nachher
+Von offen nach geschlossen (Skript S. 41/42):
+
+- `public` – überall sichtbar
+- `protected` – eigenes Paket und alle Subklassen
+- kein Modifier – nur im eigenen Paket
+- `private` – nur in der eigenen Klasse
+
+`static` regelt nicht die Sichtbarkeit, sondern macht eine Klassenvariable daraus.

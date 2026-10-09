@@ -1,0 +1,23 @@
+=== titel
+Quiz: Interface-Methoden
+=== typ
+quiz
+=== frage
+```java
+interface Bewegung { void moveX(int m); }
+
+class Puck implements Bewegung {
+    void moveX(int m) { }
+}
+```
+
+Warum meldet der Compiler hier einen Fehler?
+=== optionen
+- Weil moveX keinen Rückgabewert hat.
+- Weil Puck nicht von einer Klasse erbt.
++ Weil Interface-Methoden public sind und moveX in Puck auch public sein muss.
+- Weil Interfaces keine Parameter haben dürfen.
+=== nachher
+Methoden in Interfaces sind automatisch `public`. Beim Implementieren darf man die Sichtbarkeit nicht einschränken. Der Compiler meldet: *Versuch, niedrigere Zugriffsberechtigungen zuzuweisen. War public.*
+
+Ergänzung zum Skript (S. 40): Seit Java 8 dürfen Interfaces zusätzlich `default`- und `static`-Methoden **mit** Rumpf enthalten.

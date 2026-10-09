@@ -1,0 +1,63 @@
+=== titel
+Die do-while-Schleife
+=== erklaerung
+`do-while` prüft die Bedingung erst **am Ende** – der Block läuft also **mindestens einmal** (Skript S. 22):
+
+```java
+int j = 1;
+do {
+    System.out.println(j++);
+} while (j <= 10);
+```
+
+Das ist genau richtig, wenn etwas auf jeden Fall einmal passieren soll – z. B. ein Menü anzeigen oder eine Ziffer zählen.
+=== aufgabe
+Schreibe `anzahlStellen(int zahl)` mit einer `do-while`-Schleife: Wie viele Ziffern hat die Zahl?
+
+- `12345` → `5`
+- `7` → `1`
+- `0` → `1`  ← hier zeigt sich, warum do-while passt!
+- `-42` → `2`
+=== vorlage
+public class Main {
+
+    static int anzahlStellen(int zahl) {
+        int stellen = 0;
+        // Dein Code hier
+
+        return stellen;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(anzahlStellen(12345));
+    }
+}
+=== pruefung
+Check.gleich("anzahlStellen(12345)", 5, () -> Main.anzahlStellen(12345));
+Check.gleich("anzahlStellen(7)", 1, () -> Main.anzahlStellen(7));
+Check.gleich("anzahlStellen(0)", 1, () -> Main.anzahlStellen(0));
+Check.gleich("anzahlStellen(-42)", 2, () -> Main.anzahlStellen(-42));
+Check.quelltextEnthaelt("do-while wird verwendet", "\\bdo\\b");
+=== loesung
+public class Main {
+
+    static int anzahlStellen(int zahl) {
+        if (zahl < 0) {
+            zahl = -zahl;
+        }
+        int stellen = 0;
+        do {
+            stellen++;
+            zahl = zahl / 10;
+        } while (zahl > 0);
+        return stellen;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(anzahlStellen(12345));
+    }
+}
+=== tipp
+`zahl / 10` entfernt die letzte Ziffer. Zähle, wie oft du das machen kannst.
+=== tipp
+Negative Zahlen vorher positiv machen: `if (zahl < 0) { zahl = -zahl; }`

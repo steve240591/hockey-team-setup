@@ -1,0 +1,57 @@
+=== titel
+String-Arrays und args
+=== erklaerung
+Erinnerst du dich an `main(String[] args)`? `args` ist ein **String-Array** mit den Werten, die beim Programmstart angegeben werden (Skript S. 14/15):
+
+```
+java Eingabe abc 123 xyz
+```
+
+Dann ist `args` gleich `{"abc", "123", "xyz"}`.
+
+Beim Zusammensetzen von Texten ist das „Trennzeichen-Problem“ typisch: Zwischen die Elemente soll ein `-`, aber nicht davor und nicht dahinter.
+=== aufgabe
+Schreibe `verbinde(String[] eingabe)`, die alle Einträge mit `-` verbindet.
+
+- `{"abc", "123", "xyz"}` → `"abc-123-xyz"`
+- `{"solo"}` → `"solo"`
+- `{}` → `""`
+=== vorlage
+public class Main {
+
+    static String verbinde(String[] eingabe) {
+        String ergebnis = "";
+        // Dein Code hier
+
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(verbinde(new String[] {"abc", "123", "xyz"}));
+    }
+}
+=== pruefung
+Check.gleich("verbinde({\"abc\", \"123\", \"xyz\"})", "abc-123-xyz", () -> Main.verbinde(new String[] {"abc", "123", "xyz"}));
+Check.gleich("verbinde({\"solo\"})", "solo", () -> Main.verbinde(new String[] {"solo"}));
+Check.gleich("verbinde({})", "", () -> Main.verbinde(new String[] {}));
+Check.quelltextOhne("ohne String.join (selbst programmieren!)", "\\.join\\s*\\(");
+=== loesung
+public class Main {
+
+    static String verbinde(String[] eingabe) {
+        String ergebnis = "";
+        for (int i = 0; i < eingabe.length; i++) {
+            if (i > 0) {
+                ergebnis += "-";
+            }
+            ergebnis += eingabe[i];
+        }
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(verbinde(new String[] {"abc", "123", "xyz"}));
+    }
+}
+=== tipp
+Füge das `-` nur **vor** einem Element ein, und zwar nicht beim ersten (`i > 0`).

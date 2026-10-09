@@ -1,0 +1,119 @@
+=== titel
+Der Kopierkonstruktor
+=== erklaerung
+Im Skript (S. 30) hat `Fahrrad4` einen Konstruktor, der ein **anderes Fahrrad** als Vorlage bekommt:
+
+```java
+public Fahrrad4(Fahrrad4 f) {
+    this(f.eigentuemer, f.farbe);   // ruft den Konstruktor (String, String) auf
+    this.geschw = f.geschw;
+}
+```
+
+- `this(...)` ruft einen **anderen Konstruktor derselben Klasse** auf. Das muss die **erste** Anweisung sein.
+- Innerhalb der Klasse darfst du auch auf die `private`-Variablen eines **anderen** Objekts derselben Klasse zugreifen.
+
+So entsteht ein **neues, unabhängiges** Objekt mit denselben Werten.
+=== aufgabe
+Schreibe den Kopierkonstruktor `KaderSpieler(KaderSpieler s)`. Er übernimmt Name, Nummer **und** Tore. Verwende `this(...)`.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler original = new KaderSpieler("Seider", 53);
+        original.torErzielen();
+        KaderSpieler kopie = new KaderSpieler(original);
+        System.out.println(kopie.getName() + " " + kopie.getTore());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+    }
+
+    KaderSpieler(KaderSpieler s) {
+        // Dein Code hier
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    int getTore() {
+        return tore;
+    }
+}
+=== pruefung
+Check.gleich("Kopie hat denselben Namen", "Seider", () -> new KaderSpieler(new KaderSpieler("Seider", 53)).getName());
+Check.gleich("Kopie hat dieselbe Nummer", 53, () -> new KaderSpieler(new KaderSpieler("Seider", 53)).getNummer());
+Check.gleich("Kopie übernimmt die Tore", 2, () -> {
+    KaderSpieler original = new KaderSpieler("Seider", 53);
+    original.torErzielen();
+    original.torErzielen();
+    return new KaderSpieler(original).getTore();
+});
+Check.gleich("Kopie ist unabhängig vom Original", 0, () -> {
+    KaderSpieler original = new KaderSpieler("Seider", 53);
+    KaderSpieler kopie = new KaderSpieler(original);
+    kopie.torErzielen();
+    return original.getTore();
+});
+Check.quelltextEnthaelt("this(...) wird verwendet", "this\\s*\\(");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler original = new KaderSpieler("Seider", 53);
+        original.torErzielen();
+        KaderSpieler kopie = new KaderSpieler(original);
+        System.out.println(kopie.getName() + " " + kopie.getTore());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+    }
+
+    KaderSpieler(KaderSpieler s) {
+        this(s.name, s.nummer);
+        this.tore = s.tore;
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    int getTore() {
+        return tore;
+    }
+}
+=== tipp
+Erste Zeile: `this(s.name, s.nummer);`
+=== tipp
+Danach noch die Tore übernehmen: `this.tore = s.tore;`

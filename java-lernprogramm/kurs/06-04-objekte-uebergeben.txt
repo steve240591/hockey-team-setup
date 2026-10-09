@@ -1,0 +1,120 @@
+=== titel
+Objekte als Parameter und Rückgabewert
+=== erklaerung
+Methoden können Objekte bekommen und zurückgeben – genau wie Zahlen:
+
+```java
+static Fahrrad neuesRad(String farbe) {
+    Fahrrad f = new Fahrrad();
+    f.farbe = farbe;
+    return f;
+}
+```
+
+**Verschachtelte Methodenaufrufe** (Skript S. 27) werden von links nach rechts ausgewertet. Liefert eine Methode einen String, kannst du direkt eine String-Methode anhängen:
+
+```java
+int laenge = xRad.liefereEigentuemer().length();
+```
+=== aufgabe
+1. `erzeugeSpieler(String name, int nummer)` erzeugt einen neuen Spieler, setzt Name und Nummer und gibt ihn zurück.
+2. `namensLaenge(Spieler s)` liefert die Länge des Namens – in **einer** Zeile mit `liefereName()`.
+3. `besserer(Spieler a, Spieler b)` gibt den Spieler mit mehr Punkten zurück. Bei Gleichstand gewinnt `a`.
+=== vorlage
+public class Main {
+
+    static Spieler erzeugeSpieler(String name, int nummer) {
+        // Dein Code hier
+        return null;
+    }
+
+    static int namensLaenge(Spieler s) {
+        // Dein Code hier
+        return 0;
+    }
+
+    static Spieler besserer(Spieler a, Spieler b) {
+        // Dein Code hier
+        return null;
+    }
+
+    public static void main(String[] args) {
+        Spieler s = erzeugeSpieler("Ovechkin", 8);
+        System.out.println(namensLaenge(s));
+    }
+}
+
+class Spieler {
+    String name;
+    int nummer;
+    int tore;
+    int vorlagen;
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    String liefereName() {
+        return this.name;
+    }
+}
+=== pruefung
+Check.gleich("erzeugeSpieler: Name gesetzt", "Ovechkin", () -> Main.erzeugeSpieler("Ovechkin", 8).name);
+Check.gleich("erzeugeSpieler: Nummer gesetzt", 8, () -> Main.erzeugeSpieler("Ovechkin", 8).nummer);
+Check.gleich("namensLaenge(Crosby)", 6, () -> {
+    Spieler s = new Spieler();
+    s.name = "Crosby";
+    return Main.namensLaenge(s);
+});
+Spieler a = new Spieler();
+a.tore = 3;
+Spieler b = new Spieler();
+b.tore = 1;
+b.vorlagen = 4;
+Spieler c = new Spieler();
+c.vorlagen = 3;
+Check.gleich("besserer(a, b): b hat mehr Punkte", true, () -> Main.besserer(a, b) == b);
+Check.gleich("besserer(b, a): b hat mehr Punkte", true, () -> Main.besserer(b, a) == b);
+Check.gleich("besserer(a, c): Gleichstand -> a", true, () -> Main.besserer(a, c) == a);
+=== loesung
+public class Main {
+
+    static Spieler erzeugeSpieler(String name, int nummer) {
+        Spieler s = new Spieler();
+        s.name = name;
+        s.nummer = nummer;
+        return s;
+    }
+
+    static int namensLaenge(Spieler s) {
+        return s.liefereName().length();
+    }
+
+    static Spieler besserer(Spieler a, Spieler b) {
+        return b.punkte() > a.punkte() ? b : a;
+    }
+
+    public static void main(String[] args) {
+        Spieler s = erzeugeSpieler("Ovechkin", 8);
+        System.out.println(namensLaenge(s));
+    }
+}
+
+class Spieler {
+    String name;
+    int nummer;
+    int tore;
+    int vorlagen;
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    String liefereName() {
+        return this.name;
+    }
+}
+=== tipp
+`return s.liefereName().length();`
+=== tipp
+Für `besserer`: `return b.punkte() > a.punkte() ? b : a;`

@@ -1,0 +1,23 @@
+=== titel
+Quiz: Das vergessene break
+=== typ
+quiz
+=== frage
+```java
+int zahl = 4;
+switch (zahl) {
+    case 3: System.out.print("drei ");
+    case 4: System.out.print("vier ");
+    case 5: System.out.print("fuenf ");
+    default: System.out.print("ende");
+}
+```
+
+Was wird ausgegeben?
+=== optionen
+- vier
+- vier ende
++ vier fuenf ende
+- drei vier fuenf ende
+=== nachher
+Der `switch` springt zu `case 4`. Weil kein `break` folgt, „fällt“ die Ausführung durch alle weiteren Zweige bis zum Ende (Skript S. 22).

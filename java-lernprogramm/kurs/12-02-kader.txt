@@ -1,0 +1,403 @@
+=== titel
+Projekt 2/3: Der Kader
+=== erklaerung
+Der Kader verwaltet bis zu 25 Spieler in einem **Array** – ein klassisches Muster, wenn man noch keine Listen kennt:
+
+```java
+private final Spieler[] spieler = new Spieler[MAX_SPIELER];
+private int anzahl = 0;    // wie viele Plätze sind belegt?
+```
+
+Neue Spieler kommen auf den Platz `spieler[anzahl]`, danach wird `anzahl` erhöht. Beim Durchsuchen läufst du nur bis `anzahl` – dahinter steht `null`.
+
+Das Array enthält `Feldspieler` **und** `Torhueter` (beides `Spieler`). Mit `instanceof` findest du heraus, was was ist.
+
+Die Spielerklassen aus Schritt 1 sind schon fertig eingefügt.
+=== aufgabe
+Vervollständige `Kader`:
+
+1. `hinzufuegen(Spieler neu)` – `false`, wenn der Kader voll ist **oder** die Rückennummer schon vergeben ist. Sonst speichern und `true`.
+2. `suche(int nummer)` – den Spieler mit dieser Nummer oder `null`.
+3. `topScorer()` – der **Feldspieler** mit den meisten Punkten (Torhüter überspringen), oder `null`, wenn es keinen gibt. Bei Gleichstand gewinnt der zuerst eingefügte.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Kader kader = new Kader("Adler Mannheim");
+        kader.hinzufuegen(new Feldspieler("Plachta", 22));
+        kader.hinzufuegen(new Torhueter("Brückmann", 30));
+        kader.ausgeben();
+    }
+}
+
+class Kader {
+    static final int MAX_SPIELER = 25;
+
+    private final String teamname;
+    private final Spieler[] spieler = new Spieler[MAX_SPIELER];
+    private int anzahl = 0;
+
+    Kader(String teamname) {
+        this.teamname = teamname;
+    }
+
+    String getTeamname() {
+        return teamname;
+    }
+
+    int getAnzahl() {
+        return anzahl;
+    }
+
+    boolean hinzufuegen(Spieler neu) {
+        // Dein Code hier
+        return false;
+    }
+
+    Spieler suche(int nummer) {
+        // Dein Code hier
+        return null;
+    }
+
+    Feldspieler topScorer() {
+        // Dein Code hier
+        return null;
+    }
+
+    void ausgeben() {
+        System.out.println("Kader " + teamname + " (" + anzahl + " von " + MAX_SPIELER + " Plätzen)");
+        for (int i = 0; i < anzahl; i++) {
+            System.out.println("  " + spieler[i]);
+        }
+    }
+}
+
+class Feldspieler extends Spieler {
+    private int tore;
+    private int vorlagen;
+
+    Feldspieler(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    void vorlageGeben() {
+        vorlagen++;
+    }
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    @Override
+    String rolle() {
+        return "Feldspieler";
+    }
+
+    @Override
+    public String statistik() {
+        return "Tore: " + tore + "  Vorlagen: " + vorlagen + "  Punkte: " + punkte();
+    }
+}
+
+class Torhueter extends Spieler {
+    private int paraden;
+    private int gegentore;
+
+    Torhueter(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void parade() {
+        paraden++;
+    }
+
+    void gegentor() {
+        gegentore++;
+    }
+
+    double fangquote() {
+        int schuesse = paraden + gegentore;
+        if (schuesse == 0) {
+            return 0.0;
+        }
+        return Math.round(1000.0 * paraden / schuesse) / 10.0;
+    }
+
+    @Override
+    String rolle() {
+        return "Torhüter";
+    }
+
+    @Override
+    public String statistik() {
+        return "Paraden: " + paraden + "  Gegentore: " + gegentore + "  Fangquote: " + fangquote() + " %";
+    }
+}
+
+abstract class Person {
+    private static int anzahlPersonen = 0;
+    private final String name;
+
+    Person(String name) {
+        this.name = name;
+        anzahlPersonen++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    static int getAnzahlPersonen() {
+        return anzahlPersonen;
+    }
+
+    abstract String rolle();
+}
+
+interface Auswertbar {
+    String statistik();
+}
+
+abstract class Spieler extends Person implements Auswertbar {
+    private final int nummer;
+
+    Spieler(String name, int nummer) {
+        super(name);
+        this.nummer = nummer;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + nummer + " " + getName() + " (" + rolle() + ")  " + statistik();
+    }
+}
+=== pruefung
+Check.gleich("hinzufuegen liefert true", true, () -> new Kader("T").hinzufuegen(new Feldspieler("A", 1)));
+Check.gleich("hinzufuegen erhöht die Anzahl", 2, () -> {
+    Kader k = new Kader("T");
+    k.hinzufuegen(new Feldspieler("A", 1));
+    k.hinzufuegen(new Torhueter("B", 2));
+    return k.getAnzahl();
+});
+Check.gleich("doppelte Nummer wird abgelehnt", false, () -> {
+    Kader k = new Kader("T");
+    k.hinzufuegen(new Feldspieler("A", 7));
+    return k.hinzufuegen(new Feldspieler("B", 7));
+});
+Check.gleich("voller Kader nimmt niemanden mehr auf", false, () -> {
+    Kader k = new Kader("T");
+    for (int i = 1; i <= Kader.MAX_SPIELER; i++) {
+        k.hinzufuegen(new Feldspieler("S" + i, i));
+    }
+    return k.hinzufuegen(new Feldspieler("Zuviel", 99));
+});
+Check.gleich("suche findet den Spieler", "B", () -> {
+    Kader k = new Kader("T");
+    k.hinzufuegen(new Feldspieler("A", 1));
+    k.hinzufuegen(new Torhueter("B", 30));
+    return k.suche(30).getName();
+});
+Check.gleich("suche liefert null, wenn es die Nummer nicht gibt", true, () -> new Kader("T").suche(5) == null);
+Check.gleich("topScorer ohne Feldspieler ist null", true, () -> {
+    Kader k = new Kader("T");
+    k.hinzufuegen(new Torhueter("B", 30));
+    return k.topScorer() == null;
+});
+Check.gleich("topScorer findet den besten Feldspieler", "Wolf", () -> {
+    Kader k = new Kader("T");
+    Feldspieler a = new Feldspieler("Plachta", 22);
+    Feldspieler b = new Feldspieler("Wolf", 86);
+    a.torErzielen();
+    b.vorlageGeben();
+    b.vorlageGeben();
+    k.hinzufuegen(new Torhueter("Brückmann", 30));
+    k.hinzufuegen(a);
+    k.hinzufuegen(b);
+    return k.topScorer().getName();
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Kader kader = new Kader("Adler Mannheim");
+        kader.hinzufuegen(new Feldspieler("Plachta", 22));
+        kader.hinzufuegen(new Torhueter("Brückmann", 30));
+        kader.ausgeben();
+    }
+}
+
+class Kader {
+    static final int MAX_SPIELER = 25;
+
+    private final String teamname;
+    private final Spieler[] spieler = new Spieler[MAX_SPIELER];
+    private int anzahl = 0;
+
+    Kader(String teamname) {
+        this.teamname = teamname;
+    }
+
+    String getTeamname() {
+        return teamname;
+    }
+
+    int getAnzahl() {
+        return anzahl;
+    }
+
+    boolean hinzufuegen(Spieler neu) {
+        if (anzahl == MAX_SPIELER || suche(neu.getNummer()) != null) {
+            return false;
+        }
+        spieler[anzahl] = neu;
+        anzahl++;
+        return true;
+    }
+
+    Spieler suche(int nummer) {
+        for (int i = 0; i < anzahl; i++) {
+            if (spieler[i].getNummer() == nummer) {
+                return spieler[i];
+            }
+        }
+        return null;
+    }
+
+    Feldspieler topScorer() {
+        Feldspieler top = null;
+        for (int i = 0; i < anzahl; i++) {
+            if (spieler[i] instanceof Feldspieler) {
+                Feldspieler f = (Feldspieler) spieler[i];
+                if (top == null || f.punkte() > top.punkte()) {
+                    top = f;
+                }
+            }
+        }
+        return top;
+    }
+
+    void ausgeben() {
+        System.out.println("Kader " + teamname + " (" + anzahl + " von " + MAX_SPIELER + " Plätzen)");
+        for (int i = 0; i < anzahl; i++) {
+            System.out.println("  " + spieler[i]);
+        }
+    }
+}
+
+class Feldspieler extends Spieler {
+    private int tore;
+    private int vorlagen;
+
+    Feldspieler(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void torErzielen() {
+        tore++;
+    }
+
+    void vorlageGeben() {
+        vorlagen++;
+    }
+
+    int punkte() {
+        return tore + vorlagen;
+    }
+
+    @Override
+    String rolle() {
+        return "Feldspieler";
+    }
+
+    @Override
+    public String statistik() {
+        return "Tore: " + tore + "  Vorlagen: " + vorlagen + "  Punkte: " + punkte();
+    }
+}
+
+class Torhueter extends Spieler {
+    private int paraden;
+    private int gegentore;
+
+    Torhueter(String name, int nummer) {
+        super(name, nummer);
+    }
+
+    void parade() {
+        paraden++;
+    }
+
+    void gegentor() {
+        gegentore++;
+    }
+
+    double fangquote() {
+        int schuesse = paraden + gegentore;
+        if (schuesse == 0) {
+            return 0.0;
+        }
+        return Math.round(1000.0 * paraden / schuesse) / 10.0;
+    }
+
+    @Override
+    String rolle() {
+        return "Torhüter";
+    }
+
+    @Override
+    public String statistik() {
+        return "Paraden: " + paraden + "  Gegentore: " + gegentore + "  Fangquote: " + fangquote() + " %";
+    }
+}
+
+abstract class Person {
+    private static int anzahlPersonen = 0;
+    private final String name;
+
+    Person(String name) {
+        this.name = name;
+        anzahlPersonen++;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    static int getAnzahlPersonen() {
+        return anzahlPersonen;
+    }
+
+    abstract String rolle();
+}
+
+interface Auswertbar {
+    String statistik();
+}
+
+abstract class Spieler extends Person implements Auswertbar {
+    private final int nummer;
+
+    Spieler(String name, int nummer) {
+        super(name);
+        this.nummer = nummer;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + nummer + " " + getName() + " (" + rolle() + ")  " + statistik();
+    }
+}
+=== tipp
+Für `hinzufuegen` kannst du deine eigene Methode `suche` benutzen: `suche(neu.getNummer()) != null` heißt „Nummer schon vergeben“.
+=== tipp
+In `topScorer`: `if (spieler[i] instanceof Feldspieler) { Feldspieler f = (Feldspieler) spieler[i]; ... }`

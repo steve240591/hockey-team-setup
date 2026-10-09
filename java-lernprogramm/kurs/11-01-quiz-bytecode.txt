@@ -1,0 +1,13 @@
+=== titel
+Quiz: Byte-Code und JVM
+=== typ
+quiz
+=== frage
+Warum ist ein übersetztes Java-Programm plattformunabhängig?
+=== optionen
+- Weil javac für jedes Betriebssystem eigenen Maschinencode erzeugt.
++ Weil javac Byte-Code erzeugt, den eine Java Virtual Machine auf jedem System ausführen kann.
+- Weil Java-Programme immer im Browser laufen.
+- Weil Java eine Skriptsprache ist und nie übersetzt wird.
+=== nachher
+`javac` erzeugt **Byte-Code** (`.class`-Dateien). Die **JVM** ist die Schnittstelle zwischen Byte-Code und dem jeweiligen System. Für jedes System gibt es eine eigene JVM, der Byte-Code bleibt derselbe: „write once, run everywhere“ (Skript S. 6).

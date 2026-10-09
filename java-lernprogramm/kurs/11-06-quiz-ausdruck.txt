@@ -1,0 +1,18 @@
+=== titel
+Quiz: Ausdrücke auswerten
+=== typ
+quiz
+=== frage
+```java
+int a = 10, b = 3;
+System.out.println((a > b ? a % b : b % a) + " " + (a++ * 2) + " " + a);
+```
+
+Was wird ausgegeben?
+=== optionen
++ 1 20 11
+- 1 22 11
+- 3 20 10
+- 1 20 10
+=== nachher
+`10 > 3`, also `10 % 3 = 1`. `a++ * 2` rechnet mit dem **alten** Wert 10 → `20`, danach ist `a` gleich `11`. Ausdrücke werden von links nach rechts ausgewertet.

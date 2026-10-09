@@ -1,0 +1,199 @@
+=== titel
+Figuren gemeinsam verarbeiten
+=== erklaerung
+Der große Vorteil: Ein Array vom Typ `Figur[]` kann Kreise **und** Rechtecke enthalten (Skript S. 39, FigTest.java):
+
+```java
+Figur[] k = new Figur[4];
+for (int i = 0; i <= 3; i++) {
+    if (i % 2 == 0) k[i] = new KreisF(i + 0.5);
+    else            k[i] = new RechteckF(i + 0.4, i * 2);
+}
+```
+
+Code, der nur `Figur` kennt, funktioniert dadurch automatisch mit **jeder** zukünftigen Figur – auch mit Dreiecken, die es heute noch gar nicht gibt.
+=== aufgabe
+1. `gesamtFlaeche(Figur[] figuren)` – Summe aller Flächen
+2. `groessteFigur(Figur[] figuren)` – die Figur mit der größten Fläche (das Array ist nie leer). Nutze `istGroesserAls`.
+=== vorlage
+public class Main {
+
+    static double gesamtFlaeche(Figur[] figuren) {
+        // Dein Code hier
+        return 0;
+    }
+
+    static Figur groessteFigur(Figur[] figuren) {
+        // Dein Code hier
+        return null;
+    }
+
+    public static void main(String[] args) {
+        Figur[] figuren = {new KreisF(1), new RechteckF(3, 4), new KreisF(1.5)};
+        System.out.println(gesamtFlaeche(figuren));
+        System.out.println(groessteFigur(figuren).flaeche());
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    public int getY() {
+        return yp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== pruefung
+Figur[] figuren = {new KreisF(1), new RechteckF(3, 4), new KreisF(1.5)};
+Check.gleich("gesamtFlaeche(...)", Math.PI + 12 + 2.25 * Math.PI, () -> Main.gesamtFlaeche(figuren));
+Check.gleich("gesamtFlaeche(leer)", 0.0, () -> Main.gesamtFlaeche(new Figur[0]));
+Check.gleich("groessteFigur(...) ist das Rechteck", true, () -> Main.groessteFigur(figuren) == figuren[1]);
+Check.gleich("groessteFigur mit einer Figur", true, () -> Main.groessteFigur(new Figur[] {figuren[0]}) == figuren[0]);
+=== loesung
+public class Main {
+
+    static double gesamtFlaeche(Figur[] figuren) {
+        double summe = 0;
+        for (Figur f : figuren) {
+            summe += f.flaeche();
+        }
+        return summe;
+    }
+
+    static Figur groessteFigur(Figur[] figuren) {
+        Figur groesste = figuren[0];
+        for (Figur f : figuren) {
+            if (f.istGroesserAls(groesste)) {
+                groesste = f;
+            }
+        }
+        return groesste;
+    }
+
+    public static void main(String[] args) {
+        Figur[] figuren = {new KreisF(1), new RechteckF(3, 4), new KreisF(1.5)};
+        System.out.println(gesamtFlaeche(figuren));
+        System.out.println(groessteFigur(figuren).flaeche());
+    }
+}
+
+abstract class Figur {
+    protected int xp;
+    protected int yp;
+
+    public void setPos(int xp, int yp) {
+        this.xp = xp;
+        this.yp = yp;
+    }
+
+    public int getX() {
+        return xp;
+    }
+
+    public int getY() {
+        return yp;
+    }
+
+    abstract double flaeche();
+
+    abstract double umfang();
+
+    boolean istGroesserAls(Figur andere) {
+        return this.flaeche() > andere.flaeche();
+    }
+}
+
+class KreisF extends Figur {
+    private double r;
+
+    KreisF(double r) {
+        this.r = r;
+    }
+
+    @Override
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+
+class RechteckF extends Figur {
+    private double l;
+    private double h;
+
+    RechteckF(double l, double h) {
+        this.l = l;
+        this.h = h;
+    }
+
+    @Override
+    double flaeche() {
+        return l * h;
+    }
+
+    @Override
+    double umfang() {
+        return 2 * (l + h);
+    }
+}
+=== tipp
+Für die größte Figur: Merke dir die bisher größte in einer Variable und vergleiche jede Figur damit.

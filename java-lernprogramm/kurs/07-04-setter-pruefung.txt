@@ -1,0 +1,93 @@
+=== titel
+Setter mit Prüfung
+=== erklaerung
+Ein großer Vorteil der Datenkapselung: Der Setter kann **prüfen**, ob ein Wert überhaupt erlaubt ist. Ungültige Werte kommen so gar nicht erst ins Objekt.
+
+```java
+boolean setAlter(int alter) {
+    if (alter < 0) {
+        return false;      // abgelehnt, nichts ändern
+    }
+    this.alter = alter;
+    return true;
+}
+```
+=== aufgabe
+Schreibe `setNummer(int nummer)`: Nur Trikotnummern von **1 bis 99** sind erlaubt.
+
+- gültig → speichern und `true` zurückgeben
+- ungültig → nichts ändern und `false` zurückgeben
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+        System.out.println(s.setNummer(100));
+        System.out.println(s.getNummer());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+    }
+
+    boolean setNummer(int nummer) {
+        // Dein Code hier
+        return false;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+}
+=== pruefung
+Check.gleich("setNummer(17) liefert true", true, () -> new KaderSpieler("X", 1).setNummer(17));
+Check.gleich("setNummer(17) speichert 17", 17, () -> {
+    KaderSpieler s = new KaderSpieler("X", 1);
+    s.setNummer(17);
+    return s.getNummer();
+});
+Check.gleich("setNummer(99) ist erlaubt", true, () -> new KaderSpieler("X", 1).setNummer(99));
+Check.gleich("setNummer(100) liefert false", false, () -> new KaderSpieler("X", 1).setNummer(100));
+Check.gleich("setNummer(0) liefert false", false, () -> new KaderSpieler("X", 1).setNummer(0));
+Check.gleich("ungültige Nummer ändert nichts", 29, () -> {
+    KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+    s.setNummer(-5);
+    return s.getNummer();
+});
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler("Draisaitl", 29);
+        System.out.println(s.setNummer(100));
+        System.out.println(s.getNummer());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+
+    KaderSpieler(String name, int nummer) {
+        this.name = name;
+        this.nummer = nummer;
+    }
+
+    boolean setNummer(int nummer) {
+        if (nummer < 1 || nummer > 99) {
+            return false;
+        }
+        this.nummer = nummer;
+        return true;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+}
+=== tipp
+Zuerst den ungültigen Fall abfangen: `if (nummer < 1 || nummer > 99) { return false; }`

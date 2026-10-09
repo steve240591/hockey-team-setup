@@ -1,0 +1,14 @@
+=== titel
+Quiz: Überladen oder Überschreiben?
+=== typ
+quiz
+=== frage
+In `Zylinder extends Kreis` steht eine Methode `double flaeche()` – mit **gleichem Namen und gleicher Parameterliste** wie in `Kreis`. Wie nennt man das?
+=== optionen
+- Überladen
++ Überschreiben
+- Verdecken einer Variablen
+- Kapselung
+=== nachher
+**Überschreiben:** Eine Subklasse definiert eine Methode mit gleicher Signatur neu (Skript S. 33).
+**Überladen:** Mehrere Methoden mit gleichem Namen, aber **unterschiedlicher** Parameterliste – z. B. mehrere Konstruktoren (Skript S. 30).

@@ -1,0 +1,51 @@
+=== titel
+Fakultät
+=== erklaerung
+Die Fakultät `n!` ist das Produkt aller Zahlen von 1 bis n:
+
+- `5! = 1 · 2 · 3 · 4 · 5 = 120`
+- `0! = 1` (so ist es definiert)
+
+Fakultäten wachsen sehr schnell. Schon `13!` passt nicht mehr in einen `int` – deshalb verwenden wir `long`.
+
+Beim Multiplizieren startest du mit `1` statt mit `0` – warum wohl?
+=== aufgabe
+Schreibe `fakultaet(int n)` mit einer Schleife.
+
+- `fakultaet(0)` → `1`
+- `fakultaet(5)` → `120`
+- `fakultaet(20)` → `2432902008176640000`
+=== vorlage
+public class Main {
+
+    static long fakultaet(int n) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fakultaet(5));
+    }
+}
+=== pruefung
+Check.gleich("fakultaet(0)", 1L, () -> Main.fakultaet(0));
+Check.gleich("fakultaet(1)", 1L, () -> Main.fakultaet(1));
+Check.gleich("fakultaet(5)", 120L, () -> Main.fakultaet(5));
+Check.gleich("fakultaet(20)", 2432902008176640000L, () -> Main.fakultaet(20));
+=== loesung
+public class Main {
+
+    static long fakultaet(int n) {
+        long ergebnis = 1;
+        for (int i = 2; i <= n; i++) {
+            ergebnis *= i;
+        }
+        return ergebnis;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fakultaet(5));
+    }
+}
+=== tipp
+`long ergebnis = 1;` und dann in der Schleife `ergebnis *= i;`

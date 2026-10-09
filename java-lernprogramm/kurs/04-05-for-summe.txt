@@ -1,0 +1,66 @@
+=== titel
+Die for-Schleife
+=== erklaerung
+Die **Zählschleife** `for` fasst Start, Bedingung und Zählschritt in einer Zeile zusammen (Skript S. 22):
+
+```java
+for (int i = 1; i <= 10; i++) {
+    System.out.println(i);
+}
+```
+
+- `int i = 1` – wird einmal am Anfang ausgeführt
+- `i <= 10` – wird vor jedem Durchlauf geprüft
+- `i++` – wird nach jedem Durchlauf ausgeführt
+
+Typisches Muster zum Aufsummieren:
+
+```java
+int summe = 0;
+for (int i = 1; i <= 3; i++) {
+    summe += i;     // summe = summe + i
+}
+```
+=== aufgabe
+Schreibe `summeBis(int n)`: Summe 1 + 2 + … + n mit einer `for`-Schleife.
+
+- `summeBis(4)` → `10`
+- `summeBis(100)` → `5050`
+- `summeBis(0)` → `0`
+=== vorlage
+public class Main {
+
+    static int summeBis(int n) {
+        int summe = 0;
+        // Deine for-Schleife hier
+
+        return summe;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(summeBis(4));
+    }
+}
+=== pruefung
+Check.gleich("summeBis(4)", 10, () -> Main.summeBis(4));
+Check.gleich("summeBis(100)", 5050, () -> Main.summeBis(100));
+Check.gleich("summeBis(1)", 1, () -> Main.summeBis(1));
+Check.gleich("summeBis(0)", 0, () -> Main.summeBis(0));
+Check.quelltextEnthaelt("for-Schleife wird verwendet", "\\bfor\\b");
+=== loesung
+public class Main {
+
+    static int summeBis(int n) {
+        int summe = 0;
+        for (int i = 1; i <= n; i++) {
+            summe += i;
+        }
+        return summe;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(summeBis(4));
+    }
+}
+=== tipp
+`for (int i = 1; i <= n; i++) { summe += i; }`

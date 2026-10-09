@@ -1,0 +1,64 @@
+=== titel
+Zeichen (char)
+=== erklaerung
+Ein `char` ist **ein einzelnes Zeichen** in einfachen Anführungszeichen: `'A'`. Intern ist es eine Zahl im Unicode-Zeichensatz (Skript S. 8 und 19):
+
+```java
+char c = 'A';
+int code = c;            // automatisch: 65
+char d = (char) 66;      // Cast nötig: 'B'
+```
+
+Rechnest du mit einem `char`, kommt ein `int` heraus:
+
+```java
+char c = 'A';
+System.out.println(c + 1);          // 66
+System.out.println((char) (c + 1)); // B
+```
+=== aufgabe
+1. `zeichenCode(char c)` gibt den Unicode-Wert zurück: `'A'` → `65`
+2. `naechstesZeichen(char c)` gibt das nächste Zeichen zurück: `'A'` → `'B'`
+=== vorlage
+public class Main {
+
+    static int zeichenCode(char c) {
+        // Dein Code hier
+        return 0;
+    }
+
+    static char naechstesZeichen(char c) {
+        // Dein Code hier
+        return ' ';
+    }
+
+    public static void main(String[] args) {
+        System.out.println(zeichenCode('A'));
+        System.out.println(naechstesZeichen('A'));
+    }
+}
+=== pruefung
+Check.gleich("zeichenCode('A')", 65, () -> Main.zeichenCode('A'));
+Check.gleich("zeichenCode('a')", 97, () -> Main.zeichenCode('a'));
+Check.gleich("naechstesZeichen('A')", 'B', () -> Main.naechstesZeichen('A'));
+Check.gleich("naechstesZeichen('y')", 'z', () -> Main.naechstesZeichen('y'));
+=== loesung
+public class Main {
+
+    static int zeichenCode(char c) {
+        return c;
+    }
+
+    static char naechstesZeichen(char c) {
+        return (char) (c + 1);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(zeichenCode('A'));
+        System.out.println(naechstesZeichen('A'));
+    }
+}
+=== tipp
+Für `zeichenCode` reicht `return c;` – Java wandelt automatisch um.
+=== tipp
+`c + 1` ist ein `int`. Mit `(char) (c + 1)` wird wieder ein Zeichen daraus.

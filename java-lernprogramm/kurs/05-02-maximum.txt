@@ -1,0 +1,54 @@
+=== titel
+Das größte Element
+=== erklaerung
+Mit einer normalen `for`-Schleife hast du Zugriff auf den **Index**:
+
+```java
+for (int i = 0; i < zahlen.length; i++) {
+    System.out.println("Element " + i + ": " + zahlen[i]);
+}
+```
+
+Beim Maximum-Suchen ist der Startwert entscheidend. Was passiert, wenn alle Zahlen negativ sind und du mit `max = 0` startest?
+=== aufgabe
+Schreibe `maximum(int[] zahlen)`. Das Array ist nie leer.
+
+- `{3, 9, 4}` → `9`
+- `{-5, -2, -9}` → `-2`
+=== vorlage
+public class Main {
+
+    static int maximum(int[] zahlen) {
+        int max = 0;   // Achtung, Falle!
+        // Dein Code hier
+
+        return max;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maximum(new int[] {-5, -2, -9}));
+    }
+}
+=== pruefung
+Check.gleich("maximum({3, 9, 4})", 9, () -> Main.maximum(new int[] {3, 9, 4}));
+Check.gleich("maximum({-5, -2, -9})", -2, () -> Main.maximum(new int[] {-5, -2, -9}));
+Check.gleich("maximum({7})", 7, () -> Main.maximum(new int[] {7}));
+=== loesung
+public class Main {
+
+    static int maximum(int[] zahlen) {
+        int max = zahlen[0];
+        for (int i = 1; i < zahlen.length; i++) {
+            if (zahlen[i] > max) {
+                max = zahlen[i];
+            }
+        }
+        return max;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maximum(new int[] {-5, -2, -9}));
+    }
+}
+=== tipp
+Starte mit dem ersten Element: `int max = zahlen[0];`

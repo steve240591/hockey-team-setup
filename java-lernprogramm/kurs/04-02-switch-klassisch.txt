@@ -1,0 +1,83 @@
+=== titel
+switch mit break
+=== erklaerung
+Die **Mehrfachverzweigung** `switch` vergleicht einen Wert mit mehreren Konstanten (Skript S. 22):
+
+```java
+switch (drittel) {
+    case 1:
+        text = "erstes Drittel";
+        break;
+    case 2:
+        text = "zweites Drittel";
+        break;
+    default:
+        text = "unbekannt";
+}
+```
+
+**Achtung:** `case` ist nur ein Einsprungziel. Fehlt das `break`, laufen auch die folgenden `case`-Zweige durch!
+=== aufgabe
+Schreibe `notenText(int note)` mit der **klassischen** switch-Anweisung (mit `case ...:` und `break`):
+
+1 → `"sehr gut"`, 2 → `"gut"`, 3 → `"befriedigend"`, 4 → `"ausreichend"`, 5 → `"mangelhaft"`, 6 → `"ungenügend"`, sonst → `"keine Note"`
+=== vorlage
+public class Main {
+
+    static String notenText(int note) {
+        String text;
+        // Dein switch hier
+        text = "";
+        return text;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(notenText(2));
+    }
+}
+=== pruefung
+Check.gleich("notenText(1)", "sehr gut", () -> Main.notenText(1));
+Check.gleich("notenText(2)", "gut", () -> Main.notenText(2));
+Check.gleich("notenText(3)", "befriedigend", () -> Main.notenText(3));
+Check.gleich("notenText(4)", "ausreichend", () -> Main.notenText(4));
+Check.gleich("notenText(5)", "mangelhaft", () -> Main.notenText(5));
+Check.gleich("notenText(6)", "ungenügend", () -> Main.notenText(6));
+Check.gleich("notenText(9)", "keine Note", () -> Main.notenText(9));
+Check.quelltextEnthaelt("switch wird verwendet", "\\bswitch\\b");
+Check.quelltextEnthaelt("break wird verwendet", "\\bbreak\\b");
+=== loesung
+public class Main {
+
+    static String notenText(int note) {
+        String text;
+        switch (note) {
+            case 1:
+                text = "sehr gut";
+                break;
+            case 2:
+                text = "gut";
+                break;
+            case 3:
+                text = "befriedigend";
+                break;
+            case 4:
+                text = "ausreichend";
+                break;
+            case 5:
+                text = "mangelhaft";
+                break;
+            case 6:
+                text = "ungenügend";
+                break;
+            default:
+                text = "keine Note";
+        }
+        return text;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(notenText(2));
+    }
+}
+=== tipp
+Vergiss das `break;` nach jedem Fall nicht – sonst landet immer der Text des letzten Falls in `text`.

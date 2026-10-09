@@ -1,0 +1,107 @@
+=== titel
+private und Getter
+=== erklaerung
+**Datenkapselung** heißt: Kein direkter Zugriff auf die Daten eines Objekts „von außen“. Objekte kommunizieren nur über **Methoden** (Skript S. 28).
+
+In Java machst du Instanzvariablen dazu `private` und bietest **Getter** (zum Lesen) und **Setter** (zum Ändern) an (Skript S. 29):
+
+```java
+class Fahrrad3 {
+    private String farbe;
+
+    public String getFarbe() {
+        return farbe;
+    }
+
+    public void setFarbe(String farbe) {
+        this.farbe = farbe;
+    }
+}
+```
+
+`meinRad.farbe = "rot";` würde jetzt vom Compiler abgelehnt – nur noch `meinRad.setFarbe("rot");` ist erlaubt.
+
+Ein **Konstruktor** ist eine besondere Methode mit dem Namen der Klasse und **ohne Rückgabetyp**. Er läuft bei `new` und setzt Startwerte (Skript S. 30):
+
+```java
+Fahrrad4() {
+    this.eigentuemer = "Nobody";
+}
+```
+=== aufgabe
+Vervollständige `KaderSpieler`:
+
+1. Der **Standardkonstruktor** setzt die Startwerte: `name` = `"Unbekannt"`, `nummer` = `0`, `tore` = `0`.
+2. Schreibe die drei Getter `getName()`, `getNummer()` und `getTore()`.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler();
+        System.out.println(s.getName() + " " + s.getNummer());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler() {
+        // Startwerte setzen
+    }
+
+    String getName() {
+        // Dein Code hier
+        return null;
+    }
+
+    int getNummer() {
+        // Dein Code hier
+        return -1;
+    }
+
+    int getTore() {
+        // Dein Code hier
+        return -1;
+    }
+}
+=== pruefung
+Check.gleich("Startwert name", "Unbekannt", () -> new KaderSpieler().getName());
+Check.gleich("Startwert nummer", 0, () -> new KaderSpieler().getNummer());
+Check.gleich("Startwert tore", 0, () -> new KaderSpieler().getTore());
+Check.quelltextOhne("Instanzvariablen bleiben private (kein public davor)", "public\\s+(String|int)\\s+(name|nummer|tore)\\s*;");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        KaderSpieler s = new KaderSpieler();
+        System.out.println(s.getName() + " " + s.getNummer());
+    }
+}
+
+class KaderSpieler {
+    private String name;
+    private int nummer;
+    private int tore;
+
+    KaderSpieler() {
+        this.name = "Unbekannt";
+        this.nummer = 0;
+        this.tore = 0;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    int getNummer() {
+        return nummer;
+    }
+
+    int getTore() {
+        return tore;
+    }
+}
+=== tipp
+Im Konstruktor: `this.name = "Unbekannt";` usw.
+=== tipp
+Ein Getter gibt einfach den Wert zurück: `return name;`

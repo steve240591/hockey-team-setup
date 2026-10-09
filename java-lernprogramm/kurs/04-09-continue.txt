@@ -1,0 +1,57 @@
+=== titel
+Überspringen mit continue
+=== erklaerung
+`continue` beendet den **aktuellen** Schleifendurchlauf und macht mit dem nächsten weiter. `break` verlässt die Schleife ganz (Skript S. 23).
+
+```java
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) {
+        continue;      // 3 überspringen
+    }
+    System.out.print(i + " ");
+}
+// Ausgabe: 1 2 4 5
+```
+=== aufgabe
+Schreibe `summeOhneDreier(int n)`: Summe von 1 bis n, aber alle **Vielfachen von 3** werden übersprungen. Verwende `continue`.
+
+`summeOhneDreier(10)` → `1+2+4+5+7+8+10 = 37`
+=== vorlage
+public class Main {
+
+    static int summeOhneDreier(int n) {
+        int summe = 0;
+        // Dein Code hier
+
+        return summe;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(summeOhneDreier(10));
+    }
+}
+=== pruefung
+Check.gleich("summeOhneDreier(10)", 37, () -> Main.summeOhneDreier(10));
+Check.gleich("summeOhneDreier(2)", 3, () -> Main.summeOhneDreier(2));
+Check.gleich("summeOhneDreier(3)", 3, () -> Main.summeOhneDreier(3));
+Check.quelltextEnthaelt("continue wird verwendet", "\\bcontinue\\b");
+=== loesung
+public class Main {
+
+    static int summeOhneDreier(int n) {
+        int summe = 0;
+        for (int i = 1; i <= n; i++) {
+            if (i % 3 == 0) {
+                continue;
+            }
+            summe += i;
+        }
+        return summe;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(summeOhneDreier(10));
+    }
+}
+=== tipp
+Vielfache von 3 erkennst du an `i % 3 == 0`.

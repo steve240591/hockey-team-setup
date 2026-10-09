@@ -1,0 +1,55 @@
+=== titel
+Vergleichsoperatoren
+=== erklaerung
+Vergleiche liefern einen `boolean` – also `true` oder `false` (Skript S. 20):
+
+| Operator | Bedeutung |
+|---|---|
+| `==` | gleich |
+| `!=` | ungleich |
+| `<`, `<=` | kleiner, kleiner gleich |
+| `>`, `>=` | größer, größer gleich |
+
+Einen Vergleich kannst du direkt zurückgeben – ganz ohne `if`:
+
+```java
+static boolean istVolljaehrig(int alter) {
+    return alter >= 18;
+}
+```
+
+Achtung: `=` ist eine **Zuweisung**, `==` ein **Vergleich**.
+=== aufgabe
+Schreibe `istGerade(int zahl)`: `true`, wenn die Zahl gerade ist.
+
+Tipp: Eine Zahl ist gerade, wenn beim Teilen durch 2 kein Rest bleibt.
+=== vorlage
+public class Main {
+
+    static boolean istGerade(int zahl) {
+        // Dein Code hier
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istGerade(4));
+    }
+}
+=== pruefung
+Check.gleich("istGerade(4)", true, () -> Main.istGerade(4));
+Check.gleich("istGerade(7)", false, () -> Main.istGerade(7));
+Check.gleich("istGerade(-4)", true, () -> Main.istGerade(-4));
+Check.gleich("istGerade(0)", true, () -> Main.istGerade(0));
+=== loesung
+public class Main {
+
+    static boolean istGerade(int zahl) {
+        return zahl % 2 == 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istGerade(4));
+    }
+}
+=== tipp
+`zahl % 2` ist der Rest beim Teilen durch 2.

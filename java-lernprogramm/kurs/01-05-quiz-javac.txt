@@ -1,0 +1,13 @@
+=== titel
+Quiz: Vom Quelltext zum Programm
+=== typ
+quiz
+=== frage
+Welches Werkzeug des JDK übersetzt `HalloJava.java` in die Byte-Code-Datei `HalloJava.class`?
+=== optionen
+- java
++ javac
+- javadoc
+- jdb
+=== nachher
+`javac` ist der **Compiler** und erzeugt Byte-Code. `java` startet die virtuelle Maschine (JVM), die den Byte-Code ausführt. `javadoc` erzeugt Dokumentation, `jdb` ist der Debugger (Skript S. 4 und 6).

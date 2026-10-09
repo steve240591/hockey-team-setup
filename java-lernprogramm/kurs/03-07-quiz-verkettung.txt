@@ -1,0 +1,17 @@
+=== titel
+Quiz: Von links nach rechts
+=== typ
+quiz
+=== frage
+```java
+System.out.println(1 + 2 + "3" + 4 + 5);
+```
+
+Was wird ausgegeben?
+=== optionen
+- 15
+- 12345
++ 3345
+- 339
+=== nachher
+Java rechnet von links nach rechts: `1 + 2 = 3` (beides Zahlen). Dann `3 + "3"` → `"33"` (ab jetzt String!), dann `"334"`, dann `"3345"`.

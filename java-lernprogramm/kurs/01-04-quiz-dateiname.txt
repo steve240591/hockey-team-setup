@@ -1,0 +1,23 @@
+=== titel
+Quiz: Klasse und Datei
+=== typ
+quiz
+=== frage
+In einer Datei steht:
+
+```java
+public class HalloJava {
+    public static void main(String[] args) {
+        System.out.println("Hallo Java");
+    }
+}
+```
+
+Wie muss die Datei heißen?
+=== optionen
+- Main.java
++ HalloJava.java
+- hallojava.java
+- Der Name ist egal, Hauptsache die Endung ist .java
+=== nachher
+Der Dateiname muss genau dem Namen der **public-Klasse** entsprechen – inklusive Groß-/Kleinschreibung (Skript S. 7 und S. 11). Eine Datei darf höchstens **eine** public-Klasse enthalten.

@@ -1,0 +1,123 @@
+=== titel
+Eine Klasse ganz allein
+=== erklaerung
+Jetzt entwirfst du eine Klasse selbst – mit privaten Instanzvariablen, Konstruktor und Methoden.
+
+Gute Fragen beim Entwurf:
+
+- Welche **Daten** muss ein Objekt sich merken? → Instanzvariablen (`private`)
+- Was muss beim **Erzeugen** festgelegt werden? → Konstruktor-Parameter
+- Was soll man mit dem Objekt **tun** können? → Methoden
+=== aufgabe
+Ein `Spielstand` kennt die Namen beider Teams und zählt die Tore.
+
+- `Spielstand(String heim, String gast)`
+- `torHeim()` und `torGast()` – ein Tor für das jeweilige Team
+- `anzeige()` → z. B. `"Adler 2:1 Eisbären"`
+- `fuehrend()` → Name des führenden Teams oder `"unentschieden"`
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Spielstand s = new Spielstand("Adler", "Eisbären");
+        s.torHeim();
+        s.torGast();
+        s.torHeim();
+        System.out.println(s.anzeige());
+        System.out.println(s.fuehrend());
+    }
+}
+
+class Spielstand {
+    // private Instanzvariablen anlegen
+
+    Spielstand(String heim, String gast) {
+        // Dein Code hier
+    }
+
+    void torHeim() {
+        // Dein Code hier
+    }
+
+    void torGast() {
+        // Dein Code hier
+    }
+
+    String anzeige() {
+        // Dein Code hier
+        return "";
+    }
+
+    String fuehrend() {
+        // Dein Code hier
+        return "";
+    }
+}
+=== pruefung
+Check.gleich("Anzeige zu Beginn", "Adler 0:0 Eisbären", () -> new Spielstand("Adler", "Eisbären").anzeige());
+Check.gleich("Anzeige nach Toren", "Adler 2:1 Eisbären", () -> {
+    Spielstand s = new Spielstand("Adler", "Eisbären");
+    s.torHeim();
+    s.torGast();
+    s.torHeim();
+    return s.anzeige();
+});
+Check.gleich("fuehrend: Heim", "Adler", () -> {
+    Spielstand s = new Spielstand("Adler", "Eisbären");
+    s.torHeim();
+    return s.fuehrend();
+});
+Check.gleich("fuehrend: Gast", "Eisbären", () -> {
+    Spielstand s = new Spielstand("Adler", "Eisbären");
+    s.torGast();
+    return s.fuehrend();
+});
+Check.gleich("fuehrend: unentschieden", "unentschieden", () -> new Spielstand("Adler", "Eisbären").fuehrend());
+Check.quelltextEnthaelt("Instanzvariablen sind private", "private\\s+(String|int)\\s+\\w+");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Spielstand s = new Spielstand("Adler", "Eisbären");
+        s.torHeim();
+        s.torGast();
+        s.torHeim();
+        System.out.println(s.anzeige());
+        System.out.println(s.fuehrend());
+    }
+}
+
+class Spielstand {
+    private String heim;
+    private String gast;
+    private int toreHeim;
+    private int toreGast;
+
+    Spielstand(String heim, String gast) {
+        this.heim = heim;
+        this.gast = gast;
+    }
+
+    void torHeim() {
+        toreHeim++;
+    }
+
+    void torGast() {
+        toreGast++;
+    }
+
+    String anzeige() {
+        return heim + " " + toreHeim + ":" + toreGast + " " + gast;
+    }
+
+    String fuehrend() {
+        if (toreHeim > toreGast) {
+            return heim;
+        } else if (toreGast > toreHeim) {
+            return gast;
+        }
+        return "unentschieden";
+    }
+}
+=== tipp
+Du brauchst vier Instanzvariablen: zwei Namen und zwei Torzähler.
+=== tipp
+`private String heim; private String gast; private int toreHeim; private int toreGast;`

@@ -1,0 +1,62 @@
+=== titel
+Arrays (Felder)
+=== erklaerung
+Ein **Array** speichert mehrere Werte gleichen Typs unter einem Namen:
+
+```java
+int[] tore = {2, 0, 3, 1};    // Array mit 4 Elementen anlegen
+System.out.println(tore[0]);  // 2 – gezählt wird ab 0!
+System.out.println(tore.length); // 4 – Länge (ohne Klammern)
+tore[1] = 5;                  // Element ändern
+
+int[] leer = new int[3];      // {0, 0, 0}
+```
+
+Alle Elemente durchlaufen – mit der **for-each-Schleife** (Skript S. 22):
+
+```java
+for (int t : tore) {
+    System.out.println(t);
+}
+```
+=== aufgabe
+Schreibe `summe(int[] zahlen)`, die alle Elemente addiert. Verwende die for-each-Schleife.
+
+- `{1, 2, 3}` → `6`
+- `{}` → `0`
+=== vorlage
+public class Main {
+
+    static int summe(int[] zahlen) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        int[] tore = {2, 0, 3, 1};
+        System.out.println(summe(tore));
+    }
+}
+=== pruefung
+Check.gleich("summe({1, 2, 3})", 6, () -> Main.summe(new int[] {1, 2, 3}));
+Check.gleich("summe({})", 0, () -> Main.summe(new int[] {}));
+Check.gleich("summe({-4, 4, 10})", 10, () -> Main.summe(new int[] {-4, 4, 10}));
+Check.quelltextEnthaelt("for-each-Schleife wird verwendet", "for\\s*\\(\\s*int\\s+\\w+\\s*:");
+=== loesung
+public class Main {
+
+    static int summe(int[] zahlen) {
+        int summe = 0;
+        for (int z : zahlen) {
+            summe += z;
+        }
+        return summe;
+    }
+
+    public static void main(String[] args) {
+        int[] tore = {2, 0, 3, 1};
+        System.out.println(summe(tore));
+    }
+}
+=== tipp
+`for (int z : zahlen) { summe += z; }`

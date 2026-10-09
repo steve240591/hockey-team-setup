@@ -1,0 +1,52 @@
+=== titel
+Palindrome
+=== erklaerung
+Ein **Palindrom** liest sich vorwärts und rückwärts gleich: „Anna“, „Otto“, „Rentner“.
+
+Idee: Vergleiche das erste mit dem letzten Zeichen, das zweite mit dem vorletzten usw. Sobald zwei nicht passen, ist es kein Palindrom.
+
+Das letzte Zeichen eines Strings `w` steht an Position `w.length() - 1`.
+=== aufgabe
+Schreibe `istPalindrom(String wort)` – Groß-/Kleinschreibung spielt keine Rolle.
+
+- `"Anna"` → `true`
+- `"Hockey"` → `false`
+=== vorlage
+public class Main {
+
+    static boolean istPalindrom(String wort) {
+        // Dein Code hier
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istPalindrom("Anna"));
+    }
+}
+=== pruefung
+Check.gleich("istPalindrom(\"Anna\")", true, () -> Main.istPalindrom("Anna"));
+Check.gleich("istPalindrom(\"Otto\")", true, () -> Main.istPalindrom("Otto"));
+Check.gleich("istPalindrom(\"Rentner\")", true, () -> Main.istPalindrom("Rentner"));
+Check.gleich("istPalindrom(\"Hockey\")", false, () -> Main.istPalindrom("Hockey"));
+Check.gleich("istPalindrom(\"ab\")", false, () -> Main.istPalindrom("ab"));
+=== loesung
+public class Main {
+
+    static boolean istPalindrom(String wort) {
+        String w = wort.toLowerCase();
+        for (int i = 0; i < w.length() / 2; i++) {
+            if (w.charAt(i) != w.charAt(w.length() - 1 - i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(istPalindrom("Anna"));
+    }
+}
+=== tipp
+Es reicht, bis zur Mitte zu laufen: `i < w.length() / 2`
+=== tipp
+Vergleiche `w.charAt(i)` mit `w.charAt(w.length() - 1 - i)`.

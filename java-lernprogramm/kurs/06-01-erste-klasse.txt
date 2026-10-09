@@ -1,0 +1,68 @@
+=== titel
+Deine erste eigene Klasse
+=== erklaerung
+In der OOP besteht die Welt aus **Objekten**, die man **klassifizieren** kann (Skript S. 23):
+
+- Eine **Klasse** ist der Bauplan – z. B. `Spieler`.
+- Eine **Instanz** ist ein konkretes Objekt nach diesem Bauplan – z. B. Sidney Crosby.
+- **Instanzvariablen** sind die Eigenschaften, die jede Instanz für sich hat.
+
+```java
+class Fahrrad {
+    String eigentuemer;
+    String farbe;
+}
+```
+
+Mit `new` erzeugst du eine Instanz, mit dem Punkt greifst du auf ihre Variablen zu (Skript S. 25/26):
+
+```java
+Fahrrad meinRad = new Fahrrad();
+meinRad.eigentuemer = "Ingo";
+meinRad.farbe = "blau";
+System.out.println(meinRad.farbe);   // blau
+```
+
+Die Klasse `Spieler` steht in derselben Datei unter `Main` – ohne `public`, denn eine Datei darf nur **eine** public-Klasse haben (Skript S. 11).
+=== aufgabe
+Erzeuge in `main` einen `Spieler`, setze `name` auf `"Crosby"` und `nummer` auf `87` und gib aus:
+
+```
+#87 Crosby
+```
+
+Verwende dabei die Instanzvariablen des Objekts.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        // Dein Code hier
+
+    }
+}
+
+class Spieler {
+    String name;
+    int nummer;
+}
+=== pruefung
+Check.ausgabe("Ausgabe ist \"#87 Crosby\"", "#87 Crosby");
+Check.quelltextEnthaelt("ein Spieler wird mit new erzeugt", "new\\s+Spieler\\s*\\(");
+Check.quelltextEnthaelt("die Variable nummer wird gesetzt", "\\.nummer\\s*=");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Spieler s = new Spieler();
+        s.name = "Crosby";
+        s.nummer = 87;
+        System.out.println("#" + s.nummer + " " + s.name);
+    }
+}
+
+class Spieler {
+    String name;
+    int nummer;
+}
+=== tipp
+`Spieler s = new Spieler();` – dann `s.name = "Crosby";`
+=== tipp
+Ausgabe: `System.out.println("#" + s.nummer + " " + s.name);`

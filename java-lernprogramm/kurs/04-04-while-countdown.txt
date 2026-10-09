@@ -1,0 +1,54 @@
+=== titel
+Die while-Schleife
+=== erklaerung
+Eine `while`-Schleife wiederholt ihren Block, **solange** die Bedingung wahr ist (Skript S. 22):
+
+```java
+int i = 1;
+while (i <= 3) {
+    System.out.println(i);
+    i++;          // ganz wichtig – sonst läuft die Schleife ewig!
+}
+```
+
+Ausgabe: `1`, `2`, `3` – jede Zahl in einer eigenen Zeile.
+
+`while` ist eine **abweisende** Schleife: Ist die Bedingung schon am Anfang falsch, läuft sie kein einziges Mal.
+=== aufgabe
+Schreibe in `main` einen Countdown mit einer `while`-Schleife. Ausgabe:
+
+```
+5
+4
+3
+2
+1
+Bully!
+```
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        int sekunden = 5;
+        // Deine while-Schleife hier
+
+        System.out.println("Bully!");
+    }
+}
+=== pruefung
+Check.ausgabe("Countdown von 5 bis 1, dann Bully!", "5\n4\n3\n2\n1\nBully!");
+Check.quelltextEnthaelt("while-Schleife wird verwendet", "\\bwhile\\b");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        int sekunden = 5;
+        while (sekunden >= 1) {
+            System.out.println(sekunden);
+            sekunden--;
+        }
+        System.out.println("Bully!");
+    }
+}
+=== tipp
+Bedingung: `sekunden >= 1`. Im Block: ausgeben, dann `sekunden--;`
+=== tipp
+Läuft dein Programm in ein Zeitlimit? Dann wird `sekunden` vermutlich nie kleiner.

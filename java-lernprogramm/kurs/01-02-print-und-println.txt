@@ -1,0 +1,50 @@
+=== titel
+print und println
+=== erklaerung
+Es gibt zwei Ausgabe-Befehle:
+
+```java
+System.out.print("Eis");      // gibt aus, bleibt in der Zeile
+System.out.println("hockey"); // gibt aus, springt danach in die nächste Zeile
+System.out.println("!");
+```
+
+Ausgabe:
+
+```
+Eishockey
+!
+```
+
+Mit `+` kannst du Texte **verketten**: `"Eis" + "hockey"` ergibt `"Eishockey"`.
+=== aufgabe
+Das Programm soll genau diese zwei Zeilen ausgeben:
+
+```
+Eishockey
+macht Spaß!
+```
+
+Verwende dabei mindestens einmal `System.out.print` (ohne ln).
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        // Dein Code hier
+
+    }
+}
+=== pruefung
+Check.ausgabe("Ausgabe stimmt", "Eishockey\nmacht Spaß!");
+Check.quelltextEnthaelt("System.out.print (ohne ln) wird verwendet", "System\\.out\\.print\\s*\\(");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        System.out.print("Eis");
+        System.out.println("hockey");
+        System.out.println("macht Spaß!");
+    }
+}
+=== tipp
+Zum Beispiel: erst `print("Eis")`, dann `println("hockey")`.
+=== tipp
+Für die zweite Zeile reicht ein weiteres `println`.

@@ -1,0 +1,99 @@
+=== titel
+Die Basisklasse Kreis
+=== erklaerung
+In diesem Kapitel baust du das Beispiel aus dem Skript nach: **Kreise und Zylinder** (Skript S. 32–35).
+
+Zuerst die Basisklasse. Die Kreiszahl π gibt es als Konstante `Math.PI` in der Klasse `Math` (Skript S. 37) – genauer als die `3.14` im Skript.
+
+```java
+double flaeche = Math.PI * r * r;     // π · r²
+double umfang  = 2 * Math.PI * r;     // 2 · π · r
+```
+
+Der Radius ist `protected`: Er ist in der eigenen Klasse **und in allen Subklassen** sichtbar (Skript S. 32 und 41).
+=== aufgabe
+Vervollständige in `Kreis` die Methoden `flaeche()` und `umfang()`.
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Kreis k = new Kreis(2);
+        System.out.println("Fläche: " + k.flaeche());
+        System.out.println("Umfang: " + k.umfang());
+    }
+}
+
+class Kreis {
+    protected double r;
+
+    Kreis() {
+        this.r = 1.0;
+    }
+
+    Kreis(double r) {
+        this.r = r;
+    }
+
+    double setRad(double r) {
+        this.r = r;
+        return r;
+    }
+
+    double getRad() {
+        return r;
+    }
+
+    double flaeche() {
+        // Dein Code hier
+        return 0;
+    }
+
+    double umfang() {
+        // Dein Code hier
+        return 0;
+    }
+}
+=== pruefung
+Check.gleich("new Kreis(1).flaeche()", Math.PI, () -> new Kreis(1).flaeche());
+Check.gleich("new Kreis(2).flaeche()", 4 * Math.PI, () -> new Kreis(2).flaeche());
+Check.gleich("new Kreis(1).umfang()", 2 * Math.PI, () -> new Kreis(1).umfang());
+Check.gleich("new Kreis().umfang() mit Radius 1", 2 * Math.PI, () -> new Kreis().umfang());
+Check.quelltextEnthaelt("Math.PI wird verwendet", "Math\\s*\\.\\s*PI");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Kreis k = new Kreis(2);
+        System.out.println("Fläche: " + k.flaeche());
+        System.out.println("Umfang: " + k.umfang());
+    }
+}
+
+class Kreis {
+    protected double r;
+
+    Kreis() {
+        this.r = 1.0;
+    }
+
+    Kreis(double r) {
+        this.r = r;
+    }
+
+    double setRad(double r) {
+        this.r = r;
+        return r;
+    }
+
+    double getRad() {
+        return r;
+    }
+
+    double flaeche() {
+        return Math.PI * r * r;
+    }
+
+    double umfang() {
+        return 2 * Math.PI * r;
+    }
+}
+=== tipp
+`return Math.PI * r * r;`

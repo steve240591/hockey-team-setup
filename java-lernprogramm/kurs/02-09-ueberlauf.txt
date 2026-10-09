@@ -1,0 +1,54 @@
+=== titel
+Wertebereiche und Überlauf
+=== erklaerung
+Jeder Ganzzahl-Typ hat einen festen Wertebereich (Skript S. 18):
+
+| Typ | Bit | größter Wert |
+|---|---|---|
+| `byte` | 8 | 127 |
+| `short` | 16 | 32767 |
+| `int` | 32 | 2147483647 |
+| `long` | 64 | 9223372036854775807 |
+
+Wird der Bereich überschritten, gibt es **keinen Fehler** – die Zahl „läuft über“ und wird falsch (oft negativ):
+
+```java
+int gross = 2147483647;
+System.out.println(gross + 1);   // -2147483648
+```
+
+Ein `long`-Literal erkennst du am `L`: `365L`. Rechnet ein Ausdruck mit einem `long`, wird der ganze Rest auch als `long` gerechnet.
+=== aufgabe
+Schreibe `sekundenInJahren(int jahre)` – wie viele Sekunden haben `jahre` Jahre mit je 365 Tagen?
+
+- `sekundenInJahren(1)` → `31536000`
+- `sekundenInJahren(100)` → `3153600000` (passt nicht mehr in einen `int`!)
+=== vorlage
+public class Main {
+
+    static long sekundenInJahren(int jahre) {
+        return jahre * 365 * 24 * 60 * 60;   // Achtung, Falle!
+    }
+
+    public static void main(String[] args) {
+        System.out.println(sekundenInJahren(100));
+    }
+}
+=== pruefung
+Check.gleich("sekundenInJahren(1)", 31536000L, () -> Main.sekundenInJahren(1));
+Check.gleich("sekundenInJahren(100)", 3153600000L, () -> Main.sekundenInJahren(100));
+=== loesung
+public class Main {
+
+    static long sekundenInJahren(int jahre) {
+        return jahre * 365L * 24 * 60 * 60;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(sekundenInJahren(100));
+    }
+}
+=== tipp
+Obwohl der Rückgabetyp `long` ist, wird vorher mit `int` gerechnet. Klicke auf Ausführen und schau dir das Ergebnis an!
+=== tipp
+Mach eine der Zahlen zu einem `long`: `365L`

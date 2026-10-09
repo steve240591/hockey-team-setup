@@ -1,0 +1,107 @@
+=== titel
+super außerhalb der Mathematik
+=== erklaerung
+`super.methode()` ist auch praktisch, um eine geerbte Methode zu **erweitern** statt sie komplett neu zu schreiben:
+
+```java
+class Person {
+    String vorstellen() { return "Ich bin " + name; }
+}
+
+class Spielerin extends Person {
+    @Override
+    String vorstellen() {
+        return super.vorstellen() + " und spiele Eishockey";
+    }
+}
+```
+
+Private Variablen der Basisklasse sind in der Subklasse **nicht** sichtbar – über geerbte Methoden wie `getName()` kommst du trotzdem an die Werte.
+=== aufgabe
+`Person` ist fertig. Ergänze `Trainer`:
+
+1. Der Konstruktor ruft `super(name)` auf und speichert das Team.
+2. `vorstellen()` wird überschrieben und nutzt `super.vorstellen()`:
+   `new Trainer("Pat", "Adler").vorstellen()` → `"Ich bin Pat, Trainer von Adler"`
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        Person p = new Trainer("Pat", "Adler Mannheim");
+        System.out.println(p.vorstellen());
+    }
+}
+
+class Person {
+    private String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    String vorstellen() {
+        return "Ich bin " + name;
+    }
+}
+
+class Trainer extends Person {
+    private String team;
+
+    Trainer(String name, String team) {
+        super(name);
+        // Dein Code hier
+    }
+
+    // vorstellen() hier überschreiben
+}
+=== pruefung
+Check.gleich("Person.vorstellen()", "Ich bin Kim", () -> new Person("Kim").vorstellen());
+Check.gleich("Trainer.vorstellen()", "Ich bin Pat, Trainer von Adler Mannheim", () -> new Trainer("Pat", "Adler Mannheim").vorstellen());
+Check.gleich("dynamische Bindung über Person-Variable", "Ich bin Pat, Trainer von Adler", () -> {
+    Person p = new Trainer("Pat", "Adler");
+    return p.vorstellen();
+});
+Check.gleich("Trainer erbt getName()", "Pat", () -> new Trainer("Pat", "Adler").getName());
+Check.quelltextEnthaelt("super.vorstellen() wird verwendet", "super\\s*\\.\\s*vorstellen\\s*\\(");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        Person p = new Trainer("Pat", "Adler Mannheim");
+        System.out.println(p.vorstellen());
+    }
+}
+
+class Person {
+    private String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    String vorstellen() {
+        return "Ich bin " + name;
+    }
+}
+
+class Trainer extends Person {
+    private String team;
+
+    Trainer(String name, String team) {
+        super(name);
+        this.team = team;
+    }
+
+    @Override
+    String vorstellen() {
+        return super.vorstellen() + ", Trainer von " + team;
+    }
+}
+=== tipp
+`return super.vorstellen() + ", Trainer von " + team;`

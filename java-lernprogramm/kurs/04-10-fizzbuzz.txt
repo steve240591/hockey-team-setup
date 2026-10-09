@@ -1,0 +1,41 @@
+=== titel
+FizzBuzz
+=== erklaerung
+Ein Klassiker aus Vorstellungsgesprächen – er kombiniert Schleife, `if`/`else if` und Modulo.
+
+Wichtig ist die **Reihenfolge** der Bedingungen: Die speziellste Bedingung muss zuerst geprüft werden.
+=== aufgabe
+Gib in `main` die Zahlen von **1 bis 15** aus, jede in einer eigenen Zeile. Aber:
+
+- Vielfache von 3 → `Fizz`
+- Vielfache von 5 → `Buzz`
+- Vielfache von 3 **und** 5 → `FizzBuzz`
+
+Die Ausgabe beginnt also so: `1`, `2`, `Fizz`, `4`, `Buzz`, `Fizz`, …
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        // Dein Code hier
+
+    }
+}
+=== pruefung
+Check.ausgabe("FizzBuzz von 1 bis 15", "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 15; i++) {
+            if (i % 15 == 0) {
+                System.out.println("FizzBuzz");
+            } else if (i % 3 == 0) {
+                System.out.println("Fizz");
+            } else if (i % 5 == 0) {
+                System.out.println("Buzz");
+            } else {
+                System.out.println(i);
+            }
+        }
+    }
+}
+=== tipp
+Prüfe **zuerst**, ob die Zahl durch 3 und 5 (also durch 15) teilbar ist.

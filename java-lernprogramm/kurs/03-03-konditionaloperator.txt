@@ -1,0 +1,49 @@
+=== titel
+Der Konditionaloperator ? :
+=== erklaerung
+`bedingung ? a : b` liefert `a`, wenn die Bedingung wahr ist, sonst `b` (Skript S. 20). Das ist ein „if in einer Zeile“:
+
+```java
+int x = -5;
+int betrag = x < 0 ? -x : x;        // 5
+String text = tore > 0 ? "getroffen" : "kein Tor";
+```
+=== aufgabe
+Schreibe `maximum(int a, int b, int c)`, die die größte der drei Zahlen zurückgibt – **nur** mit dem Konditionaloperator, ohne `if`.
+
+Beispiel: `maximum(5, 9, 2)` → `9`
+=== vorlage
+public class Main {
+
+    static int maximum(int a, int b, int c) {
+        // Dein Code hier
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maximum(5, 9, 2));
+    }
+}
+=== pruefung
+Check.gleich("maximum(5, 9, 2)", 9, () -> Main.maximum(5, 9, 2));
+Check.gleich("maximum(9, 5, 2)", 9, () -> Main.maximum(9, 5, 2));
+Check.gleich("maximum(2, 5, 9)", 9, () -> Main.maximum(2, 5, 9));
+Check.gleich("maximum(-1, -5, -3)", -1, () -> Main.maximum(-1, -5, -3));
+Check.quelltextOhne("kein if verwendet", "\\bif\\b");
+Check.quelltextOhne("kein Math.max verwendet", "Math\\s*\\.\\s*max");
+=== loesung
+public class Main {
+
+    static int maximum(int a, int b, int c) {
+        int ab = a > b ? a : b;
+        return ab > c ? ab : c;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maximum(5, 9, 2));
+    }
+}
+=== tipp
+Bestimme erst das Maximum von `a` und `b` in einer Hilfsvariable.
+=== tipp
+`int ab = a > b ? a : b;` – dann vergleiche `ab` mit `c`.

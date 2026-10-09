@@ -1,0 +1,40 @@
+=== titel
+Hallo Java
+=== erklaerung
+Jedes Java-Programm besteht aus mindestens einer **Klasse**. Das Programm startet in der Methode `main`:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hallo Welt");
+    }
+}
+```
+
+- `public class Main` – die Klasse. Im Trainer heißt sie immer `Main` (Datei `Main.java`). Im Skript heißt sie z. B. `HalloJava` – der Dateiname muss immer zum Klassennamen passen.
+- `public static void main(String[] args)` – die **Startmethode**. Hier beginnt das Programm.
+- `System.out.println(...)` – gibt Text aus und springt danach in eine neue Zeile.
+- Texte (Strings) stehen in doppelten Anführungszeichen `"..."`.
+- Jede Anweisung endet mit einem **Semikolon** `;`.
+
+> Skript S. 7: Der Quelltext muss „zeichengenau“ eingegeben werden – Groß- und Kleinschreibung zählt!
+=== aufgabe
+Ändere das Programm so, dass es genau **Hallo Java** ausgibt.
+
+Klicke dann auf **Prüfen** (oder drücke Strg+Enter).
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hallo Welt");
+    }
+}
+=== pruefung
+Check.ausgabe("Ausgabe ist \"Hallo Java\"", "Hallo Java");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hallo Java");
+    }
+}
+=== tipp
+Ersetze nur den Text zwischen den Anführungszeichen.

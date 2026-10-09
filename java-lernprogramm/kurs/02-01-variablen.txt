@@ -1,0 +1,54 @@
+=== titel
+Variablen
+=== erklaerung
+Eine **Variable** ist ein benannter Speicherplatz für einen Wert. Bei der Deklaration gibst du den **Typ** und den **Namen** an (Skript S. 12):
+
+```java
+int tore = 3;              // ganze Zahl
+double geschwindigkeit = 12.5; // Kommazahl (mit Punkt!)
+boolean gewonnen = true;   // wahr oder falsch
+char buchstabe = 'A';      // ein einzelnes Zeichen
+String name = "Crosby";    // Text (eine Klasse, kein Grunddatentyp)
+```
+
+Mit Variablen kannst du rechnen und sie ausgeben:
+
+```java
+int a = 4;
+int b = 6;
+int summe = a + b;
+System.out.println("Summe: " + summe);   // Summe: 10
+```
+
+> Konvention (Skript S. 9): Variablennamen beginnen mit einem **Kleinbuchstaben**.
+=== aufgabe
+Ein Spieler hat **3 Tore** und **2 Vorlagen**.
+
+1. Lege die Variablen `tore` und `vorlagen` vom Typ `int` an.
+2. Berechne die Scorerpunkte in einer neuen `int`-Variable `punkte` (Tore + Vorlagen).
+3. Gib aus: `Punkte: 5`
+=== vorlage
+public class Main {
+    public static void main(String[] args) {
+        // Dein Code hier
+
+    }
+}
+=== pruefung
+Check.ausgabe("Ausgabe ist \"Punkte: 5\"", "Punkte: 5");
+Check.quelltextEnthaelt("Variable tore vom Typ int", "int\\s+tore\\b");
+Check.quelltextEnthaelt("Variable vorlagen vom Typ int", "int\\s+vorlagen\\b");
+Check.quelltextEnthaelt("Variable punkte vom Typ int", "int\\s+punkte\\b");
+=== loesung
+public class Main {
+    public static void main(String[] args) {
+        int tore = 3;
+        int vorlagen = 2;
+        int punkte = tore + vorlagen;
+        System.out.println("Punkte: " + punkte);
+    }
+}
+=== tipp
+`int punkte = tore + vorlagen;`
+=== tipp
+Für die Ausgabe: `System.out.println("Punkte: " + punkte);`
