@@ -12,7 +12,7 @@ Kurze Lektionen, ein Code-Editor mit Syntaxhervorhebung, ein **Prüfen**-Knopf m
 
 ## Als Mac-App installieren (empfohlen)
 
-**Voraussetzungen:** macOS 13 oder neuer, Xcode (oder nur die Command Line Tools: `xcode-select --install`) und ein JDK ab Version 17, z. B. Eclipse Temurin von adoptium.net.
+**Voraussetzungen:** macOS 13 oder neuer, Xcode (oder nur die Command Line Tools: `xcode-select --install`) und ein **JDK** ab Version 17, z. B. Eclipse Temurin 21 (LTS) von adoptium.net. Wichtig: Das „Java“ von java.com bzw. das Java-Browser-Plug-in ist nur eine Laufzeitumgebung (JRE) ohne Compiler und reicht nicht.
 
 Im Terminal, im Ordner `java-lernprogramm`:
 

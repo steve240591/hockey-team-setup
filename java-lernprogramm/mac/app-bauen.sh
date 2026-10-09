@@ -40,12 +40,36 @@ if ! xcrun --find swiftc >/dev/null 2>&1; then
     echo "Swift-Compiler nicht gefunden. Bitte Xcode installieren oder im Terminal ausführen: xcode-select --install" >&2
     exit 1
 fi
-if ! JAVA_HOME_PFAD=$(/usr/libexec/java_home -v 17+ 2>/dev/null); then
-    echo "Kein JDK ab Version 17 gefunden. Bitte z. B. Eclipse Temurin von https://adoptium.net installieren." >&2
+# Ein JDK ab Version 17 suchen. Wichtig: Es muss javac enthalten - eine reine
+# Laufzeitumgebung (JRE, z. B. das alte Java-Browser-Plug-in) reicht nicht.
+java_version() {
+    "$1/bin/java" -version 2>&1 | head -1 | sed -E 's/.*version "([0-9]+).*/\1/'
+}
+JAVA_HOME_PFAD=""
+for kandidat in "$(/usr/libexec/java_home -v 17+ 2>/dev/null)" \
+        /Library/Java/JavaVirtualMachines/*/Contents/Home \
+        "$HOME"/Library/Java/JavaVirtualMachines/*/Contents/Home \
+        /opt/homebrew/opt/openjdk*/libexec/openjdk.jdk/Contents/Home \
+        /usr/local/opt/openjdk*/libexec/openjdk.jdk/Contents/Home; do
+    if [ -x "$kandidat/bin/javac" ] && [ -x "$kandidat/bin/java" ]; then
+        v=$(java_version "$kandidat")
+        case "$v" in
+            ''|*[!0-9]*) continue ;;
+        esac
+        if [ "$v" -ge 17 ]; then
+            JAVA_HOME_PFAD="$kandidat"
+            break
+        fi
+    fi
+done
+if [ -z "$JAVA_HOME_PFAD" ]; then
+    echo "Kein JDK ab Version 17 mit Compiler (javac) gefunden." >&2
+    echo "Bitte ein JDK installieren, z. B. Eclipse Temurin 21 (LTS) für macOS von https://adoptium.net" >&2
+    echo "Gefunden wurde nur: $(/usr/libexec/java_home 2>/dev/null)" >&2
     exit 1
 fi
 echo "    macOS $(sw_vers -productVersion), $(uname -m)"
-echo "    JDK: $JAVA_HOME_PFAD"
+echo "    JDK: $JAVA_HOME_PFAD (Version $(java_version "$JAVA_HOME_PFAD"))"
 echo "    $(xcrun swiftc --version 2>&1 | head -1)"
 
 SCHRITT="Anthropic-SDK laden"
@@ -63,11 +87,13 @@ SCHRITT="Java-Teil übersetzen"
 echo "3/7 $SCHRITT ..."
 "$JAVA_HOME_PFAD/bin/javac" -encoding UTF-8 -nowarn -cp "lib/*" -d "$RES/klassen" Trainer.java
 cp -R kurs web lib "$RES/"
+# Die App merkt sich, mit welchem JDK sie gebaut wurde.
+printf '%s\n' "$JAVA_HOME_PFAD" > "$RES/jdk-pfad.txt"
 
 SCHRITT="App übersetzen (Swift)"
 echo "4/7 $SCHRITT ..."
 ARCH=$(uname -m)
-xcrun swiftc -O -parse-as-library -target "$ARCH-apple-macos13.0" \
+xcrun swiftc -O -parse-as-library -swift-version 5 -target "$ARCH-apple-macos13.0" \
     mac/JavaTrainerApp.swift -o "$APP/Contents/MacOS/Java-Trainer"
 
 SCHRITT="App-Symbol und Info.plist"

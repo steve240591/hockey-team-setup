@@ -163,8 +163,22 @@ final class TrainerServer: ObservableObject {
         zustand = .fehler("Der Java-Teil wurde beendet (Code \(code)).\n\n\(ende)")
     }
 
-    /// Fragt macOS nach einem installierten JDK ab Version 17.
+    /// Sucht ein JDK (mit javac): zuerst das, mit dem die App gebaut wurde,
+    /// dann den Vorschlag von macOS. Eine reine JRE reicht nicht.
     static func javaHome() -> String? {
+        var kandidaten: [String] = []
+        if let datei = Bundle.main.resourceURL?.appendingPathComponent("trainer/jdk-pfad.txt"),
+           let text = try? String(contentsOf: datei, encoding: .utf8) {
+            kandidaten.append(text.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        if let vorschlag = javaHomeVorschlag() {
+            kandidaten.append(vorschlag)
+        }
+        return kandidaten.first { FileManager.default.isExecutableFile(atPath: $0 + "/bin/javac") }
+    }
+
+    /// Fragt macOS nach einer installierten Java-Version ab 17.
+    static func javaHomeVorschlag() -> String? {
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/usr/libexec/java_home")
         p.arguments = ["-v", "17+"]
