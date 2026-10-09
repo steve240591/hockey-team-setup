@@ -1,0 +1,27 @@
+# Anthropic-Java-SDK und Abhängigkeiten (von Maven Central). Format: Datei SHA-256 URL
+anthropic-java-client-okhttp-2.70.0.jar 3142a1bec83a0cba4ab38a6f057ddd6ff9433d185de942181d291109b6f0ebf2 https://repo1.maven.org/maven2/com/anthropic/anthropic-java-client-okhttp/2.70.0/anthropic-java-client-okhttp-2.70.0.jar
+anthropic-java-core-2.70.0.jar fa54cec453ec726c6bfb382f8fefd3fffcc8172103ce90e0d00a2a30d116ffdc https://repo1.maven.org/maven2/com/anthropic/anthropic-java-core/2.70.0/anthropic-java-core-2.70.0.jar
+anthropic-java-2.70.0.jar 2dd962ed16ab314f54f444b0ea88078d6fcc542b4525953255751809d706c936 https://repo1.maven.org/maven2/com/anthropic/anthropic-java/2.70.0/anthropic-java-2.70.0.jar
+jackson-annotations-2.19.4.jar ab26383fa3c10c0df1ffd1bb035d81161c059b1af71927d73c24473c058baa16 https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.19.4/jackson-annotations-2.19.4.jar
+jackson-core-2.19.4.jar 466ae4dc4f7054f51525f4211df411d9a64d65cc169995d32bf49e20e6f586e5 https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.19.4/jackson-core-2.19.4.jar
+jackson-databind-2.19.4.jar b781c431be870deb0bf84421e99e774c256a701f4ba678df80248f55cd16ff74 https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.19.4/jackson-databind-2.19.4.jar
+jackson-datatype-jdk8-2.19.4.jar c0e0dc3039f9a37a099b2602838f833ea8c15c56445a0eb5463d0c7e0c355da2 https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.19.4/jackson-datatype-jdk8-2.19.4.jar
+jackson-datatype-jsr310-2.19.4.jar 070af4d7c345cf975ff783138050678e6194e5bb88ab489385d0311a5fcb1585 https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.19.4/jackson-datatype-jsr310-2.19.4.jar
+jackson-module-kotlin-2.19.4.jar 440a2533aa6523296a58c4798ad920cd77b1b819ccc6fbd9e96c81d53794ed90 https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.19.4/jackson-module-kotlin-2.19.4.jar
+classmate-1.7.0.jar cb868f231c5cceb89d795ea00e6e1b7a93b8f4ac1ce1d8be76dde322dff4a046 https://repo1.maven.org/maven2/com/fasterxml/classmate/1.7.0/classmate-1.7.0.jar
+jsonschema-generator-4.38.0.jar ade4aeb301db4028ac6bcba016c31405677e37aae6eebaf13c99de3fdb3531b4 https://repo1.maven.org/maven2/com/github/victools/jsonschema-generator/4.38.0/jsonschema-generator-4.38.0.jar
+jsonschema-module-jackson-4.38.0.jar 36fbd3f1c27379c3ba8420ac2cb0b42411f7bc3b3df8bdd11d8d7e024a1c28ca https://repo1.maven.org/maven2/com/github/victools/jsonschema-module-jackson/4.38.0/jsonschema-module-jackson-4.38.0.jar
+jsonschema-module-swagger-2-4.38.0.jar b76c0df657bcf88cca46d7ad540938552e10127a7c28d2136f62b631666997c1 https://repo1.maven.org/maven2/com/github/victools/jsonschema-module-swagger-2/4.38.0/jsonschema-module-swagger-2-4.38.0.jar
+error_prone_annotations-2.50.0.jar 4667724877f1d37a689202da191e23efa7657c62eef93ccdac406eccfe5cdd0a https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.50.0/error_prone_annotations-2.50.0.jar
+okhttp-4.12.0.jar b1050081b14bb7a3a7e55a4d3ef01b5dcfabc453b4573a4fc019767191d5f4e0 https://repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/4.12.0/okhttp-4.12.0.jar
+okio-jvm-3.6.0.jar 67543f0736fc422ae927ed0e504b98bc5e269fda0d3500579337cb713da28412 https://repo1.maven.org/maven2/com/squareup/okio/okio-jvm/3.6.0/okio-jvm-3.6.0.jar
+okio-3.6.0.jar 8e63292e5c53bb93c4a6b0c213e79f15990fed250c1340f1c343880e1c9c39b5 https://repo1.maven.org/maven2/com/squareup/okio/okio/3.6.0/okio-3.6.0.jar
+standardwebhooks-1.2.0.jar ba63bc64feb5866750ca72770108fbcbbed28862bc1cc577db7bd3ef9d2d007b https://repo1.maven.org/maven2/com/standardwebhooks/standardwebhooks/1.2.0/standardwebhooks-1.2.0.jar
+swagger-annotations-2.2.50.jar 66e571d19a2ac61842007194f7dad221f6a130671c0d99bf854279ef6458a16b https://repo1.maven.org/maven2/io/swagger/core/v3/swagger-annotations/2.2.50/swagger-annotations-2.2.50.jar
+kotlin-reflect-1.9.0.jar 2070159be514ea8ea3ce2c8b1ee7993e6ff60a93565a299f200629aa7df7f581 https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.9.0/kotlin-reflect-1.9.0.jar
+kotlin-stdlib-common-1.9.0.jar 283274204bd7c020789ec46f8f8e72af4244d7f550b3392a57e5ca006ad7aa2c https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.9.0/kotlin-stdlib-common-1.9.0.jar
+kotlin-stdlib-jdk7-1.9.0.jar b7979a7aac94055f0d9f1fd3b47ce5ffe1cb6032a842ba9fbe7186f085289178 https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.9.0/kotlin-stdlib-jdk7-1.9.0.jar
+kotlin-stdlib-jdk8-1.9.0.jar a59fa24fdf1ffb594baecdbf0fd10010f977cea10236d487fe3464977a7377fa https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.0/kotlin-stdlib-jdk8-1.9.0.jar
+kotlin-stdlib-1.9.0.jar 35aeffbe2db5aa446072cee50fcee48b7fa9e2fc51ca37c0cc7d7d0bc39d952e https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.0/kotlin-stdlib-1.9.0.jar
+annotations-13.0.jar ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478 https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.jar
+slf4j-api-2.0.16.jar a12578dde1ba00bd9b816d388a0b879928d00bab3c83c240f7013bf4196c579a https://repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.16/slf4j-api-2.0.16.jar

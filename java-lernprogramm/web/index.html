@@ -23,6 +23,9 @@
       <span id="gesamtText">0 / 0</span>
     </div>
     <div class="kopf-rechts">
+      <button class="claude-knopf" id="claudeKnopf" title="Claude um Hilfe bitten">
+        <span class="claude-stern">✦</span> Claude
+      </button>
       <span class="pille pille-xp" title="Erfahrungspunkte"><span aria-hidden="true">⚡</span> <b id="xpWert">0</b> XP</span>
       <span class="pille pille-serie" title="Lernserie: Tage in Folge mit mindestens einer gelösten Lektion"><span aria-hidden="true">🔥</span> <b id="serieWert">0</b></span>
       <button class="icon-knopf" id="themaKnopf" aria-label="Hell/Dunkel umschalten" title="Hell/Dunkel">
@@ -87,6 +90,59 @@
         </section>
       </section>
     </main>
+  </div>
+
+  <!-- Claude als Lern-Coach -->
+  <aside class="coach" id="coach" hidden aria-label="Claude, dein Lern-Coach">
+    <div class="coach-kopf">
+      <div class="coach-avatar">✦</div>
+      <div class="coach-name"><b>Claude</b><small>Dein Lern-Coach</small></div>
+      <button class="icon-knopf" id="coachLeeren" title="Gespräch zu dieser Lektion leeren" aria-label="Gespräch leeren">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-knopf" id="coachEinstellungen" title="API-Schlüssel entfernen" aria-label="Einstellungen">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 11V8a4 4 0 0 1 8 0v3M6 11h12v9H6z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-knopf" id="coachSchliessen" aria-label="Schließen">✕</button>
+    </div>
+
+    <div class="coach-einrichtung" id="coachEinrichtung">
+      <div class="coach-avatar gross">✦</div>
+      <h3>Claude einrichten</h3>
+      <p>Claude gibt dir Tipps, kontrolliert deinen Code mit dem echten Prüfergebnis und erklärt Fehlermeldungen. Dafür braucht die App einen API-Schlüssel von Anthropic.</p>
+      <ol>
+        <li>Öffne die <a href="#" id="consoleLink">Claude Console (platform.claude.com)</a> und melde dich an.</li>
+        <li>Lege unter <b>API Keys</b> einen neuen Schlüssel an und kopiere ihn.</li>
+        <li>Füge ihn hier ein:</li>
+      </ol>
+      <input type="password" id="schluesselFeld" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+      <button class="knopf knopf-haupt" id="schluesselSpeichern">Schlüssel prüfen und speichern</button>
+      <p class="schluessel-meldung" id="schluesselMeldung" role="status"></p>
+      <p class="klein"><b>Kosten:</b> Die Nutzung wird über dein Anthropic-Konto abgerechnet. Modell claude-opus-5-5: 4 $ je 1 Mio. Eingabe-Tokens und 20 $ je 1 Mio. Ausgabe-Tokens. Eine typische Frage kostet grob 1–5 Cent; nach jeder Antwort zeigt die App die ungefähren Kosten an.</p>
+      <p class="klein" id="schluesselOrt"></p>
+    </div>
+
+    <div class="coach-chat" id="coachChat" hidden>
+      <div class="coach-verlauf" id="coachVerlauf"></div>
+      <div class="coach-aktionen" id="coachAktionen"></div>
+      <form class="coach-eingabe" id="coachForm">
+        <textarea id="coachText" rows="2" placeholder="Frag Claude zu dieser Lektion … (Enter senden, Umschalt+Enter neue Zeile)"></textarea>
+        <button class="knopf knopf-haupt" id="coachSenden" type="submit" aria-label="Senden">➤</button>
+      </form>
+    </div>
+    <div class="coach-fuss" id="coachFuss"></div>
+  </aside>
+
+  <!-- Bestätigung -->
+  <div class="overlay" id="frageDialog" hidden>
+    <div class="dialog-karte frage-karte" role="alertdialog" aria-modal="true" aria-labelledby="frageTitel">
+      <h2 id="frageTitel"></h2>
+      <p id="frageText" class="gedaempft"></p>
+      <div class="erfolg-knoepfe">
+        <button class="knopf knopf-zweit" id="frageNein">Abbrechen</button>
+        <button class="knopf knopf-haupt" id="frageJa">OK</button>
+      </div>
+    </div>
   </div>
 
   <!-- Erfolg -->

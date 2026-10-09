@@ -139,6 +139,8 @@ async function start() {
   setzeThema(zustand.thema || 'dark');
   baueEditor();
   verbindeKnoepfe();
+  verbindeCoach();
+  ladeCoachStatus();
   renderKopf();
   window.addEventListener('hashchange', route);
   route();
@@ -237,6 +239,7 @@ function naechsteOffene() {
 
 function zeigeUebersicht() {
   aktuelle = null;
+  setTimeout(renderCoach, 0);
   $('lektion').hidden = true;
   const ue = $('uebersicht');
   ue.hidden = false;
@@ -300,6 +303,7 @@ function zeigeUebersicht() {
 // ---------------------------------------------------------------------
 function zeigeLektion(l) {
   aktuelle = l;
+  setTimeout(renderCoach, 0);
   zustand.letzte = l.id;
   speichern();
   offeneKapitel.add(l.kapitel);
@@ -581,7 +585,8 @@ function zeigeDiagnosen(diagnosen) {
     html += `<div class="diagnose"><span class="diagnose-zeile">Hinweis</span>Die Prüfung findet etwas nicht, das sie erwartet.
       Hast du eine Methode oder Klasse umbenannt, gelöscht oder ihre Parameter geändert?<pre>${esc(fremde.map((d) => d.meldung).join('\n'))}</pre></div>`;
   }
-  $('konsoleErgebnis').innerHTML = html;
+  $('konsoleErgebnis').innerHTML = html + claudeKnopfHtml('fehler', 'Claude erklärt mir den Fehler');
+  verbindeClaudeKnopf();
   zeigeReiter('ergebnis');
   markiereFehlerzeilen(eigene.map((d) => d.zeile));
   for (const knopf of $('konsoleErgebnis').querySelectorAll('button.diagnose')) {
@@ -623,7 +628,24 @@ function zeigeTests(r) {
   if (!tests.length) {
     liste = '<p class="leer-hinweis">Es konnte kein Test ausgeführt werden. Schau im Reiter „Konsole“ nach Fehlermeldungen.</p>';
   }
-  $('konsoleErgebnis').innerHTML = kopf + liste;
+  $('konsoleErgebnis').innerHTML = kopf + liste + (r.status === 'bestanden'
+    ? claudeKnopfHtml('pruefen', 'Code-Review von Claude')
+    : claudeKnopfHtml('pruefen', 'Claude fragen, was nicht stimmt'));
+  verbindeClaudeKnopf();
+}
+
+function claudeKnopfHtml(modus, text) {
+  return `<button class="claude-inline" data-modus="${modus}"><span class="claude-stern">✦</span> ${esc(text)}</button>`;
+}
+
+function verbindeClaudeKnopf() {
+  for (const knopf of $('konsoleErgebnis').querySelectorAll('.claude-inline')) {
+    knopf.addEventListener('click', () => {
+      oeffneCoach();
+      const modus = knopf.dataset.modus;
+      coachSenden(modus, '', modus === 'fehler' ? '🧩 Erklär mir die Fehlermeldung' : '🔍 Prüf meinen Code');
+    });
+  }
 }
 
 // ---------------------------------------------------------------------
@@ -661,6 +683,7 @@ function renderQuiz(l) {
     const knopf = document.createElement('button');
     knopf.className = 'option';
     knopf.innerHTML = `<span class="option-buchstabe">${'ABCDEFGH'[i]}</span><span class="md">${inline(text)}</span>`;
+    knopf.dataset.index = i;
     knopf.addEventListener('click', () => {
       gewaehlt = i;
       knoepfe.forEach((k, j) => k.classList.toggle('gewaehlt', j === i));
@@ -703,7 +726,12 @@ function renderQuiz(l) {
       falsch.disabled = true;
       gewaehlt = -1;
       $('antwortKnopf').disabled = true;
-      $('quizMeldung').textContent = 'Leider falsch – versuch es noch einmal.';
+      $('quizMeldung').innerHTML = 'Leider falsch – versuch es noch einmal. '
+        + '<button class="link-knopf" id="quizClaude">Claude um einen Denkanstoß bitten</button>';
+      $('quizClaude').addEventListener('click', () => {
+        oeffneCoach();
+        coachSenden('tipp', 'Ich habe beim Quiz falsch geantwortet: „' + l.optionen[falsch.dataset.index] + '“. Gib mir einen Denkanstoß, ohne die Lösung zu verraten.', '💡 Gib mir einen Denkanstoß zum Quiz');
+      });
     }
   });
   $('quizZurueck').addEventListener('click', () => geheZu(kurs.lektionen[index - 1]));
@@ -819,9 +847,10 @@ function konfetti(anzahl) {
 async function zeigeLoesung(l) {
   if (!istErledigt(l.id) && !zustand.loesungGesehen[l.id]) {
     const versuche = zustand.versuche[l.id] || 0;
-    const frage = (versuche < 2 ? 'Du hast erst ' + versuche + (versuche === 1 ? ' Versuch' : ' Versuche') + ' gemacht. ' : '')
-      + 'Wenn du die Lösung vor dem Bestehen ansiehst, gibt es für diese Lektion nur die halben XP.\n\nTrotzdem ansehen?';
-    if (!confirm(frage)) {
+    const text = (versuche < 2 ? 'Du hast erst ' + versuche + (versuche === 1 ? ' Versuch' : ' Versuche') + ' gemacht. ' : '')
+      + 'Wenn du die Lösung vor dem Bestehen ansiehst, gibt es für diese Lektion nur die halben XP. '
+      + 'Tipp: Frag vorher Claude nach einem Hinweis.';
+    if (!await frage('Musterlösung ansehen?', text, 'Trotzdem ansehen')) {
       return;
     }
     zustand.loesungGesehen[l.id] = true;
@@ -834,8 +863,8 @@ async function zeigeLoesung(l) {
     CodeMirror.runMode(r.loesung, 'text/x-java', pre);
     $('loesungDialog').hidden = false;
     $('loesungOk').focus();
-    $('loesungUebernehmen').onclick = () => {
-      if (confirm('Deinen Code im Editor durch die Musterlösung ersetzen?')) {
+    $('loesungUebernehmen').onclick = async () => {
+      if (await frage('Code ersetzen?', 'Dein Code im Editor wird durch die Musterlösung ersetzt.', 'Ersetzen')) {
         editor.setValue(r.loesung);
         schliesseOverlay('loesungDialog');
       }
@@ -851,8 +880,8 @@ async function zeigeLoesung(l) {
 function verbindeKnoepfe() {
   $('ausfuehrenKnopf').addEventListener('click', ausfuehren);
   $('pruefenKnopf').addEventListener('click', pruefen);
-  $('zuruecksetzenKnopf').addEventListener('click', () => {
-    if (aktuelle && confirm('Deinen Code verwerfen und die Vorlage wiederherstellen?')) {
+  $('zuruecksetzenKnopf').addEventListener('click', async () => {
+    if (aktuelle && await frage('Zurücksetzen?', 'Dein Code wird verworfen und die Vorlage wiederhergestellt.', 'Zurücksetzen')) {
       editor.setValue(aktuelle.vorlage);
     }
   });
@@ -891,11 +920,14 @@ function verbindeKnoepfe() {
   }
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      if (!$('frageDialog').hidden) {
+        return;
+      }
       schliesseOverlay('erfolg');
       schliesseOverlay('loesungDialog');
       schliesseMenue();
     }
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !editor.hasFocus()) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !editor.hasFocus() && !e.target.closest('#coach')) {
       e.preventDefault();
       if (e.shiftKey) {
         ausfuehren();
@@ -1025,6 +1057,325 @@ function hebeCodeHervor(wurzel) {
     pre.textContent = '';
     CodeMirror.runMode(code, 'text/x-java', pre);
   }
+}
+
+// ---------------------------------------------------------------------
+//  Bestätigungsdialog (statt confirm(), das in der Mac-App nicht erscheint)
+// ---------------------------------------------------------------------
+function frage(titel, text, jaText = 'OK') {
+  return new Promise((aufloesen) => {
+    $('frageTitel').textContent = titel;
+    $('frageText').textContent = text;
+    $('frageJa').textContent = jaText;
+    $('frageDialog').hidden = false;
+    $('frageJa').focus();
+    const ende = (antwort) => {
+      $('frageDialog').hidden = true;
+      $('frageJa').onclick = null;
+      $('frageNein').onclick = null;
+      document.removeEventListener('keydown', taste, true);
+      aufloesen(antwort);
+    };
+    const taste = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        ende(false);
+      }
+    };
+    document.addEventListener('keydown', taste, true);
+    $('frageJa').onclick = () => ende(true);
+    $('frageNein').onclick = () => ende(false);
+  });
+}
+
+// ---------------------------------------------------------------------
+//  Claude als Lern-Coach
+// ---------------------------------------------------------------------
+const APP = Boolean(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.javatrainer);
+let coachStatus = null;
+let coachLaeuft = false;
+const dollar = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 3 });
+
+function anApp(nachricht) {
+  if (APP) {
+    window.webkit.messageHandlers.javatrainer.postMessage(nachricht);
+  }
+}
+
+function oeffneExtern(url) {
+  if (APP) {
+    anApp({ aktion: 'oeffnen', url });
+  } else {
+    window.open(url, '_blank', 'noopener');
+  }
+}
+
+async function ladeCoachStatus() {
+  try {
+    coachStatus = await api('/api/claude/status');
+  } catch (e) {
+    coachStatus = null;
+  }
+  renderCoach();
+}
+
+function oeffneCoach() {
+  $('coach').hidden = false;
+  document.body.classList.add('coach-offen');
+  $('claudeKnopf').classList.add('aktiv');
+  renderCoach();
+  setTimeout(() => {
+    const feld = coachStatus && coachStatus.aktiv ? $('coachText') : $('schluesselFeld');
+    if (feld && window.innerWidth > 860) {
+      feld.focus();
+    }
+  }, 50);
+}
+
+function schliesseCoach() {
+  $('coach').hidden = true;
+  document.body.classList.remove('coach-offen');
+  $('claudeKnopf').classList.remove('aktiv');
+}
+
+function coachVerlauf(id) {
+  zustand.coach = zustand.coach || {};
+  if (!zustand.coach[id]) {
+    zustand.coach[id] = [];
+  }
+  return zustand.coach[id];
+}
+
+function renderCoach() {
+  if ($('coach').hidden) {
+    return;
+  }
+  const aktiv = Boolean(coachStatus && coachStatus.aktiv);
+  $('coachEinrichtung').hidden = aktiv;
+  $('coachChat').hidden = !aktiv;
+  $('coachFuss').textContent = aktiv
+    ? coachStatus.modell + ' · bisher ≈ ' + dollar.format(zustand.coachKosten || 0)
+    : '';
+  if (!aktiv) {
+    $('schluesselOrt').textContent = APP
+      ? 'Der Schlüssel wird im macOS-Schlüsselbund gespeichert.'
+      : 'Der Schlüssel wird in ~/.javatrainer/ gespeichert (nur für dich lesbar).';
+    return;
+  }
+  const verlauf = $('coachVerlauf');
+  if (!aktuelle) {
+    verlauf.innerHTML = '<div class="coach-leer"><div class="coach-avatar gross">✦</div><p>Öffne eine Lektion – dann kenne ich die Aufgabe, deinen Code und das Prüfergebnis und kann dir gezielt helfen.</p></div>';
+    $('coachAktionen').innerHTML = '';
+    $('coachForm').hidden = true;
+    return;
+  }
+  $('coachForm').hidden = false;
+  const nachrichten = coachVerlauf(aktuelle.id);
+  let html = '';
+  if (!nachrichten.length) {
+    html = `<div class="coach-leer"><div class="coach-avatar gross">✦</div>
+      <p><b>Hi, ich bin Claude.</b> Ich sehe die Lektion „${esc(aktuelle.titel)}“${aktuelle.typ === 'code' ? ', deinen Code und was der Compiler dazu sagt' : ''}.
+      Ich gebe dir lieber Denkanstöße als fertige Lösungen – du sollst ja selbst draufkommen.</p></div>`;
+  }
+  for (const n of nachrichten) {
+    if (n.rolle === 'user') {
+      html += `<div class="blase blase-ich">${esc(n.text)}</div>`;
+    } else {
+      html += `<div class="blase blase-claude"><div class="md">${md(n.text)}</div>`
+        + (n.laeuft ? '<span class="tippt"><i></i><i></i><i></i></span>' : '')
+        + (n.hinweis ? `<div class="blase-hinweis">${esc(n.hinweis)}</div>` : '')
+        + (n.fehler ? `<div class="blase-fehler">${esc(n.fehler)}</div>` : '')
+        + (n.kosten !== undefined ? `<div class="blase-kosten">≈ ${dollar.format(n.kosten)}</div>` : '')
+        + '</div>';
+    }
+  }
+  verlauf.innerHTML = html;
+  hebeCodeHervor(verlauf);
+  verlauf.scrollTop = verlauf.scrollHeight;
+
+  const aktionen = aktuelle.typ === 'code'
+    ? [['tipp', '💡 Tipp', '💡 Gib mir einen Tipp'], ['pruefen', '🔍 Code prüfen', '🔍 Prüf meinen Code'],
+      ['fehler', '🧩 Fehler erklären', '🧩 Erklär mir die Fehlermeldung'], ['erklaeren', '📘 Thema erklären', '📘 Erklär mir das Thema anders']]
+    : [['erklaeren', '📘 Thema erklären', '📘 Erklär mir das Thema anders'], ['tipp', '💡 Denkanstoß', '💡 Gib mir einen Denkanstoß']];
+  $('coachAktionen').innerHTML = aktionen.map(([modus, kurz, lang]) =>
+    `<button class="chip" data-modus="${modus}" data-text="${esc(lang)}" ${coachLaeuft ? 'disabled' : ''}>${kurz}</button>`).join('');
+  for (const chip of $('coachAktionen').querySelectorAll('.chip')) {
+    chip.addEventListener('click', () => coachSenden(chip.dataset.modus, '', chip.dataset.text));
+  }
+  $('coachSenden').disabled = coachLaeuft;
+}
+
+async function coachSenden(modus, frageText, anzeige) {
+  if (coachLaeuft || !aktuelle || !(coachStatus && coachStatus.aktiv)) {
+    return;
+  }
+  const l = aktuelle;
+  const nachrichten = coachVerlauf(l.id);
+  // Verlauf nur aus vollständigen Frage-Antwort-Paaren
+  const bisher = [];
+  for (let i = 0; i + 1 < nachrichten.length; i++) {
+    const a = nachrichten[i];
+    const b = nachrichten[i + 1];
+    if (a.rolle === 'user' && b.rolle === 'assistant' && b.text && !b.fehler) {
+      bisher.push({ rolle: 'user', text: a.text }, { rolle: 'assistant', text: b.text });
+      i++;
+    }
+  }
+  nachrichten.push({ rolle: 'user', text: anzeige || frageText });
+  const antwort = { rolle: 'assistant', text: '', laeuft: true };
+  nachrichten.push(antwort);
+  while (nachrichten.length > 40) {
+    nachrichten.splice(0, 2);
+  }
+  coachLaeuft = true;
+  renderCoach();
+
+  let zeichnen = false;
+  const neuZeichnen = () => {
+    if (!zeichnen) {
+      zeichnen = true;
+      requestAnimationFrame(() => {
+        zeichnen = false;
+        if (aktuelle === l) {
+          renderCoach();
+        }
+      });
+    }
+  };
+  try {
+    const r = await fetch('/api/claude/hilfe', {
+      method: 'POST',
+      headers: { 'X-Token': TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: l.id,
+        modus,
+        frage: frageText,
+        code: l.typ === 'code' ? editor.getValue() : '',
+        verlauf: bisher,
+      }),
+    });
+    if (!r.ok || !r.body) {
+      throw new Error('HTTP ' + r.status);
+    }
+    const leser = r.body.getReader();
+    const dekoder = new TextDecoder();
+    let puffer = '';
+    for (;;) {
+      const { done, value } = await leser.read();
+      if (done) {
+        break;
+      }
+      puffer += dekoder.decode(value, { stream: true });
+      let umbruch;
+      while ((umbruch = puffer.indexOf('\n')) >= 0) {
+        const zeile = puffer.slice(0, umbruch);
+        puffer = puffer.slice(umbruch + 1);
+        if (!zeile.trim()) {
+          continue;
+        }
+        const e = JSON.parse(zeile);
+        if (e.typ === 'text') {
+          antwort.text += e.text;
+        } else if (e.typ === 'hinweis') {
+          antwort.hinweis = e.text;
+        } else if (e.typ === 'fehler') {
+          antwort.fehler = e.text;
+        } else if (e.typ === 'ende') {
+          antwort.kosten = e.kostenUsd;
+          zustand.coachKosten = (zustand.coachKosten || 0) + e.kostenUsd;
+        }
+        neuZeichnen();
+      }
+    }
+    if (!antwort.text && !antwort.fehler && !antwort.hinweis) {
+      antwort.fehler = 'Keine Antwort erhalten.';
+    }
+  } catch (e) {
+    antwort.fehler = 'Keine Verbindung zum Trainer oder zu Anthropic.';
+  } finally {
+    antwort.laeuft = false;
+    coachLaeuft = false;
+    speichern();
+    renderCoach();
+  }
+}
+
+async function schluesselSpeichern() {
+  const wert = $('schluesselFeld').value.trim();
+  const meldung = $('schluesselMeldung');
+  if (!wert) {
+    meldung.textContent = 'Bitte einen Schlüssel einfügen.';
+    return;
+  }
+  $('schluesselSpeichern').disabled = true;
+  meldung.textContent = 'Wird geprüft …';
+  try {
+    const r = await api('/api/claude/schluessel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ schluessel: wert }),
+    });
+    if (r.ok) {
+      anApp({ aktion: 'schluesselSpeichern', wert });
+      $('schluesselFeld').value = '';
+      meldung.textContent = '';
+      await ladeCoachStatus();
+      toast('Claude ist eingerichtet ✦');
+    } else {
+      meldung.textContent = r.meldung;
+    }
+  } catch (e) {
+    meldung.textContent = 'Keine Verbindung zum Trainer.';
+  } finally {
+    $('schluesselSpeichern').disabled = false;
+  }
+}
+
+function verbindeCoach() {
+  $('claudeKnopf').addEventListener('click', () => ($('coach').hidden ? oeffneCoach() : schliesseCoach()));
+  $('coachSchliessen').addEventListener('click', schliesseCoach);
+  $('schluesselSpeichern').addEventListener('click', schluesselSpeichern);
+  $('schluesselFeld').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      schluesselSpeichern();
+    }
+  });
+  $('consoleLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    oeffneExtern('https://platform.claude.com/settings/keys');
+  });
+  $('coachEinstellungen').addEventListener('click', async () => {
+    if (!(coachStatus && coachStatus.aktiv)) {
+      return;
+    }
+    if (await frage('API-Schlüssel entfernen?', 'Claude ist danach ausgeschaltet, bis du wieder einen Schlüssel einträgst. Dein Gesprächsverlauf bleibt erhalten.', 'Entfernen')) {
+      await api('/api/claude/schluessel', { method: 'DELETE' });
+      anApp({ aktion: 'schluesselLoeschen' });
+      await ladeCoachStatus();
+    }
+  });
+  $('coachLeeren').addEventListener('click', async () => {
+    if (aktuelle && coachVerlauf(aktuelle.id).length && !coachLaeuft
+        && await frage('Gespräch leeren?', 'Der Verlauf mit Claude zu dieser Lektion wird gelöscht.', 'Leeren')) {
+      zustand.coach[aktuelle.id] = [];
+      speichern();
+      renderCoach();
+    }
+  });
+  $('coachForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = $('coachText').value.trim();
+    if (text) {
+      $('coachText').value = '';
+      coachSenden('frage', text, text);
+    }
+  });
+  $('coachText').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      $('coachForm').requestSubmit();
+    }
+  });
 }
 
 start();

@@ -1,3 +1,21 @@
+import com.anthropic.client.AnthropicClient;
+import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+import com.anthropic.core.http.StreamResponse;
+import com.anthropic.errors.AnthropicIoException;
+import com.anthropic.errors.AnthropicServiceException;
+import com.anthropic.errors.NotFoundException;
+import com.anthropic.errors.PermissionDeniedException;
+import com.anthropic.errors.RateLimitException;
+import com.anthropic.errors.UnauthorizedException;
+import com.anthropic.models.beta.messages.BetaFallbacksParam;
+import com.anthropic.models.beta.messages.BetaMessageDeltaUsage;
+import com.anthropic.models.beta.messages.BetaOutputConfig;
+import com.anthropic.models.beta.messages.BetaRawMessageStreamEvent;
+import com.anthropic.models.beta.messages.BetaStopReason;
+import com.anthropic.models.beta.messages.BetaUsage;
+import com.anthropic.models.beta.messages.MessageCreateParams;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -21,11 +39,14 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.HexFormat;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,19 +56,24 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /*
- * JAVA-TRAINER - lokale Lernumgebung im Browser
+ * JAVA-TRAINER - lokale Lernumgebung
  *
- * Start (im Ordner java-lernprogramm):
- *     java Trainer.java
- * oder per Doppelklick auf starten.bat (Windows) bzw. starten.sh (macOS/Linux).
+ * Normalerweise startest du den Trainer als Mac-App (siehe mac/app-bauen.sh).
+ * Ohne App geht es auch im Browser: starten.sh / starten.command / starten.bat.
+ * Diese Skripte laden einmalig das Anthropic-Java-SDK nach lib/ (für den
+ * Claude-Coach) und starten dann:
+ *     java -cp "lib/*" Trainer.java
  *
  * Der Trainer startet einen kleinen Webserver, der NUR auf diesem Rechner
- * erreichbar ist (localhost), und öffnet die Oberfläche im Browser.
- * Dein Code wird mit dem javac deines JDK übersetzt und in einem eigenen
- * Java-Prozess mit Zeitlimit ausgeführt.
+ * erreichbar ist (localhost). Dein Code wird mit dem javac deines JDK übersetzt
+ * und in einem eigenen Java-Prozess mit Zeitlimit ausgeführt.
  *
- * Selbsttest aller Lektionen (für Entwickler):
- *     java Trainer.java --selbsttest
+ * Optionen:
+ *     --app           Start aus der Mac-App: kein Browser, Adresse als
+ *                     "JAVATRAINER_URL=..." auf der Standardausgabe; der Server
+ *                     beendet sich, sobald die App ihre Standardeingabe schließt.
+ *     --daten <ordner> Ordner für fortschritt.json (Standard: dieser Ordner)
+ *     --selbsttest    alle Lektionen prüfen (für Entwickler)
  */
 public class Trainer {
 
@@ -56,18 +82,35 @@ public class Trainer {
     static final int MAX_ANFRAGE = 2 * 1024 * 1024;
 
     static Path basis;
+    static Path daten;
+    static boolean appModus;
     static String token;
     static int port;
 
     public static void main(String[] args) throws Exception {
         basis = findeBasis();
+        daten = basis;
+        boolean selbsttest = false;
+        for (int i = 0; i < args.length; i++) {
+            switch (args[i]) {
+                case "--app" -> appModus = true;
+                case "--selbsttest" -> selbsttest = true;
+                case "--daten" -> daten = Path.of(args[++i]).toAbsolutePath().normalize();
+                default -> {
+                    System.err.println("Unbekannte Option: " + args[i]);
+                    System.exit(2);
+                }
+            }
+        }
         if (ToolProvider.getSystemJavaCompiler() == null) {
             System.err.println("Kein Java-Compiler gefunden. Bitte ein JDK installieren (nicht nur eine JRE).");
             System.exit(1);
         }
-        if (args.length > 0 && args[0].equals("--selbsttest")) {
+        if (selbsttest) {
             System.exit(Selbsttest.ausfuehren() ? 0 : 1);
         }
+        Files.createDirectories(daten);
+        Coach.initialisieren();
 
         byte[] zufall = new byte[24];
         new SecureRandom().nextBytes(zufall);
@@ -91,6 +134,25 @@ public class Trainer {
         server.start();
 
         String url = "http://localhost:" + port + "/";
+        if (appModus) {
+            System.out.println("JAVATRAINER_URL=" + url);
+            System.out.flush();
+            // Die App hält unsere Standardeingabe offen. Wird sie geschlossen
+            // (App beendet oder abgestürzt), beendet sich auch der Server.
+            Thread waechter = new Thread(() -> {
+                try {
+                    while (System.in.read() != -1) {
+                        // nichts zu tun
+                    }
+                } catch (IOException e) {
+                    // Eingabe weg - beenden
+                }
+                System.exit(0);
+            });
+            waechter.setDaemon(true);
+            waechter.start();
+            return;
+        }
         System.out.println();
         System.out.println("  Java-Trainer laeuft:  " + url);
         System.out.println("  (Falls sich der Browser nicht oeffnet: Adresse oben in den Browser kopieren.)");
@@ -184,7 +246,7 @@ public class Trainer {
                 sende(ex, 200, "application/json", Pruefer.ausfuehren(leseText(ex), eingabe));
             }
             case "/api/fortschritt" -> {
-                Path datei = basis.resolve("fortschritt.json");
+                Path datei = daten.resolve("fortschritt.json");
                 if (methode.equals("POST")) {
                     Files.writeString(datei, leseText(ex), StandardCharsets.UTF_8);
                     sende(ex, 200, "application/json", "{\"ok\":true}");
@@ -192,6 +254,24 @@ public class Trainer {
                     sende(ex, 200, "application/json",
                             Files.exists(datei) ? Files.readString(datei, StandardCharsets.UTF_8) : "{}");
                 }
+            }
+            case "/api/claude/status" -> sende(ex, 200, "application/json", Coach.status());
+            case "/api/claude/schluessel" -> {
+                if (methode.equals("DELETE")) {
+                    Coach.schluesselLoeschen();
+                    sende(ex, 200, "application/json", "{\"ok\":true}");
+                } else if (methode.equals("POST")) {
+                    sende(ex, 200, "application/json", Coach.schluesselSpeichern(leseText(ex)));
+                } else {
+                    sende(ex, 405, "text/plain", "Nicht erlaubt");
+                }
+            }
+            case "/api/claude/hilfe" -> {
+                if (!methode.equals("POST")) {
+                    sende(ex, 405, "text/plain", "Nicht erlaubt");
+                    return;
+                }
+                Coach.hilfe(ex, leseText(ex));
             }
             default -> sende(ex, 404, "text/plain", "Unbekannt");
         }
@@ -475,6 +555,32 @@ record Pruefergebnis(String status, List<Diagnose> diagnosen, List<Test> tests, 
 
 class Pruefer {
 
+    /** Prüfergebnis als lesbarer Text (für den Claude-Coach). */
+    static String alsText(Pruefergebnis r) {
+        StringBuilder sb = new StringBuilder("Status: ").append(switch (r.status()) {
+            case "bestanden" -> "alle Tests bestanden";
+            case "nicht_bestanden" -> "nicht alle Tests bestanden";
+            case "kompilierfehler" -> "Compilerfehler - der Code lässt sich nicht übersetzen";
+            case "zeitlimit" -> "Zeitlimit überschritten (vermutlich Endlosschleife)";
+            default -> r.status();
+        }).append('\n');
+        for (Diagnose d : r.diagnosen()) {
+            sb.append(d.datei().equals("Main.java") ? "Compilerfehler in Zeile " + d.zeile() : "Fehler in der Prüfung (Methoden- oder Klassenname geändert?)")
+                    .append(": ").append(d.meldung()).append('\n');
+        }
+        for (Test t : r.tests()) {
+            sb.append("- [").append(t.status()).append("] ").append(t.beschreibung());
+            if (!t.erwartet().isEmpty() || !t.erhalten().isEmpty()) {
+                sb.append(" | erwartet: ").append(t.erwartet()).append(" | erhalten: ").append(t.erhalten());
+            }
+            sb.append('\n');
+        }
+        if (!r.ausgabe().isBlank()) {
+            sb.append("Zusätzliche Bildschirmausgabe des Programms:\n").append(r.ausgabe()).append('\n');
+        }
+        return sb.toString();
+    }
+
     static Pruefergebnis pruefen(String pruefung, String code) throws IOException, InterruptedException {
         Path ordner = Files.createTempDirectory("javatrainer");
         try {
@@ -696,5 +802,304 @@ class Selbsttest {
         System.out.println(lektionen.size() + " Lektionen, " + tests + " Tests in Musterloesungen, "
                 + fehler + " mit Problemen.");
         return fehler == 0;
+    }
+}
+
+// ======================================================================
+//  Claude-Coach: Hilfe und Kontrolle über die Anthropic-API
+// ======================================================================
+
+class Coach {
+
+    static final String MODELL = System.getenv().getOrDefault("JAVATRAINER_MODELL", "claude-opus-5-5");
+    // US-Dollar je 1 Mio. Tokens für claude-opus-5-5 laut Anthropic-Preisliste (Stand Oktober 2026).
+    // Dient nur der ungefähren Kostenanzeige; maßgeblich ist die Abrechnung in der Anthropic Console.
+    static final double PREIS_EINGABE = 4.0;
+    static final double PREIS_AUSGABE = 20.0;
+
+    static final ObjectMapper JSON = new ObjectMapper();
+
+    static final String SYSTEM = """
+            Du bist Claude, der eingebaute Lern-Coach im "Java-Trainer". Mit der App arbeitet eine Person \
+            den Stoff der Vorlesung "Einführung in die objektorientierte Programmierung, Teil 1" (Java) nach: \
+            Grunddatentypen, Operatoren, Kontrollstrukturen, Arrays, Klassen und Objekte, Datenkapselung, \
+            Konstruktoren, Vererbung, statische Elemente, abstrakte Klassen und Schnittstellen.
+
+            So hilfst du:
+            - Antworte auf Deutsch, freundlich und auf Augenhöhe. Halte dich kurz: meist drei bis acht Sätze. \
+            Code nur, wenn er wirklich hilft, dann als kurzer Codeblock mit ```java.
+            - Ziel ist, dass die Person selbst darauf kommt. Gib Denkanstöße, Rückfragen und gezielte Hinweise \
+            statt der fertigen Lösung. Die vollständige Lösung schreibst du nur, wenn ausdrücklich danach gefragt \
+            wird - und dann mit Erklärung.
+            - Die Musterlösung bekommst du nur als Hintergrundwissen. Gib sie nicht wieder und zitiere sie nicht.
+            - Aussagen darüber, ob der Code kompiliert, was er ausgibt oder welche Tests scheitern, stützt du auf \
+            das mitgelieferte Prüfergebnis. Es stammt vom echten Java-Compiler und den Tests der App. Rate nicht; \
+            wenn du etwas nicht sicher weißt, sag das offen.
+            - Verweise auf Zeilennummern im Code der Person, wenn das hilft.
+            - Bleib beim Stoff des Kurses. Verwende keine Sprachmittel, die im Kurs noch nicht vorkamen \
+            (zum Beispiel Streams, Lambdas, Collections, var), außer die Person fragt ausdrücklich danach.
+            - Wenn die Frage nichts mit Java oder der Lektion zu tun hat, lenke freundlich zurück zur Aufgabe.
+            """;
+
+    static final Map<String, String> MODI = Map.of(
+            "tipp", "Gib genau einen kleinen, konkreten Denkanstoß für den nächsten Schritt. Keine Lösung und kein fertiger Code.",
+            "pruefen", "Kontrolliere den Code anhand des Prüfergebnisses: Was stimmt schon, was ist falsch und warum? "
+                    + "Zeig auf die betreffenden Zeilen, aber verrate nicht die fertige Lösung. Sind alle Tests bestanden, "
+                    + "gib kurzes Feedback zu Lesbarkeit und Stil (Namen, Einrückung, unnötiger Code) und lobe, was gut ist.",
+            "fehler", "Erkläre die Compiler- oder Testmeldung in einfachen Worten: was sie bedeutet, wo die Ursache liegt "
+                    + "und woran man solche Fehler künftig erkennt. Keine fertige Lösung.",
+            "erklaeren", "Erkläre das Thema dieser Lektion noch einmal anders als im Lektionstext, mit einem kleinen "
+                    + "eigenen Beispiel, das nicht die Aufgabe selbst löst.",
+            "frage", "Beantworte die Frage der Person.");
+
+    private static AnthropicClient client;
+    private static String quelle = "";
+
+    static synchronized void initialisieren() {
+        String ausUmgebung = System.getenv("ANTHROPIC_API_KEY");
+        if (ausUmgebung != null && !ausUmgebung.isBlank()) {
+            client = baueClient(ausUmgebung.trim());
+            quelle = Trainer.appModus ? "schluesselbund" : "umgebung";
+            return;
+        }
+        Path datei = schluesselDatei();
+        if (!Trainer.appModus && Files.isRegularFile(datei)) {
+            try {
+                client = baueClient(Files.readString(datei, StandardCharsets.UTF_8).trim());
+                quelle = "datei";
+            } catch (IOException e) {
+                client = null;
+            }
+        }
+    }
+
+    static Path schluesselDatei() {
+        return Path.of(System.getProperty("user.home"), ".javatrainer", "anthropic-api-key");
+    }
+
+    static AnthropicClient baueClient(String schluessel) {
+        AnthropicOkHttpClient.Builder builder = AnthropicOkHttpClient.builder()
+                .apiKey(schluessel)
+                .timeout(Duration.ofMinutes(5));
+        String basisUrl = System.getenv("ANTHROPIC_BASE_URL");
+        if (basisUrl != null && !basisUrl.isBlank()) {
+            builder.baseUrl(basisUrl);
+        }
+        return builder.build();
+    }
+
+    static synchronized String status() {
+        return "{\"aktiv\":" + (client != null) + ",\"modell\":" + Json.text(MODELL)
+                + ",\"quelle\":" + Json.text(quelle) + ",\"app\":" + Trainer.appModus
+                + ",\"preisEingabe\":" + PREIS_EINGABE + ",\"preisAusgabe\":" + PREIS_AUSGABE + "}";
+    }
+
+    /** Prüft den Schlüssel mit einer kostenlosen Abfrage (Modellinfo) und übernimmt ihn. */
+    static String schluesselSpeichern(String anfrage) throws IOException {
+        String schluessel = JSON.readTree(anfrage).path("schluessel").asText("").trim();
+        if (schluessel.isEmpty()) {
+            return antwort(false, "Bitte einen API-Schlüssel eingeben.");
+        }
+        AnthropicClient neu = baueClient(schluessel);
+        try {
+            neu.models().retrieve(MODELL);
+        } catch (UnauthorizedException e) {
+            return antwort(false, "Anthropic hat den Schlüssel abgelehnt. Bitte prüfe, ob er vollständig kopiert wurde.");
+        } catch (PermissionDeniedException | NotFoundException e) {
+            return antwort(false, "Mit diesem Schlüssel ist das Modell " + MODELL + " nicht verfügbar.");
+        } catch (AnthropicIoException e) {
+            return antwort(false, "Keine Verbindung zu Anthropic. Bist du online?");
+        } catch (AnthropicServiceException e) {
+            return antwort(false, "Anthropic meldet einen Fehler (HTTP " + e.statusCode() + "). Bitte später erneut versuchen.");
+        }
+        synchronized (Coach.class) {
+            client = neu;
+            quelle = Trainer.appModus ? "schluesselbund" : "datei";
+        }
+        if (!Trainer.appModus) {
+            Path datei = schluesselDatei();
+            Files.createDirectories(datei.getParent());
+            Files.writeString(datei, schluessel, StandardCharsets.UTF_8);
+            try {
+                Files.setPosixFilePermissions(datei, PosixFilePermissions.fromString("rw-------"));
+            } catch (UnsupportedOperationException e) {
+                // Windows: keine POSIX-Rechte
+            }
+        }
+        return antwort(true, "");
+    }
+
+    static synchronized void schluesselLoeschen() throws IOException {
+        client = null;
+        quelle = "";
+        Files.deleteIfExists(schluesselDatei());
+    }
+
+    static String antwort(boolean ok, String meldung) {
+        return "{\"ok\":" + ok + ",\"meldung\":" + Json.text(meldung) + "}";
+    }
+
+    // ------------------------------------------------------------------
+
+    static void hilfe(HttpExchange ex, String body) throws IOException {
+        ex.getResponseHeaders().set("Content-Type", "application/x-ndjson; charset=utf-8");
+        ex.getResponseHeaders().set("Cache-Control", "no-store");
+        ex.sendResponseHeaders(200, 0);
+        try (OutputStream out = ex.getResponseBody()) {
+            AnthropicClient c;
+            synchronized (Coach.class) {
+                c = client;
+            }
+            if (c == null) {
+                ereignis(out, "fehler", "Claude ist noch nicht eingerichtet. Bitte zuerst einen API-Schlüssel eintragen.");
+                return;
+            }
+            JsonNode anfrage = JSON.readTree(body);
+            Lektion l = Kurs.finde(anfrage.path("id").asText());
+            if (l == null) {
+                ereignis(out, "fehler", "Lektion nicht gefunden.");
+                return;
+            }
+            String modus = MODI.containsKey(anfrage.path("modus").asText()) ? anfrage.path("modus").asText() : "frage";
+            String kontext = baueKontext(l, modus, anfrage.path("code").asText(""), anfrage.path("frage").asText(""));
+
+            MessageCreateParams.Builder params = MessageCreateParams.builder()
+                    .model(MODELL)
+                    .maxTokens(64000L)
+                    .system(SYSTEM)
+                    .outputConfig(BetaOutputConfig.builder().effort(BetaOutputConfig.Effort.MEDIUM).build())
+                    // Lehnt ein Sicherheitsfilter ab, antwortet automatisch ein passendes anderes Modell.
+                    .addBeta("server-side-fallback-2026-07-01")
+                    .fallbacks(BetaFallbacksParam.ofDefault());
+            for (String[] nachricht : verlauf(anfrage.path("verlauf"))) {
+                if (nachricht[0].equals("user")) {
+                    params.addUserMessage(nachricht[1]);
+                } else {
+                    params.addAssistantMessage(nachricht[1]);
+                }
+            }
+            params.addUserMessage(kontext);
+
+            long eingabe = 0;
+            long ausgabe = 0;
+            boolean abgelehnt = false;
+            try (StreamResponse<BetaRawMessageStreamEvent> stream = c.beta().messages().createStreaming(params.build())) {
+                Iterator<BetaRawMessageStreamEvent> ereignisse = stream.stream().iterator();
+                while (ereignisse.hasNext()) {
+                    BetaRawMessageStreamEvent e = ereignisse.next();
+                    if (e.messageStart().isPresent()) {
+                        BetaUsage u = e.messageStart().get().message().usage();
+                        eingabe = u.inputTokens() + u.cacheCreationInputTokens().orElse(0L) + u.cacheReadInputTokens().orElse(0L);
+                    } else if (e.contentBlockDelta().isPresent()) {
+                        var text = e.contentBlockDelta().get().delta().text();
+                        if (text.isPresent()) {
+                            ereignis(out, "text", text.get().text());
+                        }
+                    } else if (e.messageDelta().isPresent()) {
+                        BetaMessageDeltaUsage u = e.messageDelta().get().usage();
+                        ausgabe = Math.max(ausgabe, u.outputTokens());
+                        eingabe = Math.max(eingabe, u.inputTokens().orElse(0L));
+                        if (e.messageDelta().get().delta().stopReason().map(BetaStopReason.REFUSAL::equals).orElse(false)) {
+                            abgelehnt = true;
+                        }
+                    }
+                }
+            }
+            if (abgelehnt) {
+                ereignis(out, "hinweis", "Claude hat diese Anfrage nicht beantwortet. Formuliere die Frage bitte anders.");
+            }
+            double kosten = eingabe * PREIS_EINGABE / 1_000_000 + ausgabe * PREIS_AUSGABE / 1_000_000;
+            out.write(("{\"typ\":\"ende\",\"eingabeTokens\":" + eingabe + ",\"ausgabeTokens\":" + ausgabe
+                    + ",\"kostenUsd\":" + String.format(Locale.ROOT, "%.5f", kosten) + "}\n").getBytes(StandardCharsets.UTF_8));
+            out.flush();
+        } catch (UnauthorizedException e) {
+            fehlerAmEnde(ex, "Anthropic hat den API-Schlüssel abgelehnt. Bitte in den Claude-Einstellungen neu eintragen.");
+        } catch (RateLimitException e) {
+            fehlerAmEnde(ex, "Zu viele Anfragen in kurzer Zeit. Bitte einen Moment warten und erneut versuchen.");
+        } catch (AnthropicIoException e) {
+            fehlerAmEnde(ex, "Keine Verbindung zu Anthropic. Bist du online?");
+        } catch (AnthropicServiceException e) {
+            fehlerAmEnde(ex, "Anthropic meldet einen Fehler (HTTP " + e.statusCode() + "). Bitte später erneut versuchen.");
+        } catch (RuntimeException | InterruptedException e) {
+            fehlerAmEnde(ex, "Unerwarteter Fehler: " + e.getMessage());
+        }
+    }
+
+    /** Bisheriger Gesprächsverlauf (nur Text), abwechselnd user/assistant, beginnend mit user, höchstens 16 Nachrichten. */
+    static List<String[]> verlauf(JsonNode knoten) {
+        List<String[]> liste = new ArrayList<>();
+        for (JsonNode n : knoten) {
+            String rolle = n.path("rolle").asText();
+            String text = n.path("text").asText("").strip();
+            if (text.isEmpty() || !(rolle.equals("user") || rolle.equals("assistant"))) {
+                continue;
+            }
+            String erwartet = liste.size() % 2 == 0 ? "user" : "assistant";
+            if (rolle.equals(erwartet)) {
+                liste.add(new String[] {rolle, text});
+            }
+        }
+        if (liste.size() % 2 == 1) {
+            liste.remove(liste.size() - 1); // unbeantwortete Frage nicht doppelt schicken
+        }
+        while (liste.size() > 16) {
+            liste.remove(0);
+            liste.remove(0);
+        }
+        return liste;
+    }
+
+    static String baueKontext(Lektion l, String modus, String code, String frage) throws IOException, InterruptedException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<lektion>\nTitel: ").append(l.text("titel")).append('\n');
+        if (!l.text("erklaerung").isEmpty()) {
+            sb.append("Erklärung:\n").append(l.text("erklaerung")).append('\n');
+        }
+        if (!l.text("aufgabe").isEmpty()) {
+            sb.append("Aufgabe:\n").append(l.text("aufgabe")).append('\n');
+        }
+        sb.append("</lektion>\n\n");
+
+        if (l.typ().equals("code")) {
+            if (code.isBlank()) {
+                code = l.text("vorlage");
+            }
+            sb.append("<code_der_person>\n");
+            String[] zeilen = code.split("\n", -1);
+            for (int i = 0; i < zeilen.length; i++) {
+                sb.append(String.format("%3d| ", i + 1)).append(zeilen[i]).append('\n');
+            }
+            sb.append("</code_der_person>\n\n");
+            sb.append("<pruefergebnis>\n").append(Pruefer.alsText(Pruefer.pruefen(l.text("pruefung"), code)))
+                    .append("</pruefergebnis>\n\n");
+            sb.append("<musterloesung_nicht_verraten>\n").append(l.text("loesung")).append("\n</musterloesung_nicht_verraten>\n\n");
+        } else if (l.typ().equals("quiz")) {
+            sb.append("<quiz>\nFrage:\n").append(l.text("frage")).append("\nAntwortmöglichkeiten:\n");
+            for (String zeile : l.text("optionen").split("\n")) {
+                if (zeile.startsWith("+ ") || zeile.startsWith("- ")) {
+                    sb.append(zeile.startsWith("+ ") ? "(richtig) " : "(falsch) ").append(zeile.substring(2)).append('\n');
+                }
+            }
+            sb.append("Erklärung nach dem Beantworten:\n").append(l.text("nachher")).append("\n</quiz>\n")
+                    .append("Verrate die richtige Antwort nur, wenn die Person ausdrücklich danach fragt.\n\n");
+        }
+        sb.append("Auftrag: ").append(MODI.get(modus)).append('\n');
+        if (!frage.isBlank()) {
+            sb.append("\nFrage der Person:\n").append(frage).append('\n');
+        }
+        return sb.toString();
+    }
+
+    static void ereignis(OutputStream out, String typ, String text) throws IOException {
+        out.write(("{\"typ\":" + Json.text(typ) + ",\"text\":" + Json.text(text) + "}\n").getBytes(StandardCharsets.UTF_8));
+        out.flush();
+    }
+
+    static void fehlerAmEnde(HttpExchange ex, String meldung) {
+        try {
+            ereignis(ex.getResponseBody(), "fehler", meldung);
+        } catch (IOException e) {
+            // Verbindung schon zu
+        }
     }
 }

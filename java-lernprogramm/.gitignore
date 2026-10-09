@@ -1,2 +1,4 @@
 *.class
 fortschritt.json
+lib/
+mac/build/
