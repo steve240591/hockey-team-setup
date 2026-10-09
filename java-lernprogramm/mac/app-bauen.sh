@@ -2,7 +2,8 @@
 # Baut die macOS-App "Java-Trainer" und installiert sie im Ordner "Programme".
 #
 # Aufruf im Terminal (im Ordner java-lernprogramm):
-#     ./mac/app-bauen.sh
+#     sh mac/app-bauen.sh
+# oder Doppelklick auf "mac/App bauen.command".
 #
 # Voraussetzungen: macOS 13 oder neuer, Xcode oder die Command Line Tools
 # (xcode-select --install) und ein JDK ab Version 17.
@@ -10,8 +11,27 @@
 set -e
 cd "$(dirname "$0")/.."
 WURZEL=$(pwd)
+SCHRITT="Start"
+FERTIG=0
 
-# 1. Voraussetzungen prüfen
+# Bricht ein Schritt ab, sagen wir deutlich, welcher es war.
+melde_abbruch() {
+    if [ "$FERTIG" != 1 ]; then
+        echo "" >&2
+        echo "==================================================================" >&2
+        echo "ABBRUCH beim Schritt: $SCHRITT" >&2
+        echo "Es wurde nichts in \"Programme\" installiert." >&2
+        echo "Bitte die Ausgabe oben (oder mac/bauprotokoll.txt) an Claude schicken." >&2
+        echo "==================================================================" >&2
+    fi
+}
+trap melde_abbruch EXIT
+
+# Reste eines früheren, abgebrochenen Baus entfernen (halbfertige App!)
+rm -rf "$WURZEL/mac/build"
+
+SCHRITT="Voraussetzungen prüfen"
+echo "1/7 $SCHRITT ..."
 if [ "$(uname)" != "Darwin" ]; then
     echo "Dieses Skript läuft nur auf macOS." >&2
     exit 1
@@ -24,28 +44,34 @@ if ! JAVA_HOME_PFAD=$(/usr/libexec/java_home -v 17+ 2>/dev/null); then
     echo "Kein JDK ab Version 17 gefunden. Bitte z. B. Eclipse Temurin von https://adoptium.net installieren." >&2
     exit 1
 fi
-echo "JDK: $JAVA_HOME_PFAD"
+echo "    macOS $(sw_vers -productVersion), $(uname -m)"
+echo "    JDK: $JAVA_HOME_PFAD"
+echo "    $(xcrun swiftc --version 2>&1 | head -1)"
 
-# 2. Anthropic-Java-SDK für den Claude-Coach laden (einmalig, mit Prüfsummen)
+SCHRITT="Anthropic-SDK laden"
+echo "2/7 $SCHRITT (einmalig, ca. 45 MB) ..."
 sh ./werkzeuge/sdk-laden.sh
 
-# 3. App-Paket anlegen und Java-Teil vorübersetzen
-BAU="$WURZEL/mac/build"
+# Gebaut wird in einem temporären Ordner - eine halbfertige App kann so
+# nirgends liegen bleiben.
+BAU=$(mktemp -d "${TMPDIR:-/tmp}/javatrainer.XXXXXX")
 APP="$BAU/Java-Trainer.app"
 RES="$APP/Contents/Resources/trainer"
-rm -rf "$BAU"
 mkdir -p "$APP/Contents/MacOS" "$RES/klassen"
-echo "Übersetze Trainer.java ..."
+
+SCHRITT="Java-Teil übersetzen"
+echo "3/7 $SCHRITT ..."
 "$JAVA_HOME_PFAD/bin/javac" -encoding UTF-8 -nowarn -cp "lib/*" -d "$RES/klassen" Trainer.java
 cp -R kurs web lib "$RES/"
 
-# 4. Swift-Hülle übersetzen (für die Architektur dieses Macs)
-echo "Übersetze die App ..."
+SCHRITT="App übersetzen (Swift)"
+echo "4/7 $SCHRITT ..."
 ARCH=$(uname -m)
 xcrun swiftc -O -parse-as-library -target "$ARCH-apple-macos13.0" \
     mac/JavaTrainerApp.swift -o "$APP/Contents/MacOS/Java-Trainer"
 
-# 5. App-Symbol
+SCHRITT="App-Symbol und Info.plist"
+echo "5/7 $SCHRITT ..."
 ICONSET="$BAU/AppIcon.iconset"
 mkdir -p "$ICONSET"
 for g in 16 32 128 256 512; do
@@ -53,14 +79,22 @@ for g in 16 32 128 256 512; do
     sips -z $((g * 2)) $((g * 2)) mac/AppIcon.png --out "$ICONSET/icon_${g}x${g}@2x.png" >/dev/null
 done
 iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
-
-# 6. Info.plist
 cp mac/Info.plist "$APP/Contents/Info.plist"
 
-# 7. Ad-hoc signieren (nur für diesen Mac, keine Weitergabe)
+SCHRITT="App prüfen und signieren"
+echo "6/7 $SCHRITT ..."
+if [ ! -x "$APP/Contents/MacOS/Java-Trainer" ]; then
+    echo "Die Programmdatei der App fehlt." >&2
+    exit 1
+fi
+plutil -lint "$APP/Contents/Info.plist" >/dev/null
+# Quarantäne-Markierungen (z. B. vom ZIP-Download) entfernen, dann ad hoc signieren
+xattr -cr "$APP"
 codesign --force --deep --sign - "$APP"
+codesign --verify --deep --strict "$APP"
 
-# 8. In "Programme" installieren
+SCHRITT="In \"Programme\" installieren"
+echo "7/7 $SCHRITT ..."
 ZIEL=/Applications
 if [ ! -w "$ZIEL" ]; then
     ZIEL="$HOME/Applications"
@@ -70,6 +104,7 @@ rm -rf "$ZIEL/Java-Trainer.app"
 ditto "$APP" "$ZIEL/Java-Trainer.app"
 rm -rf "$BAU"
 
+FERTIG=1
 echo ""
 echo "Fertig: $ZIEL/Java-Trainer.app"
 echo "Du findest den Java-Trainer jetzt in \"Programme\" und im Launchpad."
